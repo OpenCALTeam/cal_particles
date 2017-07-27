@@ -1,29 +1,5 @@
-#ifndef MODEL_H
-#define MODEL_H
-
-#ifdef OMP
-#include <OpenCAL-OMP/cal3D.h>
-#include <OpenCAL-OMP/cal3DRun.h>
-#include <OpenCAL-OMP/cal3DIO.h>
-#include <OpenCAL-OMP/cal3DUnsafe.h>
-#else
-#include <OpenCAL/cal3D.h>
-#include <OpenCAL/cal3DRun.h>
-#include <OpenCAL/cal3DIO.h>
-#include <OpenCAL/cal3DUnsafe.h>
-#include <OpenCAL-CL/calcl3D.h>
-#endif
-#include <math.h>
-
-//OpenCAL-CL Macros
-#define KERNEL_INC "./kernels/include/"
-#define KERNEL_SRC "./kernels/source/"
-#define PLATFORM_NUM 0
-#define DEVICE_NUM 0
-#define RESETF "resetF"
-#define COLLISION "collision"
-#define MOVILI "movili"
-#define MOVILICAZZU "moviliCazzu"
+#ifndef model_h
+#define model_h
 
 // PHYSICAL CONSTANTS AND FLAGS
 #define KN 100//50000
@@ -65,35 +41,33 @@
 #define CELL_FILL_RATE  0.75 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 // PHYSICAL TIME AND COMPUTATIONAL STEPS
-#define TOTAL_SIMULATION_TIME 1 //0.1 //[s]
+#define TOTAL_SIMULATION_TIME 1.0 //0.1 //[s]
 #define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN)) //[s]
-#define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))+1
+#define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
 #define INTEGRITY_CHECK_STEPS STEPS
 
-//SUBSTATES
-struct Substates
-{
-  struct CALSubstate3Dr **Fx;
-  struct CALSubstate3Dr **Fy;
-  struct CALSubstate3Dr **Fz;
-  struct CALSubstate3Dr **px;
-  struct CALSubstate3Dr **py;
-  struct CALSubstate3Dr **pz;
-  struct CALSubstate3Dr **vx;
-  struct CALSubstate3Dr **vy;
-  struct CALSubstate3Dr **vz;
-  struct CALSubstate3Di **ID;
-};
 
-// Main objcts
-extern struct CALModel3D* u_modellu;
-extern struct CALCLModel3D* device_CA;
-extern struct Substates Q;
-extern struct CALRun3D* a_simulazioni;
-extern CALint initial_nummber_of_particles;
-extern CALreal elapsed_time;
+#define ID 0
+#define P(S,slot) ((S)+((slot)))
 
-// Functions
-void partilu();
+#define FX 0
+#define FY 1
+#define FZ 2
+#define PX 3
+#define PY 4
+#define PZ 5
+#define VX 6
+#define VY 7
+#define VZ 8
+#define NUM_SUBSTATES 9
+#define Q(S,slot) ((S)+((slot)*(NUM_SUBSTATES)))
 
-#endif /* MODEL_H */
+
+
+
+
+
+
+
+
+#endif

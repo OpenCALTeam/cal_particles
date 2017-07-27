@@ -26,16 +26,16 @@ int main(int argc, char** argv)
   partilu();
 
   char t0_path[2048], tf_path[2048];
-  strcpy(t0_path, argv[0]);
-  t0_path[strlen(t0_path)-7] = '\0';
-  strcpy(tf_path, t0_path);
-  strcat(t0_path, "data/particles_t0.txt");
-  strcat(tf_path, "data/particles_tf.txt");
-#ifdef VERBOSE
-  printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
-#endif
+  strcpy(t0_path, "");
+  //t0_path[strlen(t0_path)-7] = '\0';
+  //strcpy(tf_path, t0_path);
+  strcat(t0_path, "./data/particles_t0.txt");
+  strcat(tf_path, "./data/particles_tf.txt");
+//#ifdef VERBOSE
+//  printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
+//#endif
 
-  saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, t0_path);
+  saveParticles(u_modellu, 0, elapsed_time, time_spent, t0_path);
 
 #ifdef OMP
   double begin, end;
@@ -46,11 +46,12 @@ int main(int argc, char** argv)
 #endif
 
   //calRun3D(a_simulazioni);
-  CALbyte again;
-  do
-    again = simulationStep();
-  while (again);
+//  CALbyte again;
+//  do
+//    again = simulationStep();
+//  while (again);
 
+    calclRun3D(device_CA, 1, STEPS);
 #ifdef OMP
   end = omp_get_wtime();
   time_spent = end - begin;
@@ -59,7 +60,7 @@ int main(int argc, char** argv)
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 #endif
 
-  saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, tf_path);
+  saveParticles(u_modellu, STEPS, elapsed_time, time_spent, tf_path);
 
   return 0;
 }

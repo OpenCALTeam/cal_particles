@@ -11,6 +11,7 @@
 #include <stdlib.h>
 
 struct CALModel3D* u_modellu;
+struct CALCLModel3D * device_CA;
 struct CALRun3D* a_simulazioni;
 struct Substates Q;
 CALint initial_nummber_of_particles;
@@ -83,6 +84,18 @@ void transizioniGlobali(struct CALModel3D* modello)
 
 void partilu()
 {
+  //setenv("CUDA_CACHE_DISABLE", "1", 1);
+
+  // Select a compliant device
+  struct CALCLDeviceManager * calcl_device_manager = calclCreateManager();
+  calclPrintPlatformsAndDevices(calcl_device_manager);
+  CALCLdevice device = calclGetDevice(calcl_device_manager, PLATFORM_NUM, DEVICE_NUM);
+  CALCLcontext context = calclCreateContext(&device);
+
+  // Load kernels and return a compiled program
+  CALCLprogram program = calclLoadProgram3D(context, device, KERNEL_SRC, KERNEL_INC);
+
+
   u_modellu = calCADef3D(X_CELLS,Y_CELLS,Z_CELLS,CAL_MOORE_NEIGHBORHOOD_3D,CAL_SPACE_TOROIDAL,CAL_NO_OPT);
 
   Q.Fx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
@@ -130,10 +143,27 @@ void partilu()
   mmiscali_nta_cella_seriale(u_modellu);
   cancella_particelle_in_urto(u_modellu);
 
+  // Define a device-side CA
+  device_CA = calclCADef3D(u_modellu, context, program, device);
+
+  CALCLkernel resetF_kernel      = calclGetKernelFromProgram(&program, RESETF);
+  CALCLkernel collsion_kernel    = calclGetKernelFromProgram(&program, COLLISION);
+  CALCLkernel movili_kernel      = calclGetKernelFromProgram(&program, MOVILI);
+  CALCLkernel moviliCazzu_kernel = calclGetKernelFromProgram(&program, MOVILICAZZU);
+
+
+  // Add transition function's elementary process
+  calclAddElementaryProcess3D(device_CA, &resetF_kernel);
+  calclAddElementaryProcess3D(device_CA, &collsion_kernel);
+  calclAddElementaryProcess3D(device_CA, &movili_kernel);
+  calclAddElementaryProcess3D(device_CA, &moviliCazzu_kernel);
+
   // Simulation
-  a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_IMPLICIT);
-  calRunAddGlobalTransitionFunc3D(a_simulazioni, transizioniGlobali);
-  calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
+//  a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_IMPLICIT);
+//  calRunAddGlobalTransitionFunc3D(a_simulazioni, transizioniGlobali);
+//  calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
+
+
 
 #ifdef VERBOSE
   printf("The 3D particles computational model\n");

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-Project(cal_DEM)
+Project(calcl_particles)
 
 OPTION (GUI "GUI" OFF)
 OPTION (OMP "OpenMP" OFF)
@@ -8,7 +8,7 @@ OPTION (VERBOSE "verbose mode" OFF)
 
 if(OMP)
     add_definitions(-DOMP=ON)
-    find_package(OpenCAL 1.0 COMPONENTS  OpenCAL-OMP REQUIRED)
+    find_package(OpenCAL 1.0 COMPONENTS  OpenCAL-OMP OpenCAL-CL REQUIRED)
     FIND_PACKAGE(OpenMP REQUIRED)
     IF(OPENMP_FOUND)
         SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -16,13 +16,14 @@ if(OMP)
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
     ENDIF()
 else()
-    find_package(OpenCAL 1.0 COMPONENTS  OpenCAL  REQUIRED)
+    find_package(OpenCAL 1.0 COMPONENTS  OpenCAL OpenCAL-CL REQUIRED)
 endif()
 
 if(VERBOSE)
     add_definitions(-DVERBOSE=ON)
 endif()
 
+find_package( OpenCL REQUIRED )
 if(GUI)
     find_package(OpenGL REQUIRED)
     find_package(GLUT REQUIRED)
@@ -60,6 +61,7 @@ include_directories(
   ${OPENCAL_INCLUDE_DIR}
   ${OPENGL_INCLUDE_DIRS}
   ${GLUT_INCLUDE_DIR}
+  ${OpenCL_INCLUDE_DIRS}
   )
 
 if(GUI)
@@ -88,6 +90,6 @@ else() # CLI
     if(OMP)
         target_link_libraries(${PROJECT_NAME} ${OPENCAL_LIBRARIES} ${M_LIB} ${CMAKE_THREAD_LIBS_INIT})
     else()
-        target_link_libraries(${PROJECT_NAME} ${OPENCAL_LIBRARIES} ${M_LIB})
+        target_link_libraries(${PROJECT_NAME} ${OPENCAL_LIBRARIES} ${M_LIB} ${OpenCL_LIBRARIES})
     endif()
 endif()
