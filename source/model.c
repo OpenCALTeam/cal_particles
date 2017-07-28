@@ -9,6 +9,7 @@
 #include <utils_io.h>
 #include <sim_stop.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 struct CALModel3D* u_modellu;
 struct CALCLModel3D * device_CA;
@@ -82,6 +83,118 @@ void transizioniGlobali(struct CALModel3D* modello)
     }
 }
 
+void __calclGetDirFiles(char ** paths, int pathsNum, char *** files_names, int * num_files) {
+
+  DIR *dir;
+  struct dirent *ent;
+
+//  char cwd[1024];
+//  if (getcwd(cwd, sizeof(cwd)) != NULL)
+//    {
+//    fprintf(stdout, "Current working dir: %s\n", cwd);
+//    fflush(stdout);
+//    }
+//  else
+//    perror("getcwd() error");
+
+//  strcat (cwd,"/");
+//  strcat (cwd,paths[0]);
+//  fprintf(stdout, "Current working dir: %s\n", cwd);
+//  fflush(stdout);
+
+
+  (*num_files) = 0;
+  int i;
+  for (i = 0; i < pathsNum; i++) {
+      if ((dir = opendir(paths[i])) != NULL) {
+          while ((ent = readdir(dir)) != NULL) {
+              if (ent->d_name[0] != '.')
+                (*num_files)++;
+            }
+          closedir(dir);
+
+        } else {
+          perror("could not open directory\n");
+          exit(1);
+        }
+    }
+
+
+  (*files_names) = (char**) malloc(sizeof(char*) * (*num_files));
+  int count = 0;
+  for (i = 0; i < pathsNum; i++) {
+      if ((dir = opendir(paths[i])) != NULL) {
+          while ((ent = readdir(dir)) != NULL) {
+              if (ent->d_name[0] != '.') {
+                  (*files_names)[count] = (char*) malloc(1 + sizeof(char) * (strlen(paths[i]) + strlen(ent->d_name)));
+                  strcpy((*files_names)[count], paths[i]);
+                  strcat((*files_names)[count], ent->d_name);
+                  count++;
+                }
+            }
+          closedir(dir);
+        } else {
+          perror("could not open directory\n");
+          exit(1);
+        }
+
+    }
+
+
+}
+
+CALCLprogram __calclLoadProgram3D(CALCLcontext context, CALCLdevice device, char* path_user_kernel, char* path_user_include) {
+
+  char kernel_source_directory[2048];
+  strcpy(kernel_source_directory,KERNEL_SOURCE_DIR);
+  char kernel_include_directory[2048];
+  strcpy(kernel_include_directory,KERNEL_INCLUDE_DIR);
+
+  char* u = " -cl-fp32-correctly-rounded-divide-sqrt -cl-mad-enable -cl-no-signed-zeros -cl-unsafe-math-optimizations -cl-finite-math-only -cl-fast-relaxed-math -cl-uniform-work-group-size "; //" -cl-denorms-are-zero -cl-finite-math-only -cl-fp32-correctly-rounded-divide-sqrt ";
+  char* pathOpenCALCL= getenv("OPENCALCL_PATH");
+  if (pathOpenCALCL == NULL) {
+      perror("please configure environment variable OPENCALCL_PATH\n");
+      printf("please configure environment variable OPENCALCL_PATH\n");
+      fflush(stdout);
+      exit(1);
+    }
+  char* tmp;
+  if (path_user_include == NULL) {
+      tmp = (char*) malloc(sizeof(char) * (strlen(pathOpenCALCL) + strlen(kernel_include_directory) + strlen(" -I ") + strlen(u) + 1));
+      strcpy(tmp, " -I ");
+    } else {
+      tmp = (char*) malloc(sizeof(char) * (strlen(path_user_include) + strlen(pathOpenCALCL) + strlen(kernel_include_directory) + strlen(" -I ") * 2 + strlen(u) + 1));
+      strcpy(tmp, " -I ");
+      strcat(tmp, path_user_include);
+      strcat(tmp, " -I ");
+    }
+  strcat(tmp, pathOpenCALCL);
+  strcat(tmp, kernel_include_directory);
+  strcat(tmp, u);
+
+  int num_files;
+  char** filesNames;
+  char** paths = (char**) malloc(sizeof(char*) * 2);
+
+  char* tmp2 = (char*) malloc(sizeof(char) * (1 + strlen(pathOpenCALCL) + strlen(kernel_source_directory)));
+  strcpy(tmp2,pathOpenCALCL );
+  strcat(tmp2,kernel_source_directory );
+
+  paths[0] = path_user_kernel;
+  paths[1] = tmp2;
+
+  __calclGetDirFiles(paths, 2, &filesNames, &num_files);
+
+  CALCLprogram program = calclGetProgramFromFiles(filesNames, num_files, tmp, context, &device, 1);
+  int i;
+  for (i = 0; i < num_files; i++) {
+      free(filesNames[i]);
+    }
+  free(filesNames);
+  free(tmp);
+  return program;
+}
+
 void partilu()
 {
   //setenv("CUDA_CACHE_DISABLE", "1", 1);
@@ -93,8 +206,9 @@ void partilu()
   CALCLcontext context = calclCreateContext(&device);
 
   // Load kernels and return a compiled program
-  CALCLprogram program = calclLoadProgram3D(context, device, KERNEL_SRC, KERNEL_INC);
-
+  printf("KERNEL_SRC = %s\n", KERNEL_SRC);
+  printf("KERNEL_INC = %s\n", KERNEL_INC);
+  CALCLprogram program = __calclLoadProgram3D(context, device, KERNEL_SRC, KERNEL_INC);
 
   u_modellu = calCADef3D(X_CELLS,Y_CELLS,Z_CELLS,CAL_MOORE_NEIGHBORHOOD_3D,CAL_SPACE_TOROIDAL,CAL_NO_OPT);
 
@@ -134,6 +248,8 @@ void partilu()
       calInitSubstate3Di(u_modellu,Q.ID[slot],NULL_ID);
     }
 
+
+
   // Boundary
   boundaryCellsSerial(u_modellu);
 
@@ -159,9 +275,9 @@ void partilu()
   calclAddElementaryProcess3D(device_CA, &moviliCazzu_kernel);
 
   // Simulation
-//  a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_IMPLICIT);
-//  calRunAddGlobalTransitionFunc3D(a_simulazioni, transizioniGlobali);
-//  calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
+  //  a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_IMPLICIT);
+  //  calRunAddGlobalTransitionFunc3D(a_simulazioni, transizioniGlobali);
+  //  calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
 
 
 

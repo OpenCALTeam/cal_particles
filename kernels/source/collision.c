@@ -14,7 +14,7 @@ CALreal __distance (CALreal* p0, CALreal* p1)
               (p0[2]-p1[2])*(p0[2]-p1[2]));
 }
 
-CALreal pointPlaneDistance(CALreal* P0, CALreal* Pp, CALreal* n)
+CALreal __pointPlaneDistance(CALreal* P0, CALreal* Pp, CALreal* n)
 {
   return fabs(n[0]*P0[0] + n[1]*P0[1] + n[2]*P0[2] - n[0]*Pp[0] - n[1]*Pp[1] - n[2]*Pp[2]);
 }
@@ -24,7 +24,7 @@ CALreal scalar(CALreal *v, CALreal *n)
   return v[0]*n[0]+v[1]*n[1]+v[2]*n[2];
 }
 
-void orthogonalProjectedPointToPlane(CALreal* Pi, CALreal* Pp, CALreal* n, CALreal* Pj)
+void __orthogonalProjectedPointToPlane(CALreal* Pi, CALreal* Pp, CALreal* n, CALreal* Pj)
 {
   CALreal d = - scalar(n, Pp);
   CALreal t = - d - scalar(n, Pi);
@@ -126,12 +126,12 @@ __kernel void collision(__CALCL_MODEL_3D){
                   vj[1] = 0.0;
                   vj[2] = 0.0;
   #endif
-                  dij = pointPlaneDistance(pi, pj, Nj);
+                  dij = __pointPlaneDistance(pi, pj, Nj);
 
                   if (dij < PARTICLE_RADIUS)
                     {
 
-                      orthogonalProjectedPointToPlane(pi, pj, Nj, pj);
+                      __orthogonalProjectedPointToPlane(pi, pj, Nj, pj);
 
                       for (int k=0; k<3; k++)
                         {
@@ -244,10 +244,10 @@ __kernel void collision(__CALCL_MODEL_3D){
                       vj[1] = 0.0;
                       vj[2] = 0.0;
       #endif
-                      dij = pointPlaneDistance(pi, pj, Nj);
+                      dij = __pointPlaneDistance(pi, pj, Nj);
                       if (dij < PARTICLE_RADIUS)
                         {
-                          orthogonalProjectedPointToPlane(pi, pj, Nj, pj);
+                          __orthogonalProjectedPointToPlane(pi, pj, Nj, pj);
                           for (int k=0; k<3; k++)
                             {
                               rij[k] = pj[k] - pi[k];

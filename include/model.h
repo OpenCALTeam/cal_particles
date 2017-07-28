@@ -19,7 +19,7 @@
 #define KERNEL_INC "./kernels/include/"
 #define KERNEL_SRC "./kernels/source/"
 #define PLATFORM_NUM 0
-#define DEVICE_NUM 0
+#define DEVICE_NUM 1
 #define RESETF "resetF"
 #define COLLISION "collision"
 #define MOVILI "movili"
@@ -65,9 +65,9 @@
 #define CELL_FILL_RATE  0.75 // 0.59 // 1.0/(MAX_NUMBER_OF_PARTICLES_PER_CELL)
 
 // PHYSICAL TIME AND COMPUTATIONAL STEPS
-#define TOTAL_SIMULATION_TIME 1 //0.1 //[s]
+#define TOTAL_SIMULATION_TIME 0.075 //0.1 //[s]
 #define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN)) //[s]
-#define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))+1
+#define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
 #define INTEGRITY_CHECK_STEPS STEPS
 
 //SUBSTATES

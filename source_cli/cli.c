@@ -51,7 +51,9 @@ int main(int argc, char** argv)
 //    again = simulationStep();
 //  while (again);
 
-    calclRun3D(device_CA, 1, STEPS);
+    calclRun3D(device_CA, 1, STEPS+1);
+    elapsed_time = (STEPS+1)*DELTA_T;
+
 #ifdef OMP
   end = omp_get_wtime();
   time_spent = end - begin;
@@ -60,7 +62,7 @@ int main(int argc, char** argv)
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 #endif
 
-  saveParticles(u_modellu, STEPS, elapsed_time, time_spent, tf_path);
+  saveParticles(u_modellu, STEPS+1, elapsed_time, time_spent, tf_path);
 
   return 0;
 }
