@@ -46,7 +46,7 @@ void resetF(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
   if (!ncestiArmenuNaParticella(ca, cell_x, cell_y, cell_z, 0))
     return;
 
-  CALreal F[3];
+  vec3 F;
   CALreal gravity_force = -PARTICLE_MASS*G;
 
   F[0] = 0.0;
@@ -59,8 +59,6 @@ void resetF(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
       {
-        calSet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z,F[0]);
-        calSet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z,F[1]);
-        calSet3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z,F[2]);
+        calSet3Dr_vec3(ca, Q.Fx[slot], Q.Fy[slot], Q.Fz[slot], cell_x,cell_y,cell_z, F );
       }
 }

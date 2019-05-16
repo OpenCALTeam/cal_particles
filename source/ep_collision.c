@@ -8,21 +8,18 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
   CALreal kn = KN;
   CALreal etha = ETHA;
-  CALreal pi[3], vi[3], delta_Fi[3];
-  CALreal pj[3], vj[3], delta_Fj[3], Nj[3];
-  CALreal rij[3], dij, enij[3], vij[3], vnij;
+  vec3 pi, vi, delta_Fi;
+  vec3 pj, vj, delta_Fj, Nj;
+  vec3 rij, enij, vij;
+  CALreal  dij, vnij;
   CALreal delta_n;
 
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
       {
-        pi[0] = calGet3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z);
-        pi[1] = calGet3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z);
-        pi[2] = calGet3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z);
+        calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &pi );
 #ifdef VISCOELASTIC
-        vi[0] = calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
-        vi[1] = calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
-        vi[2] = calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
+        calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &vi );
 #endif
         delta_Fi[0] = 0.0;
         delta_Fi[1] = 0.0;
@@ -34,13 +31,9 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
             if (calGet3Di(ca, Q.ID[inner_slot],cell_x,cell_y,cell_z) == NULL_ID)
               continue;
 
-            pj[0] = calGet3Dr(ca,Q.px[inner_slot],cell_x,cell_y,cell_z);
-            pj[1] = calGet3Dr(ca,Q.py[inner_slot],cell_x,cell_y,cell_z);
-            pj[2] = calGet3Dr(ca,Q.pz[inner_slot],cell_x,cell_y,cell_z);
+            calGet3Dr_vec3(ca, Q.px[inner_slot], Q.py[inner_slot], Q.pz[inner_slot], cell_x,cell_y,cell_z, &pj );
 #ifdef VISCOELASTIC
-            vj[0] = calGet3Dr(ca,Q.vx[inner_slot],cell_x,cell_y,cell_z);
-            vj[1] = calGet3Dr(ca,Q.vy[inner_slot],cell_x,cell_y,cell_z);
-            vj[2] = calGet3Dr(ca,Q.vz[inner_slot],cell_x,cell_y,cell_z);
+            calGet3Dr_vec3(ca, Q.vx[inner_slot], Q.vy[inner_slot], Q.vz[inner_slot], cell_x,cell_y,cell_z, &vj );
 #endif
             delta_Fj[0] = 0.0;
             delta_Fj[1] = 0.0;
@@ -83,9 +76,7 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
             if (calGet3Di(ca, Q.ID[inner_slot],cell_x,cell_y,cell_z) == BORDER_ID)
               {
-                Nj[0] = calGet3Dr(ca,Q.vx[inner_slot],cell_x,cell_y,cell_z);
-                Nj[1] = calGet3Dr(ca,Q.vy[inner_slot],cell_x,cell_y,cell_z);
-                Nj[2] = calGet3Dr(ca,Q.vz[inner_slot],cell_x,cell_y,cell_z);
+                calGet3Dr_vec3(ca, Q.vx[inner_slot], Q.vy[inner_slot], Q.vz[inner_slot], cell_x,cell_y,cell_z, &Nj );
 #ifdef VISCOELASTIC
                 vj[0] = 0.0;
                 vj[1] = 0.0;
@@ -137,13 +128,9 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
       {
-        pi[0] = calGet3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z);
-        pi[1] = calGet3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z);
-        pi[2] = calGet3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z);
+        calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &pi );
 #ifdef VISCOELASTIC
-        vi[0] = calGet3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z);
-        vi[1] = calGet3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z);
-        vi[2] = calGet3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z);
+        calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &vi );
 #endif
         delta_Fi[0] = 0.0;
         delta_Fi[1] = 0.0;
@@ -157,13 +144,9 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                 if (calGetX3Di(ca, Q.ID[outer_slot],cell_x,cell_y,cell_z,n) == NULL_ID)
                   continue;
 
-                pj[0] = calGetX3Dr(ca,Q.px[outer_slot],cell_x,cell_y,cell_z,n);
-                pj[1] = calGetX3Dr(ca,Q.py[outer_slot],cell_x,cell_y,cell_z,n);
-                pj[2] = calGetX3Dr(ca,Q.pz[outer_slot],cell_x,cell_y,cell_z,n);
+                calGetX3Dr_vec3(ca, Q.px[outer_slot], Q.py[outer_slot], Q.pz[outer_slot], cell_x,cell_y,cell_z, &pj, n );
 #ifdef VISCOELASTIC
-                vj[0] = calGetX3Dr(ca,Q.vx[outer_slot],cell_x,cell_y,cell_z,n);
-                vj[1] = calGetX3Dr(ca,Q.vy[outer_slot],cell_x,cell_y,cell_z,n);
-                vj[2] = calGetX3Dr(ca,Q.vz[outer_slot],cell_x,cell_y,cell_z,n);
+                calGetX3Dr_vec3(ca, Q.vx[outer_slot], Q.vy[outer_slot], Q.vz[outer_slot], cell_x,cell_y,cell_z, &vj, n );
 #endif
                 if (calGetX3Di(ca, Q.ID[outer_slot],cell_x,cell_y,cell_z,n) > NULL_ID)
                   {
@@ -193,9 +176,8 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
                 if (calGetX3Di(ca, Q.ID[outer_slot],cell_x,cell_y,cell_z,n) == BORDER_ID)
                   {
-                    Nj[0] = calGetX3Dr(ca,Q.vx[outer_slot],cell_x,cell_y,cell_z,n);
-                    Nj[1] = calGetX3Dr(ca,Q.vy[outer_slot],cell_x,cell_y,cell_z,n);
-                    Nj[2] = calGetX3Dr(ca,Q.vz[outer_slot],cell_x,cell_y,cell_z,n);
+                    calGetX3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, outer_slot, cell_x,cell_y,cell_z, &Nj, n );
+
     #ifdef VISCOELASTIC
                     vj[0] = 0.0;
                     vj[1] = 0.0;
