@@ -3,6 +3,7 @@
 
 #include <model.h>
 
+
 void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
 
 #endif
