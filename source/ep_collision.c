@@ -67,9 +67,13 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                       }
 #endif
                     // update phase
-                    calSet3Dr(ca,Q.Fx[inner_slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fx[inner_slot],cell_x,cell_y,cell_z) + delta_Fj[0]);
-                    calSet3Dr(ca,Q.Fy[inner_slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fy[inner_slot],cell_x,cell_y,cell_z) + delta_Fj[1]);
-                    calSet3Dr(ca,Q.Fz[inner_slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fz[inner_slot],cell_x,cell_y,cell_z) + delta_Fj[2]);
+                    vec3 F_next = {0.0,0.0,0.0};
+                    calGetNext3Dr_vec3_slot (ca, Q.Fx, Q.Fy, Q.Fz, inner_slot, cell_x,cell_y,cell_z, &F_next );
+                    F_next[0] += delta_Fj[0];
+                    F_next[1] += delta_Fj[1];
+                    F_next[2] += delta_Fj[2];
+
+                    calSet3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, inner_slot, cell_x,cell_y,cell_z, F_next );
                   } //if dij < 2*PARTICLE_RADIUS
               } // if > NULL_ID
 
@@ -110,9 +114,14 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
           } //for inner_slot AND if
 
         // update phase
-        calSet3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fx[slot], cell_x,cell_y,cell_z) + delta_Fi[0]);
-        calSet3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fy[slot], cell_x,cell_y,cell_z) + delta_Fi[1]);
-        calSet3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fz[slot], cell_x,cell_y,cell_z) + delta_Fi[2]);
+        vec3 F_next = {0.0,0.0,0.0};
+        calGetNext3Dr_vec3_slot (ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, &F_next );
+        F_next[0] += delta_Fi[0];
+        F_next[1] += delta_Fi[1];
+        F_next[2] += delta_Fi[2];
+
+        calSet3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, F_next );
+
       }
 }
 
@@ -212,8 +221,13 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
           } //for n = 1 ...
 
         // update phase
-        calSet3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fx[slot], cell_x,cell_y,cell_z) + delta_Fi[0]);
-        calSet3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fy[slot], cell_x,cell_y,cell_z) + delta_Fi[1]);
-        calSet3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,calGetNext3Dr(ca,Q.Fz[slot], cell_x,cell_y,cell_z) + delta_Fi[2]);
+        vec3 F_next = {0.0,0.0,0.0};
+        calGetNext3Dr_vec3_slot (ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, &F_next );
+        F_next[0] += delta_Fi[0];
+        F_next[1] += delta_Fi[1];
+        F_next[2] += delta_Fi[2];
+
+        calSet3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, F_next );
+
       }
 }
