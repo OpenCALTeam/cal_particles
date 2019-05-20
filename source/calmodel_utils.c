@@ -1,4 +1,4 @@
-#include <vector_utils.h>
+#include <calmodel_utils.h>
 
 void calSet3Dr_vec3 (struct CALModel3D* ca,		//!< Pointer to the cellular automaton structure.
                        struct CALSubstate3Dr* Q_x,	//!< Pointer to a 3D real (floating point) substate.

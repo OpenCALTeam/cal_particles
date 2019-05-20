@@ -1,7 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <vector_utils.h>
+#include <calmodel_utils.h>
 
 //SUBSTATES
 struct Substates
