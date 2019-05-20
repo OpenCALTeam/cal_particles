@@ -21,9 +21,8 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 #ifdef VISCOELASTIC
         calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &vi );
 #endif
-        delta_Fi[0] = 0.0;
-        delta_Fi[1] = 0.0;
-        delta_Fi[2] = 0.0;
+
+        clear_vec3(&delta_Fi);
 
         // inner particle-particle collision
         for (int inner_slot=slot+1; inner_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; inner_slot++)
@@ -35,9 +34,7 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 #ifdef VISCOELASTIC
             calGet3Dr_vec3(ca, Q.vx[inner_slot], Q.vy[inner_slot], Q.vz[inner_slot], cell_x,cell_y,cell_z, &vj );
 #endif
-            delta_Fj[0] = 0.0;
-            delta_Fj[1] = 0.0;
-            delta_Fj[2] = 0.0;
+            clear_vec3(&delta_Fj);
 
             if (calGet3Di(ca, Q.ID[inner_slot],cell_x,cell_y,cell_z) > NULL_ID)
               {
@@ -69,9 +66,8 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     // update phase
                     vec3 F_next = {0.0,0.0,0.0};
                     calGetNext3Dr_vec3_slot (ca, Q.Fx, Q.Fy, Q.Fz, inner_slot, cell_x,cell_y,cell_z, &F_next );
-                    F_next[0] += delta_Fj[0];
-                    F_next[1] += delta_Fj[1];
-                    F_next[2] += delta_Fj[2];
+
+                    add_vec3(&F_next, F_next, delta_Fj);
 
                     calSet3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, inner_slot, cell_x,cell_y,cell_z, F_next );
                   } //if dij < 2*PARTICLE_RADIUS
@@ -82,9 +78,7 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
               {
                 calGet3Dr_vec3(ca, Q.vx[inner_slot], Q.vy[inner_slot], Q.vz[inner_slot], cell_x,cell_y,cell_z, &Nj );
 #ifdef VISCOELASTIC
-                vj[0] = 0.0;
-                vj[1] = 0.0;
-                vj[2] = 0.0;
+                clear_vec3(&vj);
 #endif
                 dij = pointPlaneDistance(pi, pj, Nj);
                 if (dij < PARTICLE_RADIUS)
@@ -116,9 +110,8 @@ void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
         // update phase
         vec3 F_next = {0.0,0.0,0.0};
         calGetNext3Dr_vec3_slot (ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, &F_next );
-        F_next[0] += delta_Fi[0];
-        F_next[1] += delta_Fi[1];
-        F_next[2] += delta_Fi[2];
+
+        add_vec3(&F_next, F_next, delta_Fi);
 
         calSet3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, F_next );
 
@@ -141,9 +134,7 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 #ifdef VISCOELASTIC
         calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &vi );
 #endif
-        delta_Fi[0] = 0.0;
-        delta_Fi[1] = 0.0;
-        delta_Fi[2] = 0.0;
+        clear_vec3(&delta_Fi);
 
         // outer particle-particle collision
         for (int n = 1; n<ca->sizeof_X; n++)
@@ -188,9 +179,7 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     calGetX3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, outer_slot, cell_x,cell_y,cell_z, &Nj, n );
 
     #ifdef VISCOELASTIC
-                    vj[0] = 0.0;
-                    vj[1] = 0.0;
-                    vj[2] = 0.0;
+                    clear_vec3(&vj);
     #endif
                     dij = pointPlaneDistance(pi, pj, Nj);
                     if (dij < PARTICLE_RADIUS)
@@ -223,9 +212,8 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
         // update phase
         vec3 F_next = {0.0,0.0,0.0};
         calGetNext3Dr_vec3_slot (ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, &F_next );
-        F_next[0] += delta_Fi[0];
-        F_next[1] += delta_Fi[1];
-        F_next[2] += delta_Fi[2];
+
+        add_vec3(&F_next, F_next, delta_Fi);
 
         calSet3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, slot, cell_x,cell_y,cell_z, F_next );
 

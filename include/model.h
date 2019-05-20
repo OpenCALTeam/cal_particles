@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <calmodel_utils.h>
+#include <vector_utils.h>
 
 //SUBSTATES
 struct Substates

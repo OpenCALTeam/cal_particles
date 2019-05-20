@@ -132,9 +132,9 @@ void calInit3Dr_vec3_slot (struct CALModel3D* ca,	//!< Pointer to the cellular a
                        );
 
 void calGetNext3Dr_vec3(struct CALModel3D* ca3D,		//!< Pointer to the cellular automaton structure.
-                        struct CALSubstate3Dr** Q_x,	//!< Pointer to a 3D real (floating point) substate.
-                        struct CALSubstate3Dr** Q_y,	//!< Pointer to a 3D real (floating point) substate.
-                        struct CALSubstate3Dr** Q_z,	//!< Pointer to a 3D real (floating point) substate.
+                        struct CALSubstate3Dr* Q_x,	//!< Pointer to a 3D real (floating point) substate.
+                        struct CALSubstate3Dr* Q_y,	//!< Pointer to a 3D real (floating point) substate.
+                        struct CALSubstate3Dr* Q_z,	//!< Pointer to a 3D real (floating point) substate.
                           int i,					//!< Row coordinate of the cell.
                           int j,					//!< Column coordinate of the cell
                           int k,						//!< Slice coordinate of the central cell.

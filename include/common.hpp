@@ -16,6 +16,8 @@
 
 typedef CALreal vec3[3];
 
+#define DIM 3
+
 
 // PHYSICAL CONSTANTS AND FLAGS
 #define KN 100//50000
