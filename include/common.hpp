@@ -13,6 +13,8 @@
 #include <OpenCAL/cal3DUnsafe.h>
 #endif
 #include <math.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 typedef CALreal vec3[3];
 
