@@ -1,6 +1,6 @@
 #include <collision_pp.h>
 
-void initCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from)
+void copyCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from)
 {
     _to->id_i = _from->id_i;
     _to->id_j = _from->id_j;
@@ -33,34 +33,37 @@ void updateCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from)
 }
 
 //this structure is indexed using global particles' indices
-void initCollisionsPP (struct CollisionPP *** collisions_PP, const int N_PARTICLES)
+void initCollisionsPP (struct Collisions * collisions)
 {
-    collisions_PP = (struct CollisionPP***)malloc(sizeof(struct CollisionPP**)*N_PARTICLES);
-    for (int i = 0; i < N_PARTICLES; i++)
+    collisions->collisions_PP_current = (struct CollisionPP***)malloc(sizeof(struct CollisionPP**)*collisions->N_PARTICLES);
+    collisions->collisions_PP_next = (struct CollisionPP***)malloc(sizeof(struct CollisionPP**)*collisions->N_PARTICLES);
+    for (int i = 0; i < collisions->N_PARTICLES; i++)
     {
-        collisions_PP [i] = (struct CollisionPP**)malloc(sizeof(struct CollisionPP*)*(N_PARTICLES-i));
-        for (int j = 0; j < N_PARTICLES-i; ++j) {
-            collisions_PP[i][j] = NULL;
+        collisions->collisions_PP_current [i] = (struct CollisionPP**)malloc(sizeof(struct CollisionPP*)*(collisions->N_PARTICLES-i));
+        collisions->collisions_PP_next [i] = (struct CollisionPP**)malloc(sizeof(struct CollisionPP*)*(collisions->N_PARTICLES-i));
+        for (int j = 0; j < collisions->N_PARTICLES-i; ++j) {
+            collisions->collisions_PP_current[i][j] = NULL;
+            collisions->collisions_PP_next[i][j] = NULL;
         }
     }
 }
 
-bool existsCollisionPP(struct CollisionPP *** collisions_PP_current, const int N_PARTICLES, const int i, const int j)
+bool existsCollisionPP(struct Collisions * collisions, const int i, const int j)
 {
-    if (j>=i || i>=N_PARTICLES)
+    if (j<i || i>= collisions->N_PARTICLES)
     {
         return false; //ERROR
     }
-    return collisions_PP_current[i][j-i-1] == NULL;
+    return collisions->collisions_PP_current[i][j-i] == NULL;
 }
 
-struct CollisionPP* findCollision (struct CollisionPP *** collisions_PP_current, const int N_PARTICLES, const int i, const int j)
+struct CollisionPP* findCollision (struct Collisions * collisions, const int i, const int j)
 {
-    if (j>=i || i>=N_PARTICLES)
+    if (j<i || i>= collisions->N_PARTICLES)
     {
         return NULL; //ERROR
     }
-    return collisions_PP_current[i][j-i-1];
+    return collisions->collisions_PP_current[i][j-i];
 }
 
 void initializeCollisions_PP(struct CollisionPP* collision_PP, const int i, const int j)
@@ -84,106 +87,201 @@ void initializeCollisions_PP(struct CollisionPP* collision_PP, const int i, cons
 
 }
 
-bool deleteCollision (struct CollisionPP *** collisions_PP, const int N_PARTICLES, const int i, const int j)
+bool deleteCollision (struct Collisions * collisions, const int i, const int j)
 {
-    if (j>=i || i>=N_PARTICLES)
+    if (j<i || i>= collisions->N_PARTICLES)
     {
         return false; //ERROR
     }
 
+    printf("sto cancellando la collisione tra (%d,%d)\n", i,j);
     //we set the collision in the next matrix null, then during the update phase memory will be freed
-    free (collisions_PP[i][j-i-1]);
-    collisions_PP[i][j-i-1] = NULL;
+    free (collisions->collisions_PP_next[i][j-i]);
+    collisions->collisions_PP_next[i][j-i] = NULL;
     return true;
 }
 
-struct CollisionPP* addCollision (struct CollisionPP *** collisions_PP_next, const int N_PARTICLES, const int i, const int j)
+void setInitCollsionValues (struct CollisionPP* collision_ij,
+                            vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
+                            vec3* wi, vec3* wj, CALreal dtp)
 {
-    if (j>=i || i>=N_PARTICLES)
+    vec3 _toAdd;
+    multiply_by_scalar_vec3(&_toAdd, *vi, -dtp);
+    add_vec3(&collision_ij->pos_i_0, *pi, _toAdd);
+
+    multiply_by_scalar_vec3(&_toAdd, *wi, -dtp);
+    add_vec3(&collision_ij->theta_i_0, *theta_i, _toAdd);
+
+    multiply_by_scalar_vec3(&_toAdd, *vj, -dtp);
+    add_vec3(&collision_ij->pos_j_0, *pj, _toAdd);
+
+    multiply_by_scalar_vec3(&_toAdd, *wj, -dtp);
+    add_vec3(&collision_ij->theta_j_0, *theta_j, _toAdd);
+
+    subtract_vec3(&collision_ij->vers_R_c_0, collision_ij->pos_j_0, collision_ij->pos_i_0);
+
+    CALreal absVec = 0.0;
+    absulute_value_vec3(&absVec, collision_ij->vers_R_c_0);
+
+    divide_by_scalar_vec3(&collision_ij->vers_R_c_0, collision_ij->vers_R_c_0, absVec);
+}
+
+struct CollisionPP* addCollision (struct Collisions* collisions, const int i, const int j,
+                                  vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
+                                  vec3* wi, vec3* wj, CALreal dtp)
+{
+    if (j<i || i>=collisions->N_PARTICLES)
     {
         return false; //ERROR
     }
 
-    collisions_PP_next[i][j-i-1] = (struct CollisionPP*)malloc(sizeof(struct CollisionPP));
-    initializeCollisions_PP(collisions_PP_next[i][j-i-1], i, j);
-    return collisions_PP_next[i][j-i-1];
+    printf("sto aggiungendo la collisione tra (%d,%d)\n", i,j);
+
+    collisions->collisions_PP_next[i][j-i] = (struct CollisionPP*)malloc(sizeof(struct CollisionPP));
+    initializeCollisions_PP(collisions->collisions_PP_next[i][j-i], i, j);
+
+    setInitCollsionValues(collisions->collisions_PP_next[i][j-i], pi,pj,theta_i, theta_j, vi, vj, wi, wj, dtp);
+
+    return collisions->collisions_PP_next[i][j-i];
+}
+
+void setTheta_i (struct Collisions* collisions, const int i, const int j,vec3* newTheta)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    set_vec3(&collisions->collisions_PP_next[i][j-i]->theta_i_0, *newTheta);
+}
+void setTheta_j (struct Collisions* collisions, const int i, const int j,vec3* newTheta)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    set_vec3(&collisions->collisions_PP_next[i][j-i]->theta_j_0, *newTheta);
+}
+
+void setForce_i (struct Collisions* collisions, const int i, const int j,vec3* force)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    set_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_i, *force);
+}
+
+void setForce_j (struct Collisions* collisions, const int i, const int j,vec3* force)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    set_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_j, *force);
+}
+
+void setMoment_i (struct Collisions* collisions, const int i, const int j,vec3* moment)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    set_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_i, *moment);
+}
+
+void setMoment_j (struct Collisions* collisions, const int i, const int j,vec3* moment)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    set_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_j, *moment);
 }
 
 
 
-void updateCollisionsPP (struct CollisionPP *** collisions_PP_current, struct CollisionPP *** collisions_PP_next, const int N_PARTICLES)
+void updateCollisionsPP (struct Collisions* collisions)
 {
-    for (int i = 0; i < N_PARTICLES; i++)
+    for (int i = 0; i < collisions->N_PARTICLES; i++)
     {
-        for (int j = 0; j < N_PARTICLES-i; ++j) {
+        for (int j = 0; j < collisions->N_PARTICLES-i; ++j) {
             //deleted collision
-            if (collisions_PP_next[i][j] == NULL &&
-                    collisions_PP_current[i][j] != NULL)
+            if (collisions->collisions_PP_next[i][j] == NULL &&
+                    collisions->collisions_PP_current[i][j] != NULL)
             {
-                free(collisions_PP_current[i][j]);
-                collisions_PP_current[i][j] = NULL;
+                free(collisions->collisions_PP_current[i][j]);
+                collisions->collisions_PP_current[i][j] = NULL;
             }
             //new collision
-            else if(collisions_PP_next[i][j] != NULL &&
-                    collisions_PP_current[i][j] == NULL)
+            else if(collisions->collisions_PP_next[i][j] != NULL &&
+                    collisions->collisions_PP_current[i][j] == NULL)
             {
-                collisions_PP_current[i][j] = (struct CollisionPP*)malloc(sizeof(struct CollisionPP));
-                initCollisionPP(collisions_PP_current[i][j], collisions_PP_next[i][j]);
+                collisions->collisions_PP_current[i][j] = (struct CollisionPP*)malloc(sizeof(struct CollisionPP));
+                copyCollisionPP(collisions->collisions_PP_current[i][j], collisions->collisions_PP_next[i][j]);
             }
             //already present collision
-            else if (collisions_PP_next[i][j] != NULL &&
-                     collisions_PP_current[i][j] != NULL)
+            else if (collisions->collisions_PP_next[i][j] != NULL &&
+                     collisions->collisions_PP_current[i][j] != NULL)
             {
-                updateCollisionPP(collisions_PP_current[i][j], collisions_PP_next[i][j]);
+                updateCollisionPP(collisions->collisions_PP_current[i][j], collisions->collisions_PP_next[i][j]);
             }
         }
     }
 }
 
 //is i a valid particle?
-vec3* totalMomentCollisionPP(struct CollisionPP *** collisions_PP, const int i, const int N_PARTICLES)
-{
-    vec3 moment_tot_i = {0.0, 0.0, 0.0};
-    vec3* moment_tot_i_prt = &moment_tot_i;
 
-    for (int j = 0; j < N_PARTICLES - i; ++j) {
-        if(collisions_PP[i][j] != NULL)
-            add_vec3(&moment_tot_i, moment_tot_i, collisions_PP[i][j]->moment_collision_i);
+//VA PRESO DAL CURRENT?
+void totalMomentCollisionPP(struct Collisions* collisions, vec3* moment_tot_i, const int i)
+{
+    for (int j = 0; j < collisions->N_PARTICLES - i; ++j) {
+        if(collisions->collisions_PP_current[i][j] != NULL)
+            add_vec3(moment_tot_i, *moment_tot_i, collisions->collisions_PP_current[i][j]->moment_collision_i);
     }
     int k = i, t= 0;
 
-    while (k>=0 && t > i)
+    while (k>=0 && t < i)
     {
-        if(collisions_PP[t][k] != NULL)
-            add_vec3(&moment_tot_i, moment_tot_i, collisions_PP[t][k]->moment_collision_j);
+        if(collisions->collisions_PP_current[k][t] != NULL)
+            add_vec3(moment_tot_i, *moment_tot_i, collisions->collisions_PP_current[k][t]->moment_collision_j);
         k--;
         t++;
     }
-
-    return moment_tot_i_prt;
-
 }
 
 //is i a valid particle?
-vec3* totalForceCollisionPP(struct CollisionPP *** collisions_PP, const int i, const int N_PARTICLES)
+//VA PRESO DAL CURRENT?
+void totalForceCollisionPP(struct Collisions* collisions, vec3* F_tot_i, const int i)
 {
-    vec3 F_tot_i = {0.0, 0.0, 0.0};
-    vec3*  F_tot_i_prt = &F_tot_i;
-
-    for (int j = 0; j < N_PARTICLES - i; ++j) {
-        if(collisions_PP[i][j] != NULL)
-            add_vec3(&F_tot_i, F_tot_i, collisions_PP[i][j]->F_collision_i);
+    for (int j = 0; j < collisions->N_PARTICLES - i; ++j) {
+        if(collisions->collisions_PP_current[i][j] != NULL)
+            add_vec3(F_tot_i, *F_tot_i, collisions->collisions_PP_current[i][j]->F_collision_i);
     }
+
     int k = i, t= 0;
 
-    while (k>=0 && t > i)
+    while (k>=0 && t < i)
     {
-        if(collisions_PP[t][k] != NULL)
-            add_vec3(&F_tot_i, F_tot_i, collisions_PP[t][k]->F_collision_j);
+        if(collisions->collisions_PP_current[k][t] != NULL)
+            add_vec3(F_tot_i, *F_tot_i, collisions->collisions_PP_current[k][t]->F_collision_j);
         k--;
         t++;
     }
+}
 
-    return F_tot_i_prt;
+void clearForces(struct Collisions* collisions)
+{
+    for (int i = 0; i < collisions->N_PARTICLES; i++)
+    {
+        for (int j = 0; j < collisions->N_PARTICLES-i; ++j) {
+            if(collisions->collisions_PP_next[i][j] != NULL)
+            {
+                clear_vec3(&collisions->collisions_PP_next[i][j]->F_collision_i);
+                clear_vec3(&collisions->collisions_PP_next[i][j]->F_collision_j);
+                clear_vec3(&collisions->collisions_PP_next[i][j]->moment_collision_i);
+                clear_vec3(&collisions->collisions_PP_next[i][j]->moment_collision_j);
+            }
+        }
+    }
 
 }
