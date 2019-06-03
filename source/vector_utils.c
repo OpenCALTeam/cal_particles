@@ -57,6 +57,13 @@ void dot_product_vec3(double * s, const vec3 v,const vec3 u)
         (*s) += (v)[_i] * (u)[_i];
 }
 
+void cross_product_vec3(vec3 * s, const vec3 v,const vec3 u)
+{
+   (*s)[0] = u[1]*v[2] - u[2]*v[1];
+   (*s)[1] = u[2]*v[0] - u[0]*v[2];
+   (*s)[2] = u[0]*v[1] - u[1]*v[0];
+}
+
 /* ABSolute value of a Vector */
 void absulute_value_vec3(double * s, const vec3 v)
 {
@@ -77,4 +84,13 @@ void distance_vec3(double * s, const vec3 v,const vec3 u)
     for (_i = 0; _i < DIM; _i++)
         _tmp += ((u)[_i]-(v)[_i]) * ((u)[_i]-(v)[_i]);
     (*s) = sqrt(_tmp);
+}
+
+/* DISTance between Vectors */
+void distance_squared_vec3(double * s, const vec3 v,const vec3 u)
+{
+    int _i;
+    (*s) = 0.0;
+    for (_i = 0; _i < DIM; _i++)
+        (*s) += ((u)[_i]-(v)[_i]) * ((u)[_i]-(v)[_i]);
 }

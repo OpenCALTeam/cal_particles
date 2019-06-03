@@ -108,5 +108,6 @@ void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, dou
    fprintf(f, "Total number of particles: %d\n", number_of_particles);
    fprintf(f, "Total energy: %.9f\n", total_energy);
 
+   if (!f)
    fclose(f);
 }

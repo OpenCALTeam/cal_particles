@@ -71,12 +71,24 @@ return;
           calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
           calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
           calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
+
           calInit3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z,px);
           calInit3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z,py);
           calInit3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z,pz);
+
+          calInit3Dr(ca,Q.thetax[slot],cell_x,cell_y,cell_z,0.0);
+          calInit3Dr(ca,Q.thetay[slot],cell_x,cell_y,cell_z,0.0);
+          calInit3Dr(ca,Q.thetaz[slot],cell_x,cell_y,cell_z,0.0);
+
+
           calInit3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z,0.0);
           calInit3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z,0.0);
           calInit3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z,0.0);
+
+          calInit3Dr(ca,Q.wx[slot],cell_x,cell_y,cell_z,0.0);
+          calInit3Dr(ca,Q.wy[slot],cell_x,cell_y,cell_z,0.0);
+          calInit3Dr(ca,Q.wz[slot],cell_x,cell_y,cell_z,0.0);
+
           calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,DEFAULT_PARTICLE_ID);
         }
     }
@@ -96,12 +108,22 @@ void pezzialaMo(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int s
   calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
   calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
   calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
+
   calInit3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z,0.0);
   calInit3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z,0.0);
   calInit3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z,0.0);
+
+  calInit3Dr(ca,Q.thetax[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.thetay[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.thetaz[slot],cell_x,cell_y,cell_z,0.0);
+
   calInit3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z,0.0);
   calInit3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z,0.0);
   calInit3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z,0.0);
+
+  calInit3Dr(ca,Q.wx[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.wy[slot],cell_x,cell_y,cell_z,0.0);
+  calInit3Dr(ca,Q.wz[slot],cell_x,cell_y,cell_z,0.0);
   calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
 }
 

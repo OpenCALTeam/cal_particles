@@ -23,11 +23,14 @@ void divide_by_scalar_vec3(vec3 * v,const vec3 u, const double s);
 /* DOT Vector Product */
 void dot_product_vec3(double * s, const vec3 v,const vec3 u);
 
+void cross_product_vec3(vec3 * s, const vec3 v,const vec3 u);
 /* ABSolute value of a Vector */
 void absulute_value_vec3(double * s, const vec3 v);
 
 /* DISTance between Vectors */
 void distance_vec3(double * s, const vec3 v,const vec3 u);
+
+void distance_squared_vec3(double * s, const vec3 v,const vec3 u);
 
 
 

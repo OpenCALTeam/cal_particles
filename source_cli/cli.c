@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 {
   double time_spent = 0.0;
 
-  partilu();
+  run();
 
   char t0_path[2048], tf_path[2048];
   strcpy(t0_path, argv[0]);

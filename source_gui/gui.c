@@ -321,7 +321,7 @@ void specialKeys(int key, int x, int y){
 
 int main(int argc, char** argv)
 {
-  partilu();
+  run();
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

@@ -8,21 +8,29 @@ void pezziala(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_
     calSet3Dr_vec3_sv(ca, Q.Fx[slot], Q.Fy[slot], Q.Fz[slot], cell_x,cell_y,cell_z, 0.0 );
     calSet3Dr_vec3_sv(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, 0.0 );
     calSet3Dr_vec3_sv(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, 0.0 );
+    calSet3Dr_vec3_sv(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x,cell_y,cell_z, 0.0 );
+    calSet3Dr_vec3_sv(ca, Q.thetax[slot], Q.thetay[slot], Q.thetaz[slot], cell_x,cell_y,cell_z, 0.0 );
 
     calSet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
 }
 
 void sucala(int destination_slot, int source_slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
-    vec3 F, p, v;
+    vec3 F, p, v, theta, w;
 
     calGetX3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, source_slot, cell_x,cell_y,cell_z, &F, n );
     calGetX3Dr_vec3_slot(ca, Q.px, Q.py, Q.pz, source_slot, cell_x,cell_y,cell_z, &p, n );
     calGetX3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, source_slot, cell_x,cell_y,cell_z, &v, n );
+    calGetX3Dr_vec3_slot(ca, Q.thetax, Q.thetay, Q.thetaz, source_slot, cell_x,cell_y,cell_z, &theta, n );
+    calGetX3Dr_vec3_slot(ca, Q.wx, Q.wy, Q.wz, source_slot, cell_x,cell_y,cell_z, &w, n );
+
 
     calSet3Dr_vec3_slot(ca, Q.Fx, Q.Fy, Q.Fz, destination_slot, cell_x,cell_y,cell_z, F );
     calSet3Dr_vec3_slot(ca, Q.px, Q.py, Q.pz, destination_slot, cell_x,cell_y,cell_z, p );
     calSet3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, destination_slot, cell_x,cell_y,cell_z, v );
+    calSet3Dr_vec3_slot(ca, Q.thetax, Q.thetay, Q.thetaz, destination_slot, cell_x,cell_y,cell_z, theta );
+    calSet3Dr_vec3_slot(ca, Q.wx, Q.wy, Q.wz, destination_slot, cell_x,cell_y,cell_z, w );
+
 
     calSet3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z, calGetX3Di(ca,Q.ID[source_slot],cell_x,cell_y,cell_z,n));
 }
@@ -42,8 +50,19 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
             new_cell_y = p[1]/CELL_SIDE;
             new_cell_z = p[2]/CELL_SIDE;
 
+
+
             if ((cell_x != new_cell_x) || (cell_y != new_cell_y) || (cell_z != new_cell_z))
-                pezziala(slot, ca,cell_x,cell_y,cell_z);
+            {
+                //TODO DA TOGLIERE SE SI FANNO GLI SCONTI CON I MURI
+                if(new_cell_x != -1 && new_cell_y != -1 && new_cell_z != -1)
+                {
+//                    printf("%d) old cell %d %d %d, new cell %d %d %d \n",
+//                           calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z),
+//                           cell_x, cell_y, cell_z, new_cell_x, new_cell_y, new_cell_z);
+                    pezziala(slot, ca,cell_x,cell_y,cell_z);
+                }
+            }
         }
 
     //sucali
