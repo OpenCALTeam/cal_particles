@@ -30,7 +30,7 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
         subtract_vec3(&vrij, *vj, *vi);
         dot_product_vec3 (&vnij, vrij, enij);
 
-        struct CollisionPP* collision_ij = findCollision(&collisions, id_PARTICLE_i, id_PARTICLE_j);
+        struct CollisionPP* collision_ij = findCollision_PP(&collisions, id_PARTICLE_i, id_PARTICLE_j);
 
         if (collision_ij == NULL)
         {
@@ -51,26 +51,26 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
             }
 
             //al momento in cui viene inserito è solo in next.. è corretto usare quello?
-            collision_ij = addCollision(&collisions, id_PARTICLE_i, id_PARTICLE_j,
+            collision_ij = addCollision_PP(&collisions, id_PARTICLE_i, id_PARTICLE_j,
                                         pi, pj, theta_i, theta_j, vi, vj, wi, wj, dtp);
         }
 
-        defPart(&defN, &defT, overlap, enij, *theta_i, *theta_j,
+        defPart_PP(&defN, &defT, overlap, enij, *theta_i, *theta_j,
                 collision_ij);
 
-        forcePart(&Fn, &Ft, overlap, defN, defT, enij,
+        forcePart_PP(&Fn, &Ft, overlap, defN, defT, enij,
                   *wi, *wj, vnij, vrij, *theta_i, *theta_j, collision_ij, &collisions);
 
-        updateForces(Ft, Fn, enij, collision_ij);
+        updateForces_PP(Ft, Fn, enij, collision_ij);
 
     }
     else
     {
         //si potrebbe controllare solo una volta.. ma questo ha accesso costo costante quindi non dovrebbe pesare
-        struct CollisionPP* collision_ij = findCollision(&collisions, id_PARTICLE_i, id_PARTICLE_j);
+        struct CollisionPP* collision_ij = findCollision_PP(&collisions, id_PARTICLE_i, id_PARTICLE_j);
         if (collision_ij != NULL)
         {
-            deleteCollision(&collisions, id_PARTICLE_i, id_PARTICLE_j);
+            deleteCollision_PP(&collisions, id_PARTICLE_i, id_PARTICLE_j);
         }
     }
 

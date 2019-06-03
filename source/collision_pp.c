@@ -57,7 +57,7 @@ bool existsCollisionPP(struct Collisions * collisions, const int i, const int j)
     return collisions->collisions_PP_current[i][j-i] == NULL;
 }
 
-struct CollisionPP* findCollision (struct Collisions * collisions, const int i, const int j)
+struct CollisionPP* findCollision_PP (struct Collisions * collisions, const int i, const int j)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -87,7 +87,7 @@ void initializeCollisions_PP(struct CollisionPP* collision_PP, const int i, cons
 
 }
 
-bool deleteCollision (struct Collisions * collisions, const int i, const int j)
+bool deleteCollision_PP (struct Collisions * collisions, const int i, const int j)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -101,7 +101,7 @@ bool deleteCollision (struct Collisions * collisions, const int i, const int j)
     return true;
 }
 
-void setInitCollsionValues (struct CollisionPP* collision_ij,
+void setInitCollsionValues_PP (struct CollisionPP* collision_ij,
                             vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
                             vec3* wi, vec3* wj, CALreal dtp)
 {
@@ -126,7 +126,7 @@ void setInitCollsionValues (struct CollisionPP* collision_ij,
     divide_by_scalar_vec3(&collision_ij->vers_R_c_0, collision_ij->vers_R_c_0, absVec);
 }
 
-struct CollisionPP* addCollision (struct Collisions* collisions, const int i, const int j,
+struct CollisionPP* addCollision_PP (struct Collisions* collisions, const int i, const int j,
                                   vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
                                   vec3* wi, vec3* wj, CALreal dtp)
 {
@@ -140,12 +140,12 @@ struct CollisionPP* addCollision (struct Collisions* collisions, const int i, co
     collisions->collisions_PP_next[i][j-i] = (struct CollisionPP*)malloc(sizeof(struct CollisionPP));
     initializeCollisions_PP(collisions->collisions_PP_next[i][j-i], i, j);
 
-    setInitCollsionValues(collisions->collisions_PP_next[i][j-i], pi,pj,theta_i, theta_j, vi, vj, wi, wj, dtp);
+    setInitCollsionValues_PP(collisions->collisions_PP_next[i][j-i], pi,pj,theta_i, theta_j, vi, vj, wi, wj, dtp);
 
     return collisions->collisions_PP_next[i][j-i];
 }
 
-void setTheta_i (struct Collisions* collisions, const int i, const int j,vec3* newTheta)
+void setTheta_i_PP (struct Collisions* collisions, const int i, const int j,vec3* newTheta)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -153,7 +153,7 @@ void setTheta_i (struct Collisions* collisions, const int i, const int j,vec3* n
     }
     set_vec3(&collisions->collisions_PP_next[i][j-i]->theta_i_0, *newTheta);
 }
-void setTheta_j (struct Collisions* collisions, const int i, const int j,vec3* newTheta)
+void setTheta_j_PP (struct Collisions* collisions, const int i, const int j,vec3* newTheta)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -162,7 +162,7 @@ void setTheta_j (struct Collisions* collisions, const int i, const int j,vec3* n
     set_vec3(&collisions->collisions_PP_next[i][j-i]->theta_j_0, *newTheta);
 }
 
-void setForce_i (struct Collisions* collisions, const int i, const int j,vec3* force)
+void setForce_i_PP (struct Collisions* collisions, const int i, const int j,vec3* force)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -171,7 +171,7 @@ void setForce_i (struct Collisions* collisions, const int i, const int j,vec3* f
     set_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_i, *force);
 }
 
-void setForce_j (struct Collisions* collisions, const int i, const int j,vec3* force)
+void setForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -180,7 +180,7 @@ void setForce_j (struct Collisions* collisions, const int i, const int j,vec3* f
     set_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_j, *force);
 }
 
-void setMoment_i (struct Collisions* collisions, const int i, const int j,vec3* moment)
+void setMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -189,7 +189,7 @@ void setMoment_i (struct Collisions* collisions, const int i, const int j,vec3* 
     set_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_i, *moment);
 }
 
-void setMoment_j (struct Collisions* collisions, const int i, const int j,vec3* moment)
+void setMoment_j_PP (struct Collisions* collisions, const int i, const int j,vec3* moment)
 {
     if (j<i || i>= collisions->N_PARTICLES)
     {
@@ -269,7 +269,7 @@ void totalForceCollisionPP(struct Collisions* collisions, vec3* F_tot_i, const i
     }
 }
 
-void clearForces(struct Collisions* collisions)
+void clearForces_PP(struct Collisions* collisions)
 {
     for (int i = 0; i < collisions->N_PARTICLES; i++)
     {

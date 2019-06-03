@@ -4,7 +4,7 @@
 #include<common.hpp>
 #include <vector_utils.h>
 
-#include <model.h>
+#include <collision_pw.h>
 
 struct CollisionPP
 {
@@ -25,14 +25,6 @@ struct CollisionPP
     vec3 moment_collision_j;
 };
 
-struct Collisions
-{
-    //the object collision that is present in the two matrices MUST be different
-    struct CollisionPP *** collisions_PP_current;
-    struct CollisionPP *** collisions_PP_next;
-    CALint N_PARTICLES;
-};
-
 
 void copyCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from);
 void updateCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from);
@@ -42,26 +34,26 @@ void initCollisionsPP (struct Collisions * collisions);
 
 bool existsCollisionPP(struct Collisions * collisions, const int i, const int j);
 
-struct CollisionPP* findCollision (struct Collisions * collisions, const int i, const int j);
+struct CollisionPP* findCollision_PP (struct Collisions * collisions, const int i, const int j);
 
 void initializeCollisions_PP(struct CollisionPP* collision_PP, const int i, const int j);
 
-bool deleteCollision (struct Collisions * collisions, const int i, const int j);
+bool deleteCollision_PP (struct Collisions * collisions, const int i, const int j);
 
-struct CollisionPP* addCollision (struct Collisions* collisions, const int i, const int j,
+struct CollisionPP* addCollision_PP (struct Collisions* collisions, const int i, const int j,
                                   vec3* pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
                                   vec3* wi, vec3* wj, CALreal dtp);
 
 void updateCollisionsPP (struct Collisions* collisions);
 
-void setTheta_i (struct Collisions* collisions, const int i, const int j,vec3* newTheta);
-void setTheta_j (struct Collisions* collisions, const int i, const int j,vec3* newTheta);
+void setTheta_i_PP (struct Collisions* collisions, const int i, const int j,vec3* newTheta);
+void setTheta_j_PP (struct Collisions* collisions, const int i, const int j,vec3* newTheta);
 
-void setForce_i (struct Collisions* collisions, const int i, const int j,vec3* force);
-void setForce_j (struct Collisions* collisions, const int i, const int j,vec3* force);
+void setForce_i_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
+void setForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
 
-void setMoment_i (struct Collisions* collisions, const int i, const int j,vec3* moment);
-void setMoment_j (struct Collisions* collisions, const int i, const int j,vec3* moment);
+void setMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
+void setMoment_j_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
 
 //is i a valid particle?
 void totalMomentCollisionPP(struct Collisions* collisions, vec3* moment_tot_i, const int i);
@@ -69,7 +61,7 @@ void totalMomentCollisionPP(struct Collisions* collisions, vec3* moment_tot_i, c
 //is i a valid particle?
 void totalForceCollisionPP(struct Collisions* collisions, vec3* F_tot_i, const int i);
 
-void clearForces(struct Collisions* collisions);
+void clearForces_PP(struct Collisions* collisions);
 
 
 

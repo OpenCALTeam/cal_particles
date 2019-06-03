@@ -1,6 +1,6 @@
 #include <physics_pp.h>
 
-void defPart (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enij, vec3 theta_i, vec3 theta_j,
+void defPart_PP (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enij, vec3 theta_i, vec3 theta_j,
               struct CollisionPP* collision_ij)
 {
     vec3 delta_theta_vers, delta_theta_i, delta_theta_j, delta_t_i, delta_t_j, vr_i, vr_j;
@@ -25,7 +25,7 @@ void defPart (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enij, vec3 theta_i
 
 }
 
-void resetPart (vec3 deT, vec3 theta_i, vec3 theta_j, vec3 enij,  struct CollisionPP* collision_ij, struct Collisions* collisions)
+void resetPart_PP (vec3 deT, vec3 theta_i, vec3 theta_j, vec3 enij,  struct CollisionPP* collision_ij, struct Collisions* collisions)
 {
     vec3 delta_theta_vers, delta_theta_j, deTn, newTheta, toAdd;
 
@@ -42,10 +42,10 @@ void resetPart (vec3 deT, vec3 theta_i, vec3 theta_j, vec3 enij,  struct Collisi
 
     add_vec3(&newTheta, toAdd, newTheta);
 
-    setTheta_i(collisions, collision_ij->id_i, collision_ij->id_j, &newTheta);
+    setTheta_i_PP(collisions, collision_ij->id_i, collision_ij->id_j, &newTheta);
 }
 
-void forcePart (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
+void forcePart_PP (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
                 vec3 DefT, vec3 enij, vec3 Wi, vec3 Wj, CALreal vnij, vec3 vrij,
                 vec3 theta_i, vec3 theta_j,  struct CollisionPP* collision_ij,
                 struct Collisions* collisions)
@@ -66,7 +66,7 @@ void forcePart (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
         multiply_by_scalar_vec3(Ft, Et, -FRICTION_COEF *KN * overlap);
         multiply_by_scalar_vec3(&deT, Et, ddt_max);
 
-        resetPart(deT, theta_i, theta_j, enij, collision_ij, collisions);
+        resetPart_PP(deT, theta_i, theta_j, enij, collision_ij, collisions);
 
     }
     else
@@ -94,7 +94,7 @@ void forcePart (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
 
 }
 
-void updateForces (vec3 Ft, vec3 Fn, vec3 enij, struct CollisionPP* collision_ij)
+void updateForces_PP (vec3 Ft, vec3 Fn, vec3 enij, struct CollisionPP* collision_ij)
 {
     vec3 F, enijXFt;
     add_vec3(&F, Ft, Fn);

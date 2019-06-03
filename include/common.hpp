@@ -25,6 +25,17 @@ static const CALreal G = 9.81;
 
 #define DIM 3
 
+#define BORDER_WEST -1 //x
+#define BORDER_EST -2 //x
+#define BORDER_SOUTH -3 //y
+#define BORDER_NORTH -4 //y
+#define BODER_FRONT -5 //z
+#define BORDER_REAR -6 //z
+
+#define N_WALLS 6
+
+#define BORDER_TO_WALL(B) ({int idx; idx = B+N_WALLS; idx;})
+
 #define swap(x,y) { x = x + y; y = x - y; x = x - y; }
 
 

@@ -85,7 +85,7 @@ void transitionFunction(struct CALModel3D* modello)
     updateF(modello);
     updateMoment(modello);
 
-    clearForces(&collisions);
+    clearForces_PP(&collisions);
 
     calApplyElementaryProcess3D(modello, leap_frog_velocity);
     updateV(modello);
