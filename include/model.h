@@ -46,6 +46,7 @@ struct Substates Q;
 CALint initial_nummber_of_particles;
 CALreal elapsed_time;
 struct Collisions collisions; //da inizializzare
+struct Wall walls[N_WALLS];
 
 // Functions
 void run();

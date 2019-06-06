@@ -71,13 +71,15 @@ void transitionFunction(struct CALModel3D* modello)
     updateTheta(modello);
 
     //  calApplyElementaryProcess3D(modello,movili);
-    calApplyElementaryProcess3D(modello,moviliCazzu); //sposta le particelle nei nuovi celloni
+    calApplyElementaryProcess3D(modello,moveParticles); //sposta le particelle nei nuovi celloni
     calUpdate3D(modello);
 
     calApplyElementaryProcess3D(modello,inner_collision);
     calApplyElementaryProcess3D(modello,outer_collision);
+    calApplyElementaryProcess3D(modello,walls_collision);
 
     updateCollisionsPP(&collisions);
+    updateCollisionsPW(&collisions);
 
     calApplyElementaryProcess3D(modello,applyForce);
 
@@ -86,10 +88,11 @@ void transitionFunction(struct CALModel3D* modello)
     updateMoment(modello);
 
     clearForces_PP(&collisions);
+    clearForces_PW(&collisions);
 
-    calApplyElementaryProcess3D(modello, leap_frog_velocity);
-    updateV(modello);
-    updateW(modello);
+    //    calApplyElementaryProcess3D(modello, leap_frog_velocity);
+    //    updateV(modello);
+    //    updateW(modello);
 
     //    printID(modello);
 
@@ -126,4 +129,10 @@ void printID (struct CALModel3D* ca)
             }
         printf("\n");
     }
+}
+
+void cleanupCollisions (struct CALModel3D* modello)
+{
+    cleanupCollisions_PP(&collisions);
+    cleanupCollisions_PW(&collisions);
 }

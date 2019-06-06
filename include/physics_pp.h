@@ -15,7 +15,8 @@ void forcePart_PP (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
                 vec3 DefT, vec3 enij, vec3 Wi, vec3 Wj, CALreal vnij, vec3 vrij,
                 vec3 theta_i, vec3 theta_j,  struct CollisionPP* collision_ij, struct Collisions* collisions);
 
-void updateForces_PP (vec3 Ft, vec3 Fn, vec3 enij, struct CollisionPP* collision_ij);
+void updateForces_PP (vec3 Ft, vec3 Fn, vec3 enij, struct CollisionPP* collision_ij,
+                      struct Collisions* collisions);
 
 
 #endif

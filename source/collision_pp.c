@@ -171,6 +171,15 @@ void setForce_i_PP (struct Collisions* collisions, const int i, const int j,vec3
     set_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_i, *force);
 }
 
+void updateForce_i_PP (struct Collisions* collisions, const int i, const int j,vec3* force)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    add_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_i, collisions->collisions_PP_next[i][j-i]->F_collision_i, *force);
+}
+
 void setForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force)
 {
     if (j<i || i>= collisions->N_PARTICLES)
@@ -178,6 +187,15 @@ void setForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3
         return; //ERROR
     }
     set_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_j, *force);
+}
+void updateForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    subtract_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_j,
+            collisions->collisions_PP_next[i][j-i]->F_collision_j, *force);
 }
 
 void setMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment)
@@ -189,6 +207,16 @@ void setMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec
     set_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_i, *moment);
 }
 
+void updateMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    add_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_i,
+            collisions->collisions_PP_next[i][j-i]->moment_collision_i, *moment);
+}
+
 void setMoment_j_PP (struct Collisions* collisions, const int i, const int j,vec3* moment)
 {
     if (j<i || i>= collisions->N_PARTICLES)
@@ -196,6 +224,16 @@ void setMoment_j_PP (struct Collisions* collisions, const int i, const int j,vec
         return; //ERROR
     }
     set_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_j, *moment);
+}
+
+void updateMoment_j_PP (struct Collisions* collisions, const int i, const int j,vec3* moment)
+{
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+    subtract_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_j,
+            collisions->collisions_PP_next[i][j-i]->moment_collision_j, *moment);
 }
 
 
@@ -283,5 +321,32 @@ void clearForces_PP(struct Collisions* collisions)
             }
         }
     }
+
+}
+
+void cleanupCollisions_PP(struct Collisions* collisions)
+{
+    for (int i = 0; i < collisions->N_PARTICLES; i++)
+    {
+        for (int j = 0; j < collisions->N_PARTICLES-i; ++j) {
+            if(collisions->collisions_PP_next[i][j] != NULL)
+            {
+                free (collisions->collisions_PW_next[i][j]);
+                collisions->collisions_PP_next[i][j] = NULL;
+
+            }
+            if(collisions->collisions_PP_current[i][j] != NULL)
+            {
+                free (collisions->collisions_PP_current[i][j]);
+                collisions->collisions_PP_current[i][j] = NULL;
+
+            }
+        }
+        free (collisions->collisions_PP_next[i]);
+        free (collisions->collisions_PP_current[i]);
+
+    }
+    free(collisions->collisions_PP_next);
+    free(collisions->collisions_PP_current);
 
 }

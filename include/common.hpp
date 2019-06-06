@@ -21,35 +21,42 @@ typedef CALreal vec3[3];
 static const vec3 G_dir =  {0.0,0.0, -1.0};
 static const CALreal G = 9.81;
 
+#define ABS(N) ((N<0)?(-N):(N))
+
 
 
 #define DIM 3
 
-#define BORDER_WEST -1 //x
-#define BORDER_EST -2 //x
-#define BORDER_SOUTH -3 //y
-#define BORDER_NORTH -4 //y
-#define BODER_FRONT -5 //z
-#define BORDER_REAR -6 //z
+#define WALL_WEST 5 //x
+#define WALL_EAST 4 //x
+#define WALL_SOUTH 3 //y
+#define WALL_NORTH 2 //y
+#define WALL_FRONT 1 //z
+#define WALL_REAR 0 //z
 
 #define N_WALLS 6
 
-#define BORDER_TO_WALL(B) ({int idx; idx = B+N_WALLS; idx;})
+//#define BORDER_TO_WALL(B) ({int idx; idx = B+N_WALLS; idx;})
 
 #define swap(x,y) { x = x + y; y = x - y; x = x - y; }
 
 
 // PHYSICAL CONSTANTS AND FLAGS
-#define KN 5000//50000
+
 #define GRAVITY
 //#define G 9.81
 #define VISCOELASTIC
 #define ETHA 0.0015
-#define FRICTION_COEF 0.3 //boh
 #define KA 0.003 //boh
-#define AL 0.001 //boh
+#define FRICTION_COEF_PP 0.003 //boh
+#define KN_PP 1000//50000
+#define AL_PP 0.001 //boh
 
-#define DENSITY (1400.0)
+#define FRICTION_COEF_PW 0.003 //boh
+#define KN_PW 1000//50000
+#define AL_PW 0.001 //boh
+
+#define DENSITY (7400.0)
 
 #define PIG 3.141592653589793238
 #define PIG43  (PIG *(3.0/4.0))
@@ -97,7 +104,8 @@ static CALreal dm_2 = DM * DM;
 
 // PHYSICAL TIME AND COMPUTATIONAL STEPS
 #define TOTAL_SIMULATION_TIME 1.0 //0.1 //[s]
-#define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN)) //[s]
+#define DELTA_T 0.0000005
+//#define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN_PP)) //[s]
 #define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
 //#define STEPS 10
 #define INTEGRITY_CHECK_STEPS STEPS

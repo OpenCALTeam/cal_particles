@@ -1,6 +1,5 @@
 #include <boundary.h>
 #include <ep_collision.h>
-#include <ep_movili.h>
 #include <ep_movili_cazzu.h>
 #include <ep_physics.h>
 #include <ep_utils.h>
@@ -99,6 +98,7 @@ void run()
       calInitSubstate3Di(u_modellu,Q.ID[slot],NULL_ID);
     }
 
+
   // Boundary
   boundaryCellsSerial(u_modellu);
 
@@ -108,7 +108,7 @@ void run()
 //  mmiscali_nta_cella_seriale(u_modellu);
 //  cancella_particelle_in_urto(u_modellu);
 
-  for (int i = 0; i < 500; ++i) {
+  for (int i = 0; i < 300; ++i) {
       addRandomParticlePosition(u_modellu, &initial_nummber_of_particles);
   }
 
@@ -119,10 +119,16 @@ void run()
   collisions.N_PARTICLES = initial_nummber_of_particles;
   initCollisionsPP(&collisions);
 
+  initWalls(walls);
+  initCollisionsPW(&collisions);
+
   // Simulation
   a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_EXPLICIT);
   calRunAddGlobalTransitionFunc3D(a_simulazioni, transitionFunction);
   calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
+
+  calRunAddFinalizeFunc3D(a_simulazioni, cleanupCollisions);
+
 
 #ifdef VERBOSE
   printf("The 3D particles computational model\n");

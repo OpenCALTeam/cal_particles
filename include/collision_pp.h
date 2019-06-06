@@ -50,10 +50,16 @@ void setTheta_i_PP (struct Collisions* collisions, const int i, const int j,vec3
 void setTheta_j_PP (struct Collisions* collisions, const int i, const int j,vec3* newTheta);
 
 void setForce_i_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
+void updateForce_i_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
+
 void setForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
+void updateForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
 
 void setMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
+void updateMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
+
 void setMoment_j_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
+void updateMoment_j_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
 
 //is i a valid particle?
 void totalMomentCollisionPP(struct Collisions* collisions, vec3* moment_tot_i, const int i);
@@ -62,6 +68,8 @@ void totalMomentCollisionPP(struct Collisions* collisions, vec3* moment_tot_i, c
 void totalForceCollisionPP(struct Collisions* collisions, vec3* F_tot_i, const int i);
 
 void clearForces_PP(struct Collisions* collisions);
+
+void cleanupCollisions_PP(struct Collisions* collisions);
 
 
 

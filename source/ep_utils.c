@@ -1,7 +1,7 @@
 #include <ep_utils.h>
 #include <math.h>
 
-CALbyte ncestiArmenuNaParticella(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
+CALbyte isThereAtLeastAParticle(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
   for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     if (calGetX3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z,n) > NULL_ID)

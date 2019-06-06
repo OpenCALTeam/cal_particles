@@ -3,7 +3,6 @@
 #include <model.h>
 #include <ep_physics.h>
 #include <ep_collision.h>
-#include <ep_movili.h>
 #include <ep_movili_cazzu.h>
 #include <utils_io.h>
 #include <ep_utils.h>
@@ -21,5 +20,6 @@ void updateW(struct CALModel3D* ca);
 void transitionFunction(struct CALModel3D* modello);
 
 void printID (struct CALModel3D* model);
+void cleanupCollisions (struct CALModel3D* modello);
 
 #endif

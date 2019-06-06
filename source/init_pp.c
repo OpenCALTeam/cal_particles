@@ -23,9 +23,9 @@ bool addRandomParticlePosition(struct CALModel3D *ca, int * nextIDParticle)
     CALreal cz = ((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (CELL_SIDE);
 
     //generiamo una porzione
-    CALint cell_x =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * ca->rows;
-    CALint cell_y =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * ca->columns;
-    CALint cell_z =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * ca->slices;
+    CALint cell_x =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->rows-1)+1;
+    CALint cell_y =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->columns-1)+1;
+    CALint cell_z =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->slices-1)+1;
 
 
     int slot = getFirstFreeSlot(ca, cell_x,cell_y,cell_z);

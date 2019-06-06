@@ -1,10 +1,48 @@
 #include<collision_pw.h>
 
+void initWalls(struct Wall walls[N_WALLS])
+{
+    walls[WALL_WEST].indx= 0;
+    walls[WALL_WEST].sign= -1;
+    walls[WALL_WEST].border_id = WALL_WEST;
+    clear_vec3(&walls[WALL_WEST].pos);
+    walls[WALL_WEST].pos[0] = PARTICLE_RADIUS;
+
+    walls[WALL_EAST].indx= 0;
+    walls[WALL_EAST].sign= 1;
+    walls[WALL_EAST].border_id = WALL_EAST;
+    clear_vec3(&walls[WALL_EAST].pos);
+    walls[WALL_EAST].pos[0] = X_CELLS * CELL_SIDE - PARTICLE_RADIUS;
+
+    walls[WALL_NORTH].indx= 1;
+    walls[WALL_NORTH].sign= 1;
+    walls[WALL_NORTH].border_id = WALL_NORTH;
+    clear_vec3(&walls[WALL_NORTH].pos);
+    walls[WALL_NORTH].pos[1] = Y_CELLS * CELL_SIDE - PARTICLE_RADIUS;
+
+    walls[WALL_SOUTH].indx= 1;
+    walls[WALL_SOUTH].sign= -1;
+    walls[WALL_SOUTH].border_id = WALL_SOUTH;
+    clear_vec3(&walls[WALL_SOUTH].pos);
+    walls[WALL_SOUTH].pos[1] = PARTICLE_RADIUS;
+
+    walls[WALL_REAR].indx= 2;
+    walls[WALL_REAR].sign= 1;
+    walls[WALL_REAR].border_id = WALL_REAR;
+    clear_vec3(&walls[WALL_REAR].pos);
+    walls[WALL_REAR].pos[2] = Z_CELLS * CELL_SIDE - PARTICLE_RADIUS;
+
+    walls[WALL_FRONT].indx= 2;
+    walls[WALL_FRONT].sign= -1;
+    walls[WALL_FRONT].border_id = WALL_FRONT;
+    clear_vec3(&walls[WALL_FRONT].pos);
+    walls[WALL_FRONT].pos[2] = PARTICLE_RADIUS;
+}
 
 void copyCollisionPW(struct CollisionPW * _to, struct CollisionPW * _from)
 {
     _to->id_particle = _from->id_particle;
-    _to->border_id = _from->border_id;
+    _to->wall_ID = _from->wall_ID;
 
     set_vec3(&_to->pos_0, _from->pos_0);
 
@@ -42,7 +80,7 @@ void initCollisionsPW (struct Collisions * collisions)
 
 bool existsCollisionPW(struct Collisions * collisions, const int i, const int WALL_ID)
 {
-    if (i>= collisions->N_PARTICLES || WALL_ID>= N_WALLS)
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
     {
         return false; //ERROR
     }
@@ -61,7 +99,7 @@ struct CollisionPW* findCollision_PW (struct Collisions * collisions, const int 
 void initializeCollisions_PW(struct CollisionPW* collision_PW, const int i, const int WALL_ID)
 {
     collision_PW->id_particle = i;
-    collision_PW->border_id = WALL_ID;
+    collision_PW->wall_ID = WALL_ID;
 
     clear_vec3 (&collision_PW->pos_0);
     clear_vec3 (&collision_PW->theta_0);
@@ -73,21 +111,21 @@ void initializeCollisions_PW(struct CollisionPW* collision_PW, const int i, cons
 
 bool deleteCollision_PW (struct Collisions * collisions, const int i, const int WALL_ID)
 {
-    if (i>= collisions->N_PARTICLES || WALL_ID>= N_WALLS)
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
     {
         return false; //ERROR
     }
 
-    printf("sto cancellando la collisione wall tra (%d,%d)\n", i,WALL_ID);
+    printf("sto cancellando la collisione wall tra (%d,%d | %d)\n", i,WALL_ID, WALL_ID);
     //we set the collision in the next matrix null, then during the update phase memory will be freed
     free (collisions->collisions_PW_next[i][WALL_ID]);
     collisions->collisions_PW_next[i][WALL_ID] = NULL;
     return true;
 }
 
-void setInitCollsionValues_PW (struct CollisionPW* collision_PW,
-                            vec3*  p, vec3* theta, vec3* v,
-                            vec3* w, CALreal dtp)
+void setInitCollisionValues_PW (struct CollisionPW* collision_PW,
+                               vec3*  p, vec3* theta, vec3* v,
+                               vec3* w, CALreal dtp)
 {
     vec3 _toAdd;
     multiply_by_scalar_vec3(&_toAdd, *v, -dtp);
@@ -99,10 +137,10 @@ void setInitCollsionValues_PW (struct CollisionPW* collision_PW,
 
 
 struct CollisionPW* addCollision_PW (struct Collisions* collisions, const int i, const int WALL_ID,
-                                  vec3*  p, vec3* theta, vec3* v,
-                                  vec3* w, CALreal dtp)
+                                     vec3*  p, vec3* theta, vec3* v,
+                                     vec3* w, CALreal dtp)
 {
-    if (i>= collisions->N_PARTICLES || WALL_ID>= N_WALLS)
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
     {
         return false; //ERROR
     }
@@ -112,36 +150,56 @@ struct CollisionPW* addCollision_PW (struct Collisions* collisions, const int i,
     collisions->collisions_PW_next[i][WALL_ID] = (struct CollisionPW*)malloc(sizeof(struct CollisionPW));
     initializeCollisions_PW(collisions->collisions_PW_next[i][WALL_ID], i, WALL_ID);
 
-    setInitCollsionValues_PW(collisions->collisions_PW_next[i][WALL_ID], p, theta, v, w, dtp);
+    setInitCollisionValues_PW(collisions->collisions_PW_next[i][WALL_ID], p, theta, v, w, dtp);
 
     return collisions->collisions_PW_next[i][WALL_ID];
 }
 
-void setTheta_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, vec3* newTheta)
+void setPos_i_PW(struct Collisions* collisions, const int i, const int WALL_ID, vec3* new_pos)
 {
-    if (i>= collisions->N_PARTICLES || WALL_ID>= N_WALLS)
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
     {
         return; //ERROR
     }
-    set_vec3(&collisions->collisions_PW_next[i][WALL_ID]->theta_0, *newTheta);
+    set_vec3(&collisions->collisions_PW_next[i][WALL_ID]->pos_0, *new_pos);
 }
 
 void setForce_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, vec3* force)
 {
-    if (i>= collisions->N_PARTICLES || WALL_ID>= N_WALLS)
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
     {
         return; //ERROR
     }
     set_vec3(&collisions->collisions_PW_next[i][WALL_ID]->F_collision, *force);
 }
 
+void updateForce_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, vec3* force)
+{
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
+    {
+        return; //ERROR
+    }
+    add_vec3(&collisions->collisions_PW_next[i][WALL_ID]->F_collision,
+             collisions->collisions_PW_next[i][WALL_ID]->F_collision, *force);
+}
+
 void setMoment_i_PW (struct Collisions* collisions, const int i, const int WALL_ID,vec3* moment)
 {
-    if (i>= collisions->N_PARTICLES || WALL_ID>= N_WALLS)
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
     {
         return; //ERROR
     }
     set_vec3(&collisions->collisions_PW_next[i][WALL_ID]->moment_collision, *moment);
+}
+
+void updateMoment_i_PW (struct Collisions* collisions, const int i, const int WALL_ID,vec3* moment)
+{
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
+    {
+        return; //ERROR
+    }
+    add_vec3(&collisions->collisions_PW_next[i][WALL_ID]->moment_collision,
+             collisions->collisions_PW_next[i][WALL_ID]->moment_collision, *moment);
 }
 
 void updateCollisionsPW (struct Collisions* collisions)
@@ -202,6 +260,33 @@ void clearForces_PW(struct Collisions* collisions)
             }
         }
     }
+
+}
+
+void cleanupCollisions_PW(struct Collisions* collisions)
+{
+    for (int i = 0; i < collisions->N_PARTICLES; i++)
+    {
+        for (int j = 0; j < N_WALLS; ++j) {
+            if(collisions->collisions_PW_next[i][j] != NULL)
+            {
+                free (collisions->collisions_PW_next[i][j]);
+                collisions->collisions_PW_next[i][j] = NULL;
+
+            }
+            if(collisions->collisions_PW_current[i][j] != NULL)
+            {
+                free (collisions->collisions_PW_current[i][j]);
+                collisions->collisions_PW_current[i][j] = NULL;
+
+            }
+        }
+        free (collisions->collisions_PW_next[i]);
+        free (collisions->collisions_PW_current[i]);
+
+    }
+    free(collisions->collisions_PW_next);
+    free(collisions->collisions_PW_current);
 
 }
 

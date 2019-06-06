@@ -53,17 +53,18 @@ void forcePart_PP (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
     CALreal ddt_2, ddt_max_2, ddt, ddt_max;
     vec3 WixRi, WjxRj, vrc, vrcn, vrct, vrcn_AL, vrct_AL, Et, deT;
 
-    multiply_by_scalar_vec3(Fn, DefN, -KN );
+    multiply_by_scalar_vec3(Fn, DefN, -KN_PP );
 
-    dot_product_vec3(&ddt, DefT, DefT);
+    dot_product_vec3(&ddt_2, DefT, DefT);
 
-    ddt_max = (FRICTION_COEF*overlap)/KA;
+    ddt_max = (FRICTION_COEF_PP*overlap)/KA;
     ddt_max_2 = ddt_max * ddt_max;
 
     if(ddt_2 > ddt_max_2)
     {
+        ddt = sqrt(ddt_2);
         divide_by_scalar_vec3(&Et, DefT, ddt);
-        multiply_by_scalar_vec3(Ft, Et, -FRICTION_COEF *KN * overlap);
+        multiply_by_scalar_vec3(Ft, Et, -FRICTION_COEF_PP *KN_PP * overlap);
         multiply_by_scalar_vec3(&deT, Et, ddt_max);
 
         resetPart_PP(deT, theta_i, theta_j, enij, collision_ij, collisions);
@@ -71,7 +72,7 @@ void forcePart_PP (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
     }
     else
     {
-        multiply_by_scalar_vec3(Ft, DefT, (-KN*KA));
+        multiply_by_scalar_vec3(Ft, DefT, (-KN_PP*KA));
     }
 
     multiply_by_scalar_vec3(&WixRi, enij, PARTICLE_RADIUS);
@@ -86,27 +87,29 @@ void forcePart_PP (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
     multiply_by_scalar_vec3(&vrcn, enij, vnij);
     subtract_vec3(&vrct, vrc, vrcn);
 
-    multiply_by_scalar_vec3(&vrcn_AL, vrcn, -AL);
-    subtract_vec3(Fn, *Fn, vrcn_AL);
+    multiply_by_scalar_vec3(&vrcn_AL, vrcn, -AL_PP);
+    add_vec3(Fn, *Fn, vrcn_AL);
 
-    multiply_by_scalar_vec3(&vrct_AL, vrct, -AL);
-    subtract_vec3(Ft, *Ft, vrct_AL);
+    multiply_by_scalar_vec3(&vrct_AL, vrct, -AL_PP);
+    add_vec3(Ft, *Ft, vrct_AL);
 
 }
 
-void updateForces_PP (vec3 Ft, vec3 Fn, vec3 enij, struct CollisionPP* collision_ij)
+
+void updateForces_PP (vec3 Ft, vec3 Fn, vec3 enij, struct CollisionPP* collision_ij,
+                      struct Collisions* collisions)
 {
     vec3 F, enijXFt;
     add_vec3(&F, Ft, Fn);
 
-    add_vec3(&collision_ij->F_collision_i, F, collision_ij->F_collision_i);
-    subtract_vec3(&collision_ij->F_collision_j, collision_ij->F_collision_j, F);
+    updateForce_i_PP(collisions, collision_ij->id_i, collision_ij->id_j, &F);
+    updateForce_j_PP(collisions, collision_ij->id_i, collision_ij->id_j, &F);
 
     cross_product_vec3(&enijXFt, enij, Ft);
     multiply_by_scalar_vec3(&enijXFt, enijXFt, PARTICLE_RADIUS);
 
-    add_vec3(&collision_ij->moment_collision_i, enijXFt, collision_ij->moment_collision_i);
-    add_vec3(&collision_ij->moment_collision_j, enijXFt, collision_ij->moment_collision_j);
+    updateMoment_i_PP(collisions, collision_ij->id_i, collision_ij->id_j, &enijXFt);
+    updateMoment_j_PP(collisions, collision_ij->id_i, collision_ij->id_j, &enijXFt);
 
 }
 

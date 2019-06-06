@@ -5,6 +5,7 @@
 
 void inner_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
 void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
+void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
 
 
 #endif

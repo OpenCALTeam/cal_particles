@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 
-void pezziala(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
+void makeSlotEmpty(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
     calSet3Dr_vec3_sv(ca, Q.Fx[slot], Q.Fy[slot], Q.Fz[slot], cell_x,cell_y,cell_z, 0.0 );
     calSet3Dr_vec3_sv(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, 0.0 );
@@ -14,7 +14,7 @@ void pezziala(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_
     calSet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
 }
 
-void sucala(int destination_slot, int source_slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
+void moveParticleToNeighbor(int destination_slot, int source_slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
     vec3 F, p, v, theta, w;
 
@@ -35,7 +35,7 @@ void sucala(int destination_slot, int source_slot, struct CALModel3D* ca, int ce
     calSet3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z, calGetX3Di(ca,Q.ID[source_slot],cell_x,cell_y,cell_z,n));
 }
 
-void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
+void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
     vec3 p;
     CALint  new_cell_x, new_cell_y, new_cell_z;
@@ -54,14 +54,8 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
             if ((cell_x != new_cell_x) || (cell_y != new_cell_y) || (cell_z != new_cell_z))
             {
-                //TODO DA TOGLIERE SE SI FANNO GLI SCONTI CON I MURI
-                if(new_cell_x != -1 && new_cell_y != -1 && new_cell_z != -1)
-                {
-//                    printf("%d) old cell %d %d %d, new cell %d %d %d \n",
-//                           calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z),
-//                           cell_x, cell_y, cell_z, new_cell_x, new_cell_y, new_cell_z);
-                    pezziala(slot, ca,cell_x,cell_y,cell_z);
-                }
+                    makeSlotEmpty(slot, ca,cell_x,cell_y,cell_z);
+
             }
         }
 
@@ -84,7 +78,7 @@ void moviliCazzu(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     for (destination_slot = 0; destination_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
                         if (calGetNext3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z) == NULL_ID)
                         {
-                            sucala(destination_slot,source_slot,ca,cell_x,cell_y,cell_z,n);
+                            moveParticleToNeighbor(destination_slot,source_slot,ca,cell_x,cell_y,cell_z,n);
                             sucked = CAL_TRUE;
                             break;
                         }
