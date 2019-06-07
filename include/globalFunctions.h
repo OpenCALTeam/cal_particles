@@ -20,6 +20,7 @@ void updateW(struct CALModel3D* ca);
 void transitionFunction(struct CALModel3D* modello);
 
 void printID (struct CALModel3D* model);
+void printID_cell (struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
 void cleanupCollisions (struct CALModel3D* modello);
 
 #endif

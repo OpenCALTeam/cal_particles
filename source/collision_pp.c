@@ -247,6 +247,7 @@ void updateCollisionsPP (struct Collisions* collisions)
             if (collisions->collisions_PP_next[i][j] == NULL &&
                     collisions->collisions_PP_current[i][j] != NULL)
             {
+                printf("la cancello = (%d %d) \n", i,j);
                 free(collisions->collisions_PP_current[i][j]);
                 collisions->collisions_PP_current[i][j] = NULL;
             }

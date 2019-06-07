@@ -3,6 +3,7 @@
 
 #include <model.h>
 
+CALbyte isThereAtLeastTwoParticle(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n);
 CALbyte isThereAtLeastAParticle(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n);
 
 CALreal distance (CALreal* p0, CALreal* p1);
@@ -12,5 +13,7 @@ void reflect(CALreal* v, CALreal* n);
 void orthogonalProjectedPointToPlane(CALreal* Pi, CALreal* Pp, CALreal* n, CALreal* ri);
 
 CALint findMissingParticle(struct CALModel3D* ca);
+
+void findDuplicateParticleInTheSameSlot (struct CALModel3D* ca);
 
 #endif

@@ -62,7 +62,9 @@ void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     //sucali
     for (int n=1; n<ca->sizeof_X; n++)
         for (int source_slot = 0; source_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; source_slot++)
-            if (calGetX3Di(ca,Q.ID[source_slot],cell_x,cell_y,cell_z,n) > NULL_ID)
+        {
+            int id_particle = calGetX3Di(ca,Q.ID[source_slot],cell_x,cell_y,cell_z,n);
+            if (id_particle > NULL_ID)
             {
                 calGetX3Dr_vec3_slot(ca, Q.px, Q.py, Q.pz, source_slot, cell_x,cell_y,cell_z, &p, n );
 
@@ -95,4 +97,5 @@ void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     }
                 }
             }
+        }
 }

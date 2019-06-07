@@ -30,8 +30,6 @@ struct Substates
 };
 
 
-
-
 // Main objcts
 //extern struct CALModel3D* u_modellu;
 //extern struct Substates Q;

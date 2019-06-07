@@ -95,7 +95,7 @@ void drawParticles()
                     glutSolidSphere(particle_radius,10,10);
                   }
                 else
-                  if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == BORDER_ID)
+                  if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) < NULL_ID)
                     {
                       glColor3f(1,1,1);
                       glPointSize(4);
@@ -193,7 +193,7 @@ void simulationRun(void)
 #ifdef VERBOSE
   //graphic rendering
   printf("step: %d; \tactive cells: %d\r", a_simulazioni->step, a_simulazioni->ca3D->A.size_current);
-  //if (a_simulazioni->step % 100 == 0)
+//  if (a_simulazioni->step % 100 == 0)
     glutPostRedisplay();
 #endif
 

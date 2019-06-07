@@ -92,23 +92,29 @@ void inner_collision(struct CALModel3D* ca,
     vec3 pj, vj, theta_j, wj;
     //    vec3 /*rij, enij,*/ vij;
     CALreal  dij, dij_2, vnij;
+    CALint id_PARTICLE_i, id_PARTICLE_j;
+    if(!isThereAtLeastTwoParticle(ca, cell_x, cell_y,cell_z, 0))
+        return;
 
+//    printf("_______________________________________ (%d,%d,%d)\n", cell_x, cell_y, cell_z);
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
-        CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
+        CALint id_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
 
-        if (id_PARTICLE_i > NULL_ID)
+
+        if (id_i > NULL_ID)
         {
-
             // inner particle-particle collision
             for (int inner_slot=slot+1; inner_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; inner_slot++)
             {
-                CALint id_PARTICLE_j = calGet3Di(ca, Q.ID[inner_slot],cell_x,cell_y,cell_z);
-                //                printf("+++++ valuto collisione tra %d %d nella cella (%d,%d,%d)\n", id_PARTICLE_i, id_PARTICLE_j, cell_x,cell_y,cell_z);
-                if (id_PARTICLE_j <= NULL_ID) //dobbiamo escludere anche le particelle al bordo
+                CALint id_j = calGet3Di(ca, Q.ID[inner_slot],cell_x,cell_y,cell_z);
+
+                if (id_j <= NULL_ID) //dobbiamo escludere anche le particelle al bordo
                     continue;
 
+                id_PARTICLE_i = id_i;
+                id_PARTICLE_j = id_j;
 
                 if (id_PARTICLE_i > id_PARTICLE_j) //swap
                 {
@@ -164,6 +170,8 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     //    vec3 /*rij, enij,*/ vij;
     CALreal  dij, dij_2, vnij;
 
+    if(!isThereAtLeastAParticle(ca, cell_x, cell_y,cell_z, 0))
+        return;
 
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
@@ -173,6 +181,8 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
             // outer particle-particle collision
             for (int n = 1; n<ca->sizeof_X; n++)
             {
+//                if(!isThereAtLeastAParticle(ca, cell_x, cell_y,cell_z, n))
+//                    return;
 
                 for (int outer_slot=0; outer_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; outer_slot++)
                 {
@@ -220,7 +230,7 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
         {
             for(int wall_ID=0; wall_ID < N_WALLS; wall_ID++)
             {
-//                printf("______________________________\n");
+                //                printf("______________________________\n");
                 vec3 pi, vi, theta_i, wi;
                 CALreal external, overlap, dtp =0.0, dpw;
                 vec3 vec_r, defN, defT, Fn, Ft;
@@ -229,7 +239,7 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                 unsigned int indx = walls[wall_ID].indx;
                 int sign = walls[wall_ID].sign;
 
-//                pwall = walls[wall_ID].pos;
+                //                pwall = walls[wall_ID].pos;
                 calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &pi);
                 calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &vi);
                 calGet3Dr_vec3(ca, Q.thetax[slot], Q.thetay[slot], Q.thetaz[slot], cell_x,cell_y,cell_z, &theta_i );
@@ -261,7 +271,7 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     {
                         CALreal dtp_dt;
                         if ( vi[indx] != 0.0)
-                        {    
+                        {
                             dtp = (sign * overlap) / vi[indx];
                             dtp_dt = dtp / DELTA_T;
                             if (dtp_dt > 1.0)

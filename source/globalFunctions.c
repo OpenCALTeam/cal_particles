@@ -59,9 +59,23 @@ void updateW(struct CALModel3D* ca)
         calUpdateSubstate3Dr(ca,Q.wz[slot]);
     }
 }
+void printID_cell (struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
+{
+
+    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+        printf("%d | ", calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z));
+
+    printf("\n");
+}
 
 void transitionFunction(struct CALModel3D* modello)
 {
+
+//    if(a_simulazioni->step > 4332)
+//        print = true;
+//    if (print)
+//        printID_cell(modello, 11,2,15);
+    findDuplicateParticleInTheSameSlot(modello);
     calApplyElementaryProcess3D(modello, leap_frog_velocity);
     updateV(modello);
     updateW(modello);
@@ -94,7 +108,7 @@ void transitionFunction(struct CALModel3D* modello)
     //    updateV(modello);
     //    updateW(modello);
 
-    //    printID(modello);
+    //        printID(modello);
 
     elapsed_time += DELTA_T;
 
@@ -130,6 +144,9 @@ void printID (struct CALModel3D* ca)
         printf("\n");
     }
 }
+
+
+
 
 void cleanupCollisions (struct CALModel3D* modello)
 {
