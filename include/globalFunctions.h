@@ -12,6 +12,8 @@ void updateF(struct CALModel3D* ca);
 void updateMoment(struct CALModel3D* ca);
 void updateP(struct CALModel3D* ca);
 
+void updateNP(struct CALModel3D* ca);
+
 void updateTheta(struct CALModel3D* ca);
 
 void updateV(struct CALModel3D* ca);

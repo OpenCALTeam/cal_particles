@@ -12,6 +12,8 @@ void makeSlotEmpty(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int 
     calSet3Dr_vec3_sv(ca, Q.thetax[slot], Q.thetay[slot], Q.thetaz[slot], cell_x,cell_y,cell_z, 0.0 );
 
     calSet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
+
+//    calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)-1);
 }
 
 void moveParticleToNeighbor(int destination_slot, int source_slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
@@ -33,6 +35,8 @@ void moveParticleToNeighbor(int destination_slot, int source_slot, struct CALMod
 
 
     calSet3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z, calGetX3Di(ca,Q.ID[source_slot],cell_x,cell_y,cell_z,n));
+
+//    calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)+1);
 }
 
 void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)

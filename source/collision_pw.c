@@ -116,7 +116,7 @@ bool deleteCollision_PW (struct Collisions * collisions, const int i, const int 
         return false; //ERROR
     }
 
-    printf("sto cancellando la collisione wall tra (%d,%d | %d)\n", i,WALL_ID, WALL_ID);
+//    printf("sto cancellando la collisione wall tra (%d,%d | %d)\n", i,WALL_ID, WALL_ID);
     //we set the collision in the next matrix null, then during the update phase memory will be freed
     free (collisions->collisions_PW_next[i][WALL_ID]);
     collisions->collisions_PW_next[i][WALL_ID] = NULL;
@@ -145,7 +145,7 @@ struct CollisionPW* addCollision_PW (struct Collisions* collisions, const int i,
         return false; //ERROR
     }
 
-    printf("sto aggiungendo la collisione p-wall tra (%d,%d)\n", i,WALL_ID);
+//    printf("sto aggiungendo la collisione p-wall tra (%d,%d)\n", i,WALL_ID);
 
     collisions->collisions_PW_next[i][WALL_ID] = (struct CollisionPW*)malloc(sizeof(struct CollisionPW));
     initializeCollisions_PW(collisions->collisions_PW_next[i][WALL_ID], i, WALL_ID);

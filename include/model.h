@@ -27,6 +27,7 @@ struct Substates
   struct CALSubstate3Dr **wy;
   struct CALSubstate3Dr **wz;
   struct CALSubstate3Di **ID;
+  struct CALSubstate3Di *nP;
 };
 
 

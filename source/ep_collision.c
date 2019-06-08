@@ -93,7 +93,8 @@ void inner_collision(struct CALModel3D* ca,
     //    vec3 /*rij, enij,*/ vij;
     CALreal  dij, dij_2, vnij;
     CALint id_PARTICLE_i, id_PARTICLE_j;
-    if(!isThereAtLeastTwoParticle(ca, cell_x, cell_y,cell_z, 0))
+
+    if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) < 2)
         return;
 
 //    printf("_______________________________________ (%d,%d,%d)\n", cell_x, cell_y, cell_z);
@@ -170,7 +171,7 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     //    vec3 /*rij, enij,*/ vij;
     CALreal  dij, dij_2, vnij;
 
-    if(!isThereAtLeastAParticle(ca, cell_x, cell_y,cell_z, 0))
+    if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) <= 0)
         return;
 
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
@@ -181,16 +182,22 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
             // outer particle-particle collision
             for (int n = 1; n<ca->sizeof_X; n++)
             {
+//                if(calGetX3Di(ca, Q.nP,cell_x,cell_y,cell_z, n) <= 0)
+//                    continue;
+
+                //PERCHÈ CON QUESTO CONTROLLO È DIVERSA LA SIMULAZIONE?
 //                if(!isThereAtLeastAParticle(ca, cell_x, cell_y,cell_z, n))
 //                    return;
 
                 for (int outer_slot=0; outer_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; outer_slot++)
                 {
                     CALint id_PARTICLE_j = calGetX3Di(ca, Q.ID[outer_slot],cell_x,cell_y,cell_z,n);
+//                    printf("valuto (%d,%d) e n = %d e cell (%d,%d,%d) \n",id_PARTICLE_i, id_PARTICLE_j, n, cell_x, cell_y, cell_z  );
 
                     //consideriamo solo una volta la collisione quando i < j
                     if ( id_PARTICLE_j > NULL_ID  && id_PARTICLE_i < id_PARTICLE_j)
                     {
+
                         vec3 pj, vj, theta_j, wj;
 
                         calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &pi);

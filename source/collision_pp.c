@@ -94,7 +94,7 @@ bool deleteCollision_PP (struct Collisions * collisions, const int i, const int 
         return false; //ERROR
     }
 
-    printf("sto cancellando la collisione tra (%d,%d)\n", i,j);
+//    printf("sto cancellando la collisione tra (%d,%d)\n", i,j);
     //we set the collision in the next matrix null, then during the update phase memory will be freed
     free (collisions->collisions_PP_next[i][j-i]);
     collisions->collisions_PP_next[i][j-i] = NULL;
@@ -135,7 +135,7 @@ struct CollisionPP* addCollision_PP (struct Collisions* collisions, const int i,
         return false; //ERROR
     }
 
-    printf("sto aggiungendo la collisione tra (%d,%d)\n", i,j);
+//    printf("sto aggiungendo la collisione tra (%d,%d)\n", i,j);
 
     collisions->collisions_PP_next[i][j-i] = (struct CollisionPP*)malloc(sizeof(struct CollisionPP));
     initializeCollisions_PP(collisions->collisions_PP_next[i][j-i], i, j);
@@ -247,7 +247,7 @@ void updateCollisionsPP (struct Collisions* collisions)
             if (collisions->collisions_PP_next[i][j] == NULL &&
                     collisions->collisions_PP_current[i][j] != NULL)
             {
-                printf("la cancello = (%d %d) \n", i,j);
+//                printf("la cancello = (%d %d) \n", i,j);
                 free(collisions->collisions_PP_current[i][j]);
                 collisions->collisions_PP_current[i][j] = NULL;
             }

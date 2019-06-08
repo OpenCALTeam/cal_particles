@@ -76,7 +76,7 @@ void leap_frog_positions(struct CALModel3D* ca,
 
 void applyForce(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
-    if (!isThereAtLeastAParticle(ca, cell_x, cell_y, cell_z, 0))
+    if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) < 1)
         return;
 
     vec3 F, accGr,  moment_collision;

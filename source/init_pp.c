@@ -62,6 +62,8 @@ bool addRandomParticlePosition(struct CALModel3D *ca, int * nextIDParticle)
 
         calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,*nextIDParticle);
 
+//        calInit3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)+1);
+
         (*nextIDParticle)++;
         return true;
     }
