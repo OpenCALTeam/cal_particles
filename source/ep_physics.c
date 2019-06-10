@@ -109,3 +109,73 @@ void applyForce(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
         }
     }
 }
+
+void euler_backward_forward_velocity(struct CALModel3D* ca,
+                        int cell_x, int cell_y, int cell_z)
+{
+
+    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    {
+
+        CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
+        if (id_PARTICLE_i > NULL_ID)
+        {
+            vec3 Fi, moment_i, vi, wi, toAdd;
+            calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &vi);
+            calGet3Dr_vec3(ca, Q.Fx[slot], Q.Fy[slot], Q.Fz[slot], cell_x,cell_y,cell_z, &Fi);
+            calGet3Dr_vec3(ca, Q.momentx[slot], Q.momenty[slot], Q.momentz[slot], cell_x,cell_y,cell_z, &moment_i);
+            calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x,cell_y,cell_z, &wi);
+
+            multiply_by_scalar_vec3(&toAdd, Fi, DELTA_T);
+            divide_by_scalar_vec3(&toAdd, toAdd, PARTICLE_MASS);
+            add_vec3(&vi, vi, toAdd);
+            calSet3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, slot, cell_x,cell_y,cell_z, vi );
+
+            clear_vec3(&toAdd);
+
+
+            multiply_by_scalar_vec3(&toAdd, moment_i, DELTA_T);
+            divide_by_scalar_vec3(&toAdd, toAdd, MOMENT_INERTIA);
+
+            add_vec3(&wi, wi, toAdd);
+            calSet3Dr_vec3_slot(ca, Q.wx, Q.wy, Q.wz, slot, cell_x,cell_y,cell_z, wi );
+
+        }
+    }
+
+}
+
+void euler_backward_forward_position(struct CALModel3D* ca,
+                        int cell_x, int cell_y, int cell_z)
+{
+
+    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    {
+
+        CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
+        if (id_PARTICLE_i > NULL_ID)
+        {
+            vec3 pi, vi, wi, theta_i, toAdd;
+            calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &vi);
+            calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &pi);
+
+            calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x,cell_y,cell_z, &wi);
+            calGet3Dr_vec3(ca, Q.thetax[slot], Q.thetay[slot], Q.thetaz[slot], cell_x,cell_y,cell_z, &theta_i);
+
+
+            multiply_by_scalar_vec3(&toAdd, vi, DELTA_T);
+            add_vec3(&pi, pi, toAdd);
+            calSet3Dr_vec3_slot(ca, Q.px, Q.py, Q.pz, slot, cell_x,cell_y,cell_z, pi );
+
+            clear_vec3(&toAdd);
+
+            multiply_by_scalar_vec3(&toAdd, wi, DELTA_T);
+
+            add_vec3(&theta_i, theta_i, toAdd);
+            calSet3Dr_vec3_slot(ca, Q.thetax, Q.thetay, Q.thetaz, slot, cell_x,cell_y,cell_z, theta_i );
+
+        }
+    }
+
+}
+
