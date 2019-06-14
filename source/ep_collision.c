@@ -291,10 +291,11 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                             dtp_dt = dtp / DELTA_T;
                             if (dtp_dt > 1.0)
                                 dtp = DELTA_T;
-                            else
-                            {
-                                dtp = 0.0;
-                            }
+
+                        }
+                        else
+                        {
+                            dtp = 0.0;
                         }
 
 
@@ -308,13 +309,13 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     CALreal ddt_2 = 0.0, ddn_2 = 0.0, energy= 0.0 ;
                     dot_product_vec3(&ddt_2, defT, defT);
                     dot_product_vec3(&ddn_2, defN, defN);
-                    energy = 0.5 * KN_PW * ddt_2 + 0.5 * KN_PW * KA * ddn_2;
+                    energy = 0.5 * KN_PW * ddn_2 + 0.5 * KN_PW * KA * ddt_2;
                     setEnergy_i_PW(&collisions, id_PARTICLE_i, wall_ID, energy);
 #endif
 
                     forcePart_PW(&Fn, &Ft, overlap, defN, defT, theta_i, pi, vi, vec_r, collision_pw, &collisions);
 
-//                    printf("chiamo update force tra %d e %d e la distance è %.6f e il raggio è %.6f\n",id_PARTICLE_i,  wall_ID, dpw, PARTICLE_RADIUS);
+                    //                    printf("chiamo update force tra %d e %d e la distance è %.6f e il raggio è %.6f\n",id_PARTICLE_i,  wall_ID, dpw, PARTICLE_RADIUS);
 
                     updateForces_PW(Ft,Fn, vec_r, collision_pw, &collisions);
 

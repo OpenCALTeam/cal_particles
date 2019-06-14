@@ -97,7 +97,7 @@ void compute_elastic_energy_pp(struct Collisions* collisions, struct CollisionPP
     CALreal ddt_2 = 0.0, ddn_2 = 0.0, energy= 0.0 ;
     dot_product_vec3(&ddt_2, defT_i, defT_i);
     dot_product_vec3(&ddn_2, defN_i, defN_i);
-    energy = 0.5 * KN_PP * ddt_2 + 0.5 * KN_PP * KA * ddn_2;
+    energy = 0.5 * KN_PP * ddn_2 + 0.5 * KN_PP * KA * ddt_2;
     setEnergy_i_PP(collisions, i,j, energy);
 
     //    setEnergy_j_PP(collisions, i,j, energy);

@@ -17,12 +17,15 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define TEST_CASE -1
+#define TEST_CASE 0
 #define INTEGRATION_METHOD 1
 
 #define TEST_CASE_SUPERBALL 0
 #define TEST_CASE_TWO_PP_VEL 1
 #define TEST_CASE_TWO_PP_VEL_OMEGA 2
+
+#define TEST_CASE_VEL_WALL 3
+#define TEST_CASE_VEL_OMEGA_WALL 4
 
 
 #define LEAP_FROG 1
@@ -42,7 +45,7 @@
 
 typedef CALreal vec3[3];
 static const vec3 G_dir =  {0.0,0.0, -1.0};
-static const CALreal G = 9.81;
+static const CALreal G = 0;
 
 #define ABS(N) ((N<0)?(-N):(N))
 
@@ -68,7 +71,7 @@ static const CALreal G = 9.81;
 
 #if TEST_CASE == TEST_CASE_SUPERBALL
 
-#define KA 4000 //boh
+#define KA 0.28571 //boh
 #define FRICTION_COEF_PP 1000
 #define KN_PP 14000
 #define AL_PP 1
@@ -77,12 +80,12 @@ static const CALreal G = 9.81;
 #define KN_PW 14000
 #define AL_PW 0
 
-static const CALreal PARTICLE_MASS = 0.0000010472;
+static const CALreal PARTICLE_MASS = 1.0472e-6;
 #define PARTICLE_RADIUS 0.0005
 
-#define DELTA_T 0.0000172
+#define DELTA_T 0.0000172/50
 
-#elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
+#elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA || TEST_CASE == TEST_CASE_VEL_WALL
 
 #define KA 4000 //boh
 #define FRICTION_COEF_PP 0.4
@@ -96,7 +99,7 @@ static const CALreal PARTICLE_MASS = 0.0000010472;
 
 #define PARTICLE_RADIUS 0.0005
 
-#define DENSITY (2700.0)
+#define DENSITY (7500.0)
 
 #define PIG 3.141592653589793238
 #define PIG43  (PIG *(3.0/4.0))
@@ -136,7 +139,7 @@ static const CALreal PARTICLE_MASS = (DENSITY * PARTICLE_VOLUME);
 static const CALreal PARTICLE_MASS = (DENSITY * PARTICLE_VOLUME);
 
 
-#define DELTA_T 0.0000005
+#define DELTA_T 0.00000005
 //#define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN_PP)) //[s]
 #endif
 
@@ -183,7 +186,7 @@ static CALreal dm_2 = DM * DM;
 #define DELTA_T_1_2 (DELTA_T/2)
 #define PARTICLE_MASS_DELTA_T_1_2 (DELTA_T_1_2 / PARTICLE_MASS)
 
-#define MOMENT_INERTIA ((0.4 * PARTICLE_MASS) * (0.4 * PARTICLE_MASS))
+#define MOMENT_INERTIA ((0.4 * PARTICLE_MASS) * PARTICLE_RADIUS*PARTICLE_RADIUS)
 
 #define MOMENT_INERTIA_DELTA_T_1_2 (DELTA_T_1_2 / MOMENT_INERTIA)
 

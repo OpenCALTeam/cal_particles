@@ -158,11 +158,12 @@ void run()
     clear_vec3(&v_0);
     v_0[0] = 0.1;
     clear_vec3(&w_0);
-    w_0[2]= 500;
+    v_0[2] = -0.1;
+    w_0[1]= 500;
 
     p_0[0]=0.02;
     p_0[1]=0.02;
-    p_0[2]=0.0015;
+    p_0[2]=0.001001;
 
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
@@ -204,6 +205,20 @@ void run()
     v_0[0] = -0.2;
 
     w_0[1] = -0.2;
+
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+#elif TEST_CASE == TEST_CASE_VEL_WALL
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+
+    clear_vec3(&w_0);
+
+    p_0[0]=0.039;
+    p_0[1]=0.02;
+    p_0[2]=0.02;
+
+    v_0[0] = 0.9;
 
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
