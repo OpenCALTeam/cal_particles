@@ -24,6 +24,8 @@ void leap_frog_velocity(struct CALModel3D* ca,
             calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x,cell_y,cell_z, &wi);
 
 
+            //            printf("sono la particella %d e la cella è (%d,%d,%d) e ho velocità %.5f %.5f %.5f\n ", id_PARTICLE_i,cell_x,cell_y,cell_z, vi[0],vi[1], vi[2]);
+
             multiply_by_scalar_vec3(&toAdd, Fi, PARTICLE_MASS_DELTA_T_1_2);
             add_vec3(&vi, vi, toAdd);
             calSet3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, slot, cell_x,cell_y,cell_z, vi );
@@ -32,7 +34,16 @@ void leap_frog_velocity(struct CALModel3D* ca,
 
             multiply_by_scalar_vec3(&toAdd, moment_i, MOMENT_INERTIA_DELTA_T_1_2);
 
+
+#if TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
+            printf("sono la particella %d PRIMA e ho omega %.5f %.5f %.5f\n ", id_PARTICLE_i, wi[0],wi[1], wi[2]);
+#endif
+
             add_vec3(&wi, wi, toAdd);
+
+#if TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
+            printf("sono la particella %d DOPO e ho omega %.5f %.5f %.5f\n ", id_PARTICLE_i, wi[0],wi[1], wi[2]);
+#endif
             calSet3Dr_vec3_slot(ca, Q.wx, Q.wy, Q.wz, slot, cell_x,cell_y,cell_z, wi );
 
         }
@@ -56,10 +67,17 @@ void leap_frog_positions(struct CALModel3D* ca,
             calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x,cell_y,cell_z, &wi);
             calGet3Dr_vec3(ca, Q.thetax[slot], Q.thetay[slot], Q.thetaz[slot], cell_x,cell_y,cell_z, &theta_i);
 
-
+#if TEST_CASE == TEST_CASE_SUPERBALL
+            printf("sono la particella %d e la cella è (%d,%d,%d) e ho posizione %.5f %.5f %.5f\n ", id_PARTICLE_i, cell_x,cell_y,cell_z, pi[0],pi[1], pi[2]);
+#endif
             multiply_by_scalar_vec3(&toAdd, vi, DELTA_T);
             add_vec3(&pi, pi, toAdd);
+
             calSet3Dr_vec3_slot(ca, Q.px, Q.py, Q.pz, slot, cell_x,cell_y,cell_z, pi );
+
+#if TEST_CASE == TEST_CASE_SUPERBALL
+            printf("sono la particella %d e DOPO e ho posizione %.5f %.5f %.5f\n ", id_PARTICLE_i, cell_x,cell_y,cell_z, pi[0],pi[1], pi[2]);
+#endif
 
             clear_vec3(&toAdd);
 
@@ -111,7 +129,7 @@ void applyForce(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 }
 
 void euler_backward_forward_velocity(struct CALModel3D* ca,
-                        int cell_x, int cell_y, int cell_z)
+                                     int cell_x, int cell_y, int cell_z)
 {
 
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
@@ -146,7 +164,7 @@ void euler_backward_forward_velocity(struct CALModel3D* ca,
 }
 
 void euler_backward_forward_position(struct CALModel3D* ca,
-                        int cell_x, int cell_y, int cell_z)
+                                     int cell_x, int cell_y, int cell_z)
 {
 
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)

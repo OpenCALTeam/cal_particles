@@ -5,7 +5,10 @@
 #include <vector_utils.h>
 #include <collision_pp.h>
 
-void defPart_PP (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enij, vec3 theta_i, vec3 theta_j,
+void defPart_PP_ij (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enij, vec3 theta_i, vec3 theta_j,
+              struct CollisionPP* collision_ij);
+
+void defPart_PP_ji (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enji, vec3 theta_i, vec3 theta_j,
               struct CollisionPP* collision_ij);
 
 void resetPart_PP (vec3 deT, vec3 theta_i, vec3 theta_j, vec3 enij,

@@ -5,5 +5,6 @@
 
 
 bool addRandomParticlePosition(struct CALModel3D* ca, int * nextIDParticle);
+bool addParticleWithPosition(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0, int * nextIDParticle);
 
 #endif

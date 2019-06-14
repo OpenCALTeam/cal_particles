@@ -51,6 +51,10 @@ void copyCollisionPW(struct CollisionPW * _to, struct CollisionPW * _from)
     set_vec3(&_to->F_collision, _from->F_collision);
 
     set_vec3(&_to->moment_collision, _from->moment_collision);
+
+#ifdef ENERGY
+    _to->energy = _from->energy;
+#endif
 }
 
 void updateCollisionPW(struct CollisionPW * _to, struct CollisionPW * _from)
@@ -60,6 +64,10 @@ void updateCollisionPW(struct CollisionPW * _to, struct CollisionPW * _from)
     set_vec3(&_to->F_collision, _from->F_collision);
 
     set_vec3(&_to->moment_collision, _from->moment_collision);
+
+#ifdef ENERGY
+    _to->energy = _from->energy;
+#endif
 }
 
 //this structure is indexed using global particles' indices
@@ -107,6 +115,10 @@ void initializeCollisions_PW(struct CollisionPW* collision_PW, const int i, cons
     clear_vec3 (&collision_PW->F_collision);
 
     clear_vec3 (&collision_PW->moment_collision);
+
+#ifdef ENERGY
+    collision_PW->energy = 0.0;
+#endif
 }
 
 bool deleteCollision_PW (struct Collisions * collisions, const int i, const int WALL_ID)
@@ -116,7 +128,7 @@ bool deleteCollision_PW (struct Collisions * collisions, const int i, const int 
         return false; //ERROR
     }
 
-//    printf("sto cancellando la collisione wall tra (%d,%d | %d)\n", i,WALL_ID, WALL_ID);
+    printf("sto cancellando la collisione wall tra (%d,%d | %d)\n", i,WALL_ID, WALL_ID);
     //we set the collision in the next matrix null, then during the update phase memory will be freed
     free (collisions->collisions_PW_next[i][WALL_ID]);
     collisions->collisions_PW_next[i][WALL_ID] = NULL;
@@ -124,8 +136,8 @@ bool deleteCollision_PW (struct Collisions * collisions, const int i, const int 
 }
 
 void setInitCollisionValues_PW (struct CollisionPW* collision_PW,
-                               vec3*  p, vec3* theta, vec3* v,
-                               vec3* w, CALreal dtp)
+                                vec3*  p, vec3* theta, vec3* v,
+                                vec3* w, CALreal dtp)
 {
     vec3 _toAdd;
     multiply_by_scalar_vec3(&_toAdd, *v, -dtp);
@@ -145,7 +157,7 @@ struct CollisionPW* addCollision_PW (struct Collisions* collisions, const int i,
         return false; //ERROR
     }
 
-//    printf("sto aggiungendo la collisione p-wall tra (%d,%d)\n", i,WALL_ID);
+    printf("sto aggiungendo la collisione p-wall tra (%d,%d)\n", i,WALL_ID);
 
     collisions->collisions_PW_next[i][WALL_ID] = (struct CollisionPW*)malloc(sizeof(struct CollisionPW));
     initializeCollisions_PW(collisions->collisions_PW_next[i][WALL_ID], i, WALL_ID);
@@ -172,6 +184,19 @@ void setForce_i_PW (struct Collisions* collisions, const int i, const int WALL_I
     }
     set_vec3(&collisions->collisions_PW_next[i][WALL_ID]->F_collision, *force);
 }
+
+
+void setEnergy_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, CALreal energy)
+{
+#ifdef ENERGY
+    if (i>= collisions->N_PARTICLES || WALL_ID >= N_WALLS)
+    {
+        return; //ERROR
+    }
+    collisions->collisions_PW_next[i][WALL_ID]->energy= energy;
+#endif
+}
+
 
 void updateForce_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, vec3* force)
 {
@@ -200,6 +225,7 @@ void updateMoment_i_PW (struct Collisions* collisions, const int i, const int WA
     }
     add_vec3(&collisions->collisions_PW_next[i][WALL_ID]->moment_collision,
              collisions->collisions_PW_next[i][WALL_ID]->moment_collision, *moment);
+
 }
 
 void updateCollisionsPW (struct Collisions* collisions)
@@ -245,6 +271,16 @@ void totalForceCollisionPW(struct Collisions* collisions, vec3* F_tot, const int
         if(collisions->collisions_PW_current[i][j] != NULL)
             add_vec3(F_tot, *F_tot, collisions->collisions_PW_current[i][j]->F_collision);
     }
+}
+
+void totalElasticEnergyCollisionPW(struct Collisions* collisions, CALreal * energy, const int i)
+{
+#ifdef ENERGY
+    for (int j = 0; j < N_WALLS; ++j) {
+        if(collisions->collisions_PW_current[i][j] != NULL)
+            *energy += collisions->collisions_PW_current[i][j]->energy;
+    }
+#endif
 }
 
 void clearForces_PW(struct Collisions* collisions)

@@ -10,6 +10,28 @@ void updateF(struct CALModel3D* ca)
     }
 }
 
+#ifdef ENERGY
+void updateEnergy(struct CALModel3D* ca)
+{
+    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    {
+        calUpdateSubstate3Dr(ca,Q.kinetic_energy[slot]);
+        calUpdateSubstate3Dr(ca,Q.potential_energy[slot]);
+        calUpdateSubstate3Dr(ca,Q.rotational_energy[slot]);
+        calUpdateSubstate3Dr(ca,Q.elastic_pp_energy[slot]);
+        calUpdateSubstate3Dr(ca,Q.elastic_pw_energy[slot]);
+    }
+}
+
+void updateTotalEnergy(struct CALModel3D* ca)
+{
+    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    {
+        calUpdateSubstate3Dr(ca,Q.total_energy[slot]);
+    }
+}
+#endif
+
 void updateMoment(struct CALModel3D* ca)
 {
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
@@ -83,64 +105,62 @@ void printCount (struct CALModel3D* ca)
             for (int cell_z = 0; cell_z<ca->slices; cell_z++)
             {
 
-                    count += calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z);
-//                    printf("%d | ", calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z));
+                count += calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z);
+                //                    printf("%d | ", calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z));
 
 
 
             }
-//        printf("\n");
+        //        printf("\n");
     }
     printf("count =  %d\n", count);
 }
 
-void countParticles (struct CALModel3D* ca)
-{
-    for (int cell_x=0; cell_x<ca->rows; cell_x++)
-    {
-        for (int cell_y=0; cell_y<ca->columns; cell_y++)
-            for (int cell_z = 0; cell_z<ca->slices; cell_z++)
-            {
-                int count = 0;
-                for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-                    if(calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
-                    count ++;
 
-                calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z, count);
-
-
-
-            }
-
-    }
-
-}
 
 void transitionFunction(struct CALModel3D* modello)
 {
 
-//    if(a_simulazioni->step > 4332)
-//        print = true;
-//    if (print)
-//        printID_cell(modello, 11,2,15);
+    //    if (a_simulazioni->step >= 1566)
+    //    {
+    //        printID(modello);
+    //    }
 
-//    printCount(modello);
-//    findDuplicateParticleInTheSameSlot(modello);
+#if INTEGRATION_METHOD == LEAP_FROG
     calApplyElementaryProcess3D(modello, leap_frog_velocity);
+#endif
+#if INTEGRATION_METHOD == EULER_FORWARD_BACKWARD
+    calApplyElementaryProcess3D(modello, euler_backward_forward_velocity);
+#endif
+
     updateV(modello);
     updateW(modello);
 
+#if INTEGRATION_METHOD == LEAP_FROG
     calApplyElementaryProcess3D(modello, leap_frog_positions);
+#endif
+#if INTEGRATION_METHOD == EULER_FORWARD_BACKWARD
+    calApplyElementaryProcess3D(modello, euler_backward_forward_position);
+#endif
     updateP(modello);
     updateTheta(modello);
+
+
 
     //  calApplyElementaryProcess3D(modello,movili);
     calApplyElementaryProcess3D(modello,moveParticles); //sposta le particelle nei nuovi celloni
     calUpdate3D(modello);
 
     //trasformare in elementary
-    countParticles(modello);
+    calApplyElementaryProcess3D(modello,countParticles);
     updateNP(modello);
+
+#ifdef ENERGY
+    calApplyElementaryProcess3D(modello, setToZeroEnergy);
+    calApplyElementaryProcess3D(modello, compute_kinetic_energy);
+    calApplyElementaryProcess3D(modello, compute_rotational_energy);
+    calApplyElementaryProcess3D(modello, compute_potential_energy);
+#endif
 
     calApplyElementaryProcess3D(modello,inner_collision);
     calApplyElementaryProcess3D(modello,outer_collision);
@@ -149,18 +169,34 @@ void transitionFunction(struct CALModel3D* modello)
     updateCollisionsPP(&collisions);
     updateCollisionsPW(&collisions);
 
+#ifdef ENERGY
+
+
+    calApplyElementaryProcess3D(modello,total_elastic_energy_pp);
+    calApplyElementaryProcess3D(modello,total_elastic_energy_pw);
+    updateEnergy(modello);
+
+    calApplyElementaryProcess3D(modello,compute_total_energy);
+    updateTotalEnergy(modello);
+#endif
+
     calApplyElementaryProcess3D(modello,applyForce);
 
 
     updateF(modello);
     updateMoment(modello);
 
+
+
     clearForces_PP(&collisions);
     clearForces_PW(&collisions);
 
-    //    calApplyElementaryProcess3D(modello, leap_frog_velocity);
-    //    updateV(modello);
-    //    updateW(modello);
+
+#if INTEGRATION_METHOD == LEAP_FROG
+    calApplyElementaryProcess3D(modello, leap_frog_velocity);
+#endif
+    updateV(modello);
+    updateW(modello);
 
     //        printID(modello);
 
@@ -168,6 +204,9 @@ void transitionFunction(struct CALModel3D* modello)
 
 #ifdef VERBOSE
     printSummary(modello);
+#ifdef ENERGY
+    saveTotalEnergy(modello, a_simulazioni->step, elapsed_time, total_energy_file);
+#endif
 #endif
 
     CALint S = INTEGRITY_CHECK_STEPS;
@@ -202,8 +241,13 @@ void printID (struct CALModel3D* ca)
 
 
 
-void cleanupCollisions (struct CALModel3D* modello)
+void cleanup (struct CALModel3D* modello)
 {
     cleanupCollisions_PP(&collisions);
     cleanupCollisions_PW(&collisions);
+
+#ifdef ENERGY
+    if (!total_energy_file)
+        fclose(total_energy_file);
+#endif
 }

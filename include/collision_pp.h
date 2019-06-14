@@ -23,6 +23,11 @@ struct CollisionPP
 
     vec3 moment_collision_i;
     vec3 moment_collision_j;
+
+#ifdef ENERGY
+    CALreal energy_i;
+    CALreal energy_j;
+#endif
 };
 
 
@@ -55,6 +60,11 @@ void updateForce_i_PP (struct Collisions* collisions, const int i, const int j,v
 void setForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
 void updateForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force);
 
+
+void setEnergy_i_PP (struct Collisions* collisions, const int i, const int j,CALreal energy);
+void setEnergy_j_PP (struct Collisions* collisions, const int i, const int j,CALreal energy);
+
+
 void setMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
 void updateMoment_i_PP (struct Collisions* collisions, const int i, const int j,vec3* moment);
 
@@ -70,6 +80,8 @@ void totalForceCollisionPP(struct Collisions* collisions, vec3* F_tot_i, const i
 void clearForces_PP(struct Collisions* collisions);
 
 void cleanupCollisions_PP(struct Collisions* collisions);
+
+void totalElasticEnergyCollisionPP(struct Collisions* collisions, CALreal * energy, const int i);
 
 
 

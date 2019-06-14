@@ -18,6 +18,11 @@ void copyCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from)
 
     set_vec3(&_to->moment_collision_i, _from->moment_collision_i);
     set_vec3(&_to->moment_collision_j, _from->moment_collision_j);
+
+#ifdef ENERGY
+    _to->energy_i = _from->energy_i;
+    _to->energy_j = _from->energy_j;
+#endif
 }
 
 void updateCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from)
@@ -30,6 +35,11 @@ void updateCollisionPP(struct CollisionPP * _to, struct CollisionPP * _from)
 
     set_vec3(&_to->moment_collision_i, _from->moment_collision_i);
     set_vec3(&_to->moment_collision_j, _from->moment_collision_j);
+
+#ifdef ENERGY
+    _to->energy_i = _from->energy_i;
+    _to->energy_j = _from->energy_j;
+#endif
 }
 
 //this structure is indexed using global particles' indices
@@ -85,6 +95,11 @@ void initializeCollisions_PP(struct CollisionPP* collision_PP, const int i, cons
     clear_vec3 (&collision_PP->moment_collision_i);
     clear_vec3 (&collision_PP->moment_collision_j);
 
+#ifdef ENERGY
+    collision_PP->energy_i = 0.0;
+    collision_PP->energy_j = 0.0;
+#endif
+
 }
 
 bool deleteCollision_PP (struct Collisions * collisions, const int i, const int j)
@@ -94,7 +109,7 @@ bool deleteCollision_PP (struct Collisions * collisions, const int i, const int 
         return false; //ERROR
     }
 
-//    printf("sto cancellando la collisione tra (%d,%d)\n", i,j);
+    printf("sto cancellando la collisione tra (%d,%d)\n", i,j);
     //we set the collision in the next matrix null, then during the update phase memory will be freed
     free (collisions->collisions_PP_next[i][j-i]);
     collisions->collisions_PP_next[i][j-i] = NULL;
@@ -102,8 +117,8 @@ bool deleteCollision_PP (struct Collisions * collisions, const int i, const int 
 }
 
 void setInitCollsionValues_PP (struct CollisionPP* collision_ij,
-                            vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
-                            vec3* wi, vec3* wj, CALreal dtp)
+                               vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
+                               vec3* wi, vec3* wj, CALreal dtp)
 {
     vec3 _toAdd;
     multiply_by_scalar_vec3(&_toAdd, *vi, -dtp);
@@ -127,15 +142,15 @@ void setInitCollsionValues_PP (struct CollisionPP* collision_ij,
 }
 
 struct CollisionPP* addCollision_PP (struct Collisions* collisions, const int i, const int j,
-                                  vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
-                                  vec3* wi, vec3* wj, CALreal dtp)
+                                     vec3*  pi, vec3 *pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
+                                     vec3* wi, vec3* wj, CALreal dtp)
 {
     if (j<i || i>=collisions->N_PARTICLES)
     {
         return false; //ERROR
     }
 
-//    printf("sto aggiungendo la collisione tra (%d,%d)\n", i,j);
+        printf("sto aggiungendo la collisione tra (%d,%d)\n", i,j);
 
     collisions->collisions_PP_next[i][j-i] = (struct CollisionPP*)malloc(sizeof(struct CollisionPP));
     initializeCollisions_PP(collisions->collisions_PP_next[i][j-i], i, j);
@@ -188,6 +203,33 @@ void setForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3
     }
     set_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_j, *force);
 }
+
+
+void setEnergy_i_PP (struct Collisions* collisions, const int i, const int j,CALreal energy)
+{
+#ifdef ENERGY
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+
+    collisions->collisions_PP_next[i][j-i]->energy_i = energy;
+#endif
+}
+
+void setEnergy_j_PP (struct Collisions* collisions, const int i, const int j,CALreal energy)
+{
+#ifdef ENERGY
+    if (j<i || i>= collisions->N_PARTICLES)
+    {
+        return; //ERROR
+    }
+
+    collisions->collisions_PP_next[i][j-i]->energy_j = energy;
+#endif
+}
+
+
 void updateForce_j_PP (struct Collisions* collisions, const int i, const int j,vec3* force)
 {
     if (j<i || i>= collisions->N_PARTICLES)
@@ -247,7 +289,7 @@ void updateCollisionsPP (struct Collisions* collisions)
             if (collisions->collisions_PP_next[i][j] == NULL &&
                     collisions->collisions_PP_current[i][j] != NULL)
             {
-//                printf("la cancello = (%d %d) \n", i,j);
+                //                printf("la cancello = (%d %d) \n", i,j);
                 free(collisions->collisions_PP_current[i][j]);
                 collisions->collisions_PP_current[i][j] = NULL;
             }
@@ -350,4 +392,24 @@ void cleanupCollisions_PP(struct Collisions* collisions)
     free(collisions->collisions_PP_next);
     free(collisions->collisions_PP_current);
 
+}
+
+
+void totalElasticEnergyCollisionPP(struct Collisions* collisions, CALreal * energy, const int i)
+{
+#ifdef ENERGY
+    for (int j = 0; j < collisions->N_PARTICLES - i; ++j) {
+        if(collisions->collisions_PP_current[i][j] != NULL)
+            *energy += collisions->collisions_PP_current[i][j]->energy_i;
+    }
+    int k = i, t= 0;
+
+    while (k>=0 && t < i)
+    {
+        if(collisions->collisions_PP_current[k][t] != NULL)
+            *energy += collisions->collisions_PP_current[k][t]->energy_j;
+        k--;
+        t++;
+    }
+#endif
 }

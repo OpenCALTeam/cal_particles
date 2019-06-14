@@ -28,7 +28,17 @@ struct Substates
   struct CALSubstate3Dr **wz;
   struct CALSubstate3Di **ID;
   struct CALSubstate3Di *nP;
+#ifdef ENERGY
+
+    struct CALSubstate3Dr **total_energy;
+    struct CALSubstate3Dr **kinetic_energy;
+    struct CALSubstate3Dr **potential_energy;
+    struct CALSubstate3Dr **rotational_energy;
+    struct CALSubstate3Dr **elastic_pp_energy;
+    struct CALSubstate3Dr **elastic_pw_energy;
+#endif
 };
+
 
 
 // Main objcts
@@ -46,6 +56,10 @@ CALint initial_nummber_of_particles;
 CALreal elapsed_time;
 struct Collisions collisions; //da inizializzare
 struct Wall walls[N_WALLS];
+
+#ifdef ENERGY
+FILE * total_energy_file;
+#endif
 
 // Functions
 void run();

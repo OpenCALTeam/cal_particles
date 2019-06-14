@@ -41,6 +41,8 @@ void forcePart_PW (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
 
     dot_product_vec3(&ddt_2, DefT, DefT);
 
+
+
     ddt_max = (FRICTION_COEF_PW*overlap)/KA;
     ddt_max_2 = ddt_max * ddt_max;
     if(ddt_2 > ddt_max_2)
@@ -56,10 +58,6 @@ void forcePart_PW (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
     {
         multiply_by_scalar_vec3(Ft, DefT, (-KN_PW*KA));
     }
-
-    //CHE CAZZO HO FATTO?
-
-
 
     (*Fn) [indx] = (*Fn) [indx] - AL_PW * v[indx];
 

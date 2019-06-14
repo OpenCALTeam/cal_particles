@@ -7,6 +7,10 @@
 #include <physics_pp.h>
 #include <physics_pw.h>
 
+#ifdef ENERGY
+#include <../include_energy/energy.h>
+#endif
+
 
 void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3* pj, vec3* theta_i, vec3* theta_j, vec3* vi, vec3* vj,
                             vec3* wi, vec3* wj)
@@ -56,8 +60,12 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
                                            pi, pj, theta_i, theta_j, vi, vj, wi, wj, dtp);
         }
 
-        defPart_PP(&defN, &defT, overlap, enij, *theta_i, *theta_j,
-                   collision_ij);
+        defPart_PP_ij(&defN, &defT, overlap, enij, *theta_i, *theta_j,
+                      collision_ij);
+
+#ifdef ENERGY
+        compute_elastic_energy_pp (&collisions, collision_ij, id_PARTICLE_i, id_PARTICLE_j, overlap, dij, *pi, *pj, *theta_i, *theta_j);
+#endif
 
         forcePart_PP(&Fn, &Ft, overlap, defN, defT, enij,
                      *wi, *wj, vnij, vrij, *theta_i, *theta_j, collision_ij, &collisions);
@@ -97,7 +105,7 @@ void inner_collision(struct CALModel3D* ca,
     if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) < 2)
         return;
 
-//    printf("_______________________________________ (%d,%d,%d)\n", cell_x, cell_y, cell_z);
+    //    printf("_______________________________________ (%d,%d,%d)\n", cell_x, cell_y, cell_z);
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
@@ -182,17 +190,17 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
             // outer particle-particle collision
             for (int n = 1; n<ca->sizeof_X; n++)
             {
-//                if(calGetX3Di(ca, Q.nP,cell_x,cell_y,cell_z, n) <= 0)
-//                    continue;
+                if(calGetX3Di(ca, Q.nP,cell_x,cell_y,cell_z, n) <= 0)
+                    continue;
 
                 //PERCHÈ CON QUESTO CONTROLLO È DIVERSA LA SIMULAZIONE?
-//                if(!isThereAtLeastAParticle(ca, cell_x, cell_y,cell_z, n))
-//                    return;
+                //                if(!isThereAtLeastAParticle(ca, cell_x, cell_y,cell_z, n))
+                //                    return;
 
                 for (int outer_slot=0; outer_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; outer_slot++)
                 {
                     CALint id_PARTICLE_j = calGetX3Di(ca, Q.ID[outer_slot],cell_x,cell_y,cell_z,n);
-//                    printf("valuto (%d,%d) e n = %d e cell (%d,%d,%d) \n",id_PARTICLE_i, id_PARTICLE_j, n, cell_x, cell_y, cell_z  );
+                    //                    printf("valuto (%d,%d) e n = %d e cell (%d,%d,%d) \n",id_PARTICLE_i, id_PARTICLE_j, n, cell_x, cell_y, cell_z  );
 
                     //consideriamo solo una volta la collisione quando i < j
                     if ( id_PARTICLE_j > NULL_ID  && id_PARTICLE_i < id_PARTICLE_j)
@@ -296,7 +304,17 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
                     defPart_PW(&defN, &defT, overlap, vec_r, pi, theta_i, collision_pw);
 
+#ifdef ENERGY
+                    CALreal ddt_2 = 0.0, ddn_2 = 0.0, energy= 0.0 ;
+                    dot_product_vec3(&ddt_2, defT, defT);
+                    dot_product_vec3(&ddn_2, defN, defN);
+                    energy = 0.5 * KN_PW * ddt_2 + 0.5 * KN_PW * KA * ddn_2;
+                    setEnergy_i_PW(&collisions, id_PARTICLE_i, wall_ID, energy);
+#endif
+
                     forcePart_PW(&Fn, &Ft, overlap, defN, defT, theta_i, pi, vi, vec_r, collision_pw, &collisions);
+
+//                    printf("chiamo update force tra %d e %d e la distance è %.6f e il raggio è %.6f\n",id_PARTICLE_i,  wall_ID, dpw, PARTICLE_RADIUS);
 
                     updateForces_PW(Ft,Fn, vec_r, collision_pw, &collisions);
 
@@ -318,6 +336,18 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     }
 }
 
+
+void countParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
+{
+    int count = 0;
+    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+        if(calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
+            count ++;
+
+    calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z, count);
+
+
+}
 
 
 

@@ -6,6 +6,9 @@
 #include <ep_movili_cazzu.h>
 #include <utils_io.h>
 #include <ep_utils.h>
+#ifdef ENERGY
+#include <../include_energy/energy.h>
+#endif
 
 void updateF(struct CALModel3D* ca);
 
@@ -23,6 +26,6 @@ void transitionFunction(struct CALModel3D* modello);
 
 void printID (struct CALModel3D* model);
 void printID_cell (struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
-void cleanupCollisions (struct CALModel3D* modello);
+void cleanup(struct CALModel3D* modello);
 
 #endif

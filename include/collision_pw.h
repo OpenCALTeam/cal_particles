@@ -14,6 +14,10 @@ struct CollisionPW
 
     vec3 moment_collision;
 
+#ifdef ENERGY
+    CALreal energy;
+#endif
+
 };
 
 struct Wall
@@ -49,11 +53,16 @@ void initializeCollisions_PW(struct CollisionPW* collision_PW, const int i, cons
 bool deleteCollision_PW (struct Collisions * collisions, const int i, const int WALL_ID);
 
 struct CollisionPW* addCollision_PW (struct Collisions* collisions, const int i, const int WALL_ID,
-                                  vec3*  p, vec3* theta, vec3* v,
-                                  vec3* w, CALreal dtp);
+                                     vec3*  p, vec3* theta, vec3* v,
+                                     vec3* w, CALreal dtp);
 
 void setPos_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, vec3* new_pos);
 void setForce_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, vec3* force);
+
+
+void setEnergy_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, CALreal energy);
+
+
 void updateForce_i_PW (struct Collisions* collisions, const int i, const int WALL_ID, vec3* force);
 
 void setMoment_i_PW (struct Collisions* collisions, const int i, const int j,vec3* moment);
@@ -69,6 +78,7 @@ void clearForces_PW(struct Collisions* collisions);
 
 void cleanupCollisions_PW (struct Collisions* collisions);
 
+void totalElasticEnergyCollisionPW(struct Collisions* collisions, CALreal * energy, const int i);
 
 
 #endif

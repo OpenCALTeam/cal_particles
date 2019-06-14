@@ -45,6 +45,14 @@ void run()
     Q.ID = (struct CALSubstate3Di**)malloc(sizeof(struct CALSubstate3Di*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
     Q.nP = (struct CALSubstate3Di*)malloc(sizeof(struct CALSubstate3Di)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
+#ifdef ENERGY
+    Q.total_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.kinetic_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.potential_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.rotational_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.elastic_pp_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.elastic_pw_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+#endif
     for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
     {
         Q.Fx[slot] = calAddSubstate3Dr(u_modellu);
@@ -75,6 +83,16 @@ void run()
 
         Q.nP = calAddSubstate3Di(u_modellu);
 
+#ifdef ENERGY
+        Q.total_energy[slot] = calAddSubstate3Dr(u_modellu);
+        Q.potential_energy[slot] = calAddSubstate3Dr(u_modellu);
+        Q.rotational_energy[slot] = calAddSubstate3Dr(u_modellu);
+        Q.kinetic_energy[slot] = calAddSubstate3Dr(u_modellu);
+        Q.elastic_pp_energy[slot] = calAddSubstate3Dr(u_modellu);
+        Q.elastic_pw_energy[slot] = calAddSubstate3Dr(u_modellu);
+
+#endif
+
         calInitSubstate3Dr(u_modellu,Q.Fx[slot],0.0);
         calInitSubstate3Dr(u_modellu,Q.Fy[slot],0.0);
         calInitSubstate3Dr(u_modellu,Q.Fz[slot],0.0);
@@ -100,6 +118,15 @@ void run()
         calInitSubstate3Dr(u_modellu,Q.wz[slot],0.0);
         calInitSubstate3Di(u_modellu,Q.ID[slot],NULL_ID);
 
+#ifdef ENERGY
+        calInitSubstate3Dr(u_modellu,Q.total_energy[slot],0.0);
+        calInitSubstate3Dr(u_modellu,Q.potential_energy[slot],0.0);
+        calInitSubstate3Dr(u_modellu,Q.rotational_energy[slot],0.0);
+        calInitSubstate3Dr(u_modellu,Q.kinetic_energy[slot],0.0);
+        calInitSubstate3Dr(u_modellu,Q.elastic_pp_energy[slot],0.0);
+        calInitSubstate3Dr(u_modellu,Q.elastic_pw_energy[slot],0.0);
+#endif
+
 
     }
     calInitSubstate3Di(u_modellu,Q.nP,0);
@@ -110,18 +137,89 @@ void run()
     boundaryCellsSerial(u_modellu);
 #endif
 
+#ifdef ENERGY
+    total_energy_file = fopen("./data/total_energy.dat", "w");
+    if ( !total_energy_file )
+    {
+        printf ("Unable to open %s.\n", "./data/total_energy.dat");
+        exit(EXIT_FAILURE);
+    }
+#endif
+
     // Initial conditions
     initial_nummber_of_particles = 1;
     elapsed_time = 0.0;
 
 
-    for (int i = 0; i < 300; ++i) {
+
+
+#if TEST_CASE == TEST_CASE_SUPERBALL
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+    v_0[0] = 0.1;
+    clear_vec3(&w_0);
+    w_0[2]= 500;
+
+    p_0[0]=0.02;
+    p_0[1]=0.02;
+    p_0[2]=0.0015;
+
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+#elif TEST_CASE == TEST_CASE_TWO_PP_VEL
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+    v_0[0] = 0.8;
+    clear_vec3(&w_0);
+
+    p_0[0]=0.02;
+    p_0[1]=0.02;
+    p_0[2]=0.02;
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+    p_0[0]=0.021;
+    p_0[1]=0.02;
+    p_0[2]=0.02;
+    v_0[0] = -0.8;
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+#elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+    v_0[0] = 0.2;
+    clear_vec3(&w_0);
+    w_0[1] = 0.3;
+
+    p_0[0]=0.02;
+    p_0[1]=0.02;
+    p_0[2]=0.02;
+
+    w_0[1] = 0.3;
+
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+    p_0[0]=0.0211;
+    p_0[1]=0.02;
+    p_0[2]=0.02;
+    v_0[0] = -0.2;
+
+    w_0[1] = -0.2;
+
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+
+#else
+    for (int i = 0; i < TOTAL_NUMBER_PARTICLE; ++i) {
         addRandomParticlePosition(u_modellu, &initial_nummber_of_particles);
     }
 
+#endif
 
 
-    printf( "initial_nummber_of_particles = %d\n", initial_nummber_of_particles);
+    printf("attrito %llu \n", FRICTION_COEF_PW);
+
+
+    printf( "initial_nummber_of_particles = %d\n", initial_nummber_of_particles-1);
 
 
     //TODO vedere perchè è +1
@@ -136,7 +234,7 @@ void run()
     calRunAddGlobalTransitionFunc3D(a_simulazioni, transitionFunction);
     calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
 
-    calRunAddFinalizeFunc3D(a_simulazioni, cleanupCollisions);
+    calRunAddFinalizeFunc3D(a_simulazioni, cleanup);
 
 
 #ifdef VERBOSE

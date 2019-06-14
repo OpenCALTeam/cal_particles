@@ -71,3 +71,43 @@ bool addRandomParticlePosition(struct CALModel3D *ca, int * nextIDParticle)
     return false;
 
 }
+
+//aggiunge una particella con una posizone precisa del CA
+bool addParticleWithPosition(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0, int * nextIDParticle)
+{
+
+    int cell_x = p_0[0]/CELL_SIDE;
+    int cell_y = p_0[1]/CELL_SIDE;
+    int cell_z = p_0[2]/CELL_SIDE;
+
+
+    int slot = getFirstFreeSlot(ca, cell_x,cell_y,cell_z);
+
+
+    if (slot != -1)
+    {
+        printf( "aggiunta particella a pos : %f %f %f con id %d \n", p_0[0],p_0[1],p_0[2], *nextIDParticle);
+
+        calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
+        calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
+        calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
+
+
+        calInit3Dr(ca,Q.thetax[slot],cell_x,cell_y,cell_z,0.0);
+        calInit3Dr(ca,Q.thetay[slot],cell_x,cell_y,cell_z,0.0);
+        calInit3Dr(ca,Q.thetaz[slot],cell_x,cell_y,cell_z,0.0);
+
+
+        calInit3Dr_vec3(ca,Q.px[slot],Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, p_0 );
+        calInit3Dr_vec3(ca,Q.vx[slot],Q.vy[slot], Q.vz[slot], cell_x, cell_y, cell_z, v_0 );
+        calInit3Dr_vec3(ca,Q.wx[slot],Q.wy[slot], Q.wz[slot], cell_x, cell_y, cell_z, w_0 );
+
+        calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,*nextIDParticle);
+
+        (*nextIDParticle)++;
+        return true;
+    }
+
+    return false;
+
+}
