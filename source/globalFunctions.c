@@ -156,10 +156,13 @@ void transitionFunction(struct CALModel3D* modello)
     updateNP(modello);
 
 #ifdef ENERGY
-    calApplyElementaryProcess3D(modello, setToZeroEnergy);
+
     calApplyElementaryProcess3D(modello, compute_kinetic_energy);
     calApplyElementaryProcess3D(modello, compute_rotational_energy);
     calApplyElementaryProcess3D(modello, compute_potential_energy);
+    updateEnergy(modello);
+    calApplyElementaryProcess3D(modello,compute_total_energy);
+    updateTotalEnergy(modello);
 #endif
 
     calApplyElementaryProcess3D(modello,inner_collision);
@@ -169,15 +172,24 @@ void transitionFunction(struct CALModel3D* modello)
     updateCollisionsPP(&collisions);
     updateCollisionsPW(&collisions);
 
+#ifdef VERBOSE
+    printSummary(modello);
+#ifdef ENERGY
+    saveTotalEnergy(modello, a_simulazioni->step, elapsed_time, total_energy_file);
+    saveParticleInfo(modello, a_simulazioni->step, elapsed_time, particle_info_file);
+#endif
+#endif
+
 #ifdef ENERGY
 
 
+    calApplyElementaryProcess3D(modello, setToZeroEnergy);
     calApplyElementaryProcess3D(modello,total_elastic_energy_pp);
     calApplyElementaryProcess3D(modello,total_elastic_energy_pw);
-    updateEnergy(modello);
 
-    calApplyElementaryProcess3D(modello,compute_total_energy);
-    updateTotalEnergy(modello);
+
+//    calApplyElementaryProcess3D(modello,compute_total_energy);
+//    updateTotalEnergy(modello);
 #endif
 
     calApplyElementaryProcess3D(modello,applyForce);
@@ -202,12 +214,7 @@ void transitionFunction(struct CALModel3D* modello)
 
     elapsed_time += DELTA_T;
 
-#ifdef VERBOSE
-    printSummary(modello);
-#ifdef ENERGY
-    saveTotalEnergy(modello, a_simulazioni->step, elapsed_time, total_energy_file);
-#endif
-#endif
+
 
     CALint S = INTEGRITY_CHECK_STEPS;
     if (a_simulazioni->step % S == 0)

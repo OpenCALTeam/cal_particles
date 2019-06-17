@@ -1,11 +1,14 @@
 #include <utils_io.h>
 #include <stdlib.h>
+#include <string.h>
 
 CALint number_of_particles = 0;
 CALreal total_energy = 0.0;
 CALreal max_velocity = 0.0;
 CALreal max_omega = 0.0;
 CALreal max_displacement = 0.0;
+vec3 max_omega_vec;
+vec3 max_velocity_vec;
 
 CALreal total_kinetic_energy = 0.0;
 CALreal total_rotational_energy = 0.0;
@@ -48,12 +51,14 @@ void summary(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                 {
                     max_velocity = v;
                     max_displacement = v*DELTA_T;
+                    set_vec3(&max_velocity_vec, velocity);
                 }
 
                 if (max_omega < w)
                 {
                     max_omega = w;
-//                    max_displacement = v*DELTA_T;
+                    set_vec3(&max_omega_vec, omega);
+                    //                    max_displacement = v*DELTA_T;
                 }
             }
         }
@@ -73,6 +78,9 @@ void printSummary(struct CALModel3D* ca)
     total_elastic_pp_energy = 0.0;
     total_elastic_pw_energy = 0.0;
 
+    clear_vec3(&max_omega_vec);
+    clear_vec3(&max_velocity_vec);
+
     calApplyElementaryProcess3D(ca,summary);
 
 
@@ -81,7 +89,8 @@ void printSummary(struct CALModel3D* ca)
 
 
 #ifdef ENERGY
-    printf("step %6d, elapsed_time: %.6f s, n_of_particles: %d, tot_energy: %.9f, max_v: %.6f, max_w: %.6f, max_displacement: %e\n", a_simulazioni->step, elapsed_time, number_of_particles, total_energy, max_velocity,max_omega, max_displacement);
+    printf("step %6d, elapsed_time: %.6f s, n_of_particles: %d, tot_energy: %.9f, max_v: %.6f, max_w: %.6f, max_v=(%.6f, %.6f, %.6f), max_w=(%.6f, %.6f, %.6f), max_displacement: %e\n", a_simulazioni->step, elapsed_time, number_of_particles, total_energy, max_velocity,max_omega,
+           max_velocity_vec[0], max_velocity_vec[1], max_velocity_vec[2], max_omega_vec[0], max_omega_vec[1], max_omega_vec[2], max_displacement);
 #else
     printf("step %6d, elapsed_time: %.6f s, n_of_particles: %d, max_v: %.6f, max_w: %.6f, max_displacement: %e\n", a_simulazioni->step, elapsed_time, number_of_particles, max_velocity, max_omega, max_displacement);
 #endif
@@ -94,6 +103,24 @@ void saveTotalEnergy(struct CALModel3D *ca, CALint step, CALreal elapsed_time, F
     fprintf(f, "%d %.10f %.10f %.10f %.10f %.10f %.10f %.10f\n",step, elapsed_time,
             total_kinetic_energy, total_rotational_energy, total_potential_energy,
             total_elastic_pp_energy, total_elastic_pw_energy, total_energy);
+}
+
+void saveParticleInfo(struct CALModel3D *ca, CALint step, CALreal elapsed_time, FILE *f)
+{
+    vec3 position, omega, velocity;
+    for (int cell_x=0; cell_x<ca->rows; cell_x++)
+        for (int cell_y=0; cell_y<ca->columns; cell_y++)
+            for (int cell_z = 0; cell_z<ca->slices; cell_z++)
+                for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+                    if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
+                    {
+                        calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, &position );
+                        calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x, cell_y, cell_z, &omega );
+                        calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x, cell_y, cell_z, &velocity );
+
+                        fprintf(f, "%d %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f\n",step, elapsed_time, position[0], position[1], position[2],
+                                velocity[0],velocity[1], velocity[2], omega[0], omega[1], omega[2]);
+                    }
 }
 
 void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, double CPU_time, char* path)
@@ -154,3 +181,41 @@ void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, dou
     if (!f)
         fclose(f);
 }
+
+void readProperties (char* file_name)
+{
+
+    FILE * fp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    char delim[] = "=";
+
+    fp = fopen(file_name, "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    while ((read = getline(&line, &len, fp)) != -1) {
+        printf("Retrieved line of length %zu:\n", read);
+        printf("%s", line);
+        char *ptr = strtok(line, "=");
+
+        printf("%s\n", ptr);
+        ptr = strtok(NULL, "=");
+
+        printf("%s\n", ptr);
+        double temp = strtod(ptr,NULL);
+
+        printf("%.10f\n", temp);
+
+
+
+    }
+
+    fclose(fp);
+    if (line)
+        free(line);
+
+}
+
+

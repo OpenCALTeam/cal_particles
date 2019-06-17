@@ -137,14 +137,25 @@ void run()
     boundaryCellsSerial(u_modellu);
 #endif
 
-#ifdef ENERGY
-    total_energy_file = fopen("./data/total_energy.dat", "w");
-    if ( !total_energy_file )
-    {
-        printf ("Unable to open %s.\n", "./data/total_energy.dat");
-        exit(EXIT_FAILURE);
-    }
-#endif
+
+
+//#ifdef ENERGY
+//    total_energy_file = fopen("./data/total_energy_1.dat", "w");
+//    if ( !total_energy_file )
+//    {
+//        printf ("Unable to open %s.\n", "./data/total_energy.dat");
+//        exit(EXIT_FAILURE);
+//    }
+
+//    particle_info_file = fopen("./data/particle_info_1.dat", "w");
+//    if ( !total_energy_file )
+//    {
+//        printf ("Unable to open %s.\n", "/data/particle_info.dat");
+//        exit(EXIT_FAILURE);
+//    }
+//#endif
+
+    readProperties("./config/config.properties");
 
     // Initial conditions
     initial_nummber_of_particles = 1;
@@ -178,7 +189,7 @@ void run()
     p_0[2]=0.02;
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
-    p_0[0]=0.021;
+    p_0[0]=0.0211;
     p_0[1]=0.02;
     p_0[2]=0.02;
     v_0[0] = -0.8;
@@ -187,9 +198,9 @@ void run()
 #elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
     vec3 p_0, v_0, w_0;
     clear_vec3(&v_0);
-    v_0[0] = 0.2;
+    v_0[0] = +0.2;
     clear_vec3(&w_0);
-    w_0[1] = 0.3;
+    w_0[1] = 40.0;
 
     p_0[0]=0.02;
     p_0[1]=0.02;
@@ -204,7 +215,7 @@ void run()
     p_0[2]=0.02;
     v_0[0] = -0.2;
 
-    w_0[1] = -0.2;
+    w_0[1] = -50.2;
 
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
@@ -222,7 +233,32 @@ void run()
 
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
+#elif TEST_CASE == TEST_CASE_VEL_WALL_VERTICAL
 
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+//    v_0[0] = 0.1;
+    clear_vec3(&w_0);
+//    v_0[2] = -0.1;
+
+    p_0[0]=0.02;
+    p_0[1]=0.02;
+    p_0[2]=0.001101;
+
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+#elif TEST_CASE == TEST_CASE_VEL_WALL_DIAGONAL
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+    v_0[0] = 0.5;
+    clear_vec3(&w_0);
+    v_0[2] = -0.5;
+    w_0[1]= 0;
+
+    p_0[0]=0.02;
+    p_0[1]=0.02;
+    p_0[2]=0.0011;
+
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 #else
     for (int i = 0; i < TOTAL_NUMBER_PARTICLE; ++i) {
         addRandomParticlePosition(u_modellu, &initial_nummber_of_particles);

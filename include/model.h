@@ -59,6 +59,7 @@ struct Wall walls[N_WALLS];
 
 #ifdef ENERGY
 FILE * total_energy_file;
+FILE * particle_info_file;
 #endif
 
 // Functions

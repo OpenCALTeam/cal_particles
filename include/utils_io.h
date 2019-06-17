@@ -7,5 +7,6 @@ void printSummary(struct CALModel3D* ca);
 
 void saveParticles(struct CALModel3D* ca, CALint step, CALreal elapsed_time, double CPU_time, char* path);
 void saveTotalEnergy(struct CALModel3D *ca, CALint step, CALreal elapsed_time, FILE * f);
-
+void saveParticleInfo(struct CALModel3D *ca, CALint step, CALreal elapsed_time, FILE *f);
+void readProperties (char* file_name);
 #endif

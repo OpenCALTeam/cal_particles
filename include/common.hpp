@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define TEST_CASE 0
+#define TEST_CASE 1
 #define INTEGRATION_METHOD 1
 
 #define TEST_CASE_SUPERBALL 0
@@ -26,6 +26,8 @@
 
 #define TEST_CASE_VEL_WALL 3
 #define TEST_CASE_VEL_OMEGA_WALL 4
+#define TEST_CASE_VEL_WALL_VERTICAL 5
+#define TEST_CASE_VEL_WALL_DIAGONAL 6
 
 
 #define LEAP_FROG 1
@@ -45,7 +47,7 @@
 
 typedef CALreal vec3[3];
 static const vec3 G_dir =  {0.0,0.0, -1.0};
-static const CALreal G = 0;
+static const CALreal G = 9.81;
 
 #define ABS(N) ((N<0)?(-N):(N))
 
@@ -69,7 +71,7 @@ static const CALreal G = 0;
 
 // PHYSICAL CONSTANTS AND FLAGS
 
-#if TEST_CASE == TEST_CASE_SUPERBALL
+#if TEST_CASE == TEST_CASE_SUPERBALL || TEST_CASE == TEST_CASE_VEL_WALL_DIAGONAL
 
 #define KA 0.28571 //boh
 #define FRICTION_COEF_PP 1000
@@ -85,19 +87,19 @@ static const CALreal PARTICLE_MASS = 1.0472e-6;
 
 #define DELTA_T 0.0000172/50
 
-#elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA || TEST_CASE == TEST_CASE_VEL_WALL
+#elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA || TEST_CASE == TEST_CASE_TWO_PP_VEL
 
-#define KA 4000 //boh
-#define FRICTION_COEF_PP 0.4
+#define KA 0.28571
+#define FRICTION_COEF_PP 1000
 #define KN_PP 5000
-#define AL_PP 0.5
+#define AL_PP 0
 
-#define FRICTION_COEF_PW 0.4
+#define FRICTION_COEF_PW 1000
 #define KN_PW 5000
-#define AL_PW 0.5
+#define AL_PW 0
 
 
-#define PARTICLE_RADIUS 0.0005
+#define PARTICLE_RADIUS 5e-4
 
 #define DENSITY (7500.0)
 
@@ -109,7 +111,23 @@ static const CALreal PARTICLE_MASS = 1.0472e-6;
 static const CALreal PARTICLE_MASS = (DENSITY * PARTICLE_VOLUME);
 
 
-#define DELTA_T 0.0000005
+#define DELTA_T 5e-7
+
+#elif TEST_CASE == TEST_CASE_VEL_WALL_VERTICAL
+
+#define KA 0.28571 //boh
+#define FRICTION_COEF_PP 1000
+#define KN_PP 14000
+#define AL_PP 0
+
+#define FRICTION_COEF_PW 1000
+#define KN_PW 14000
+#define AL_PW 0
+
+static const CALreal PARTICLE_MASS = 1.0472e-6;
+#define PARTICLE_RADIUS 0.0005
+
+#define DELTA_T 0.0000172/50
 
 #else
 #define KA 0.95 //boh
