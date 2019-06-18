@@ -154,7 +154,7 @@ void cancella_particelle_in_urto(struct CALModel3D* ca)
                   pj[2] = calGet3Dr(ca,Q.pz[inner_slot],cell_x,cell_y,cell_z);
 
                   if (calGet3Di(ca, Q.ID[inner_slot],cell_x,cell_y,cell_z) > NULL_ID)
-                    if (distance(pi, pj) <= 2.0*PARTICLE_RADIUS)
+                    if (distance(pi, pj) <= 2.0 * cnfg.PARTICLE_RADIUS)
                       {
                         pezzialaMo(ca,cell_x,cell_y,cell_z,slot);
                         particle_OK = CAL_FALSE;
@@ -166,7 +166,7 @@ void cancella_particelle_in_urto(struct CALModel3D* ca)
                       Nj[1] = calGet3Dr(ca,Q.vy[inner_slot],cell_x,cell_y,cell_z);
                       Nj[2] = calGet3Dr(ca,Q.vz[inner_slot],cell_x,cell_y,cell_z);
 
-                      if (pointPlaneDistance(pi, pj, Nj) < PARTICLE_RADIUS)
+                      if (pointPlaneDistance(pi, pj, Nj) < cnfg.PARTICLE_RADIUS)
                         {
                           pezzialaMo(ca,cell_x,cell_y,cell_z,slot);
                           particle_OK = CAL_FALSE;
@@ -185,7 +185,7 @@ void cancella_particelle_in_urto(struct CALModel3D* ca)
                     pj[2] = calGetX3Dr(ca,Q.pz[outer_slot],cell_x,cell_y,cell_z,n);
 
                     if (calGetX3Di(ca, Q.ID[outer_slot],cell_x,cell_y,cell_z,n) > NULL_ID)
-                      if (distance(pi, pj) <= 2.0*PARTICLE_RADIUS)
+                      if (distance(pi, pj) <= 2.0* cnfg.PARTICLE_RADIUS)
                         {
                           pezzialaMo(ca,cell_x,cell_y,cell_z,slot);
                           particle_OK = CAL_FALSE;
@@ -197,7 +197,7 @@ void cancella_particelle_in_urto(struct CALModel3D* ca)
                         Nj[1] = calGetX3Dr(ca,Q.vy[outer_slot],cell_x,cell_y,cell_z,n);
                         Nj[2] = calGetX3Dr(ca,Q.vz[outer_slot],cell_x,cell_y,cell_z,n);
 
-                        if (pointPlaneDistance(pi, pj, Nj) < PARTICLE_RADIUS)
+                        if (pointPlaneDistance(pi, pj, Nj) < cnfg.PARTICLE_RADIUS)
                           {
                             pezzialaMo(ca,cell_x,cell_y,cell_z,slot);
                             particle_OK = CAL_FALSE;

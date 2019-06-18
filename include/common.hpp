@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define TEST_CASE 1
+#define TEST_CASE 0
 #define INTEGRATION_METHOD 1
 
 #define TEST_CASE_SUPERBALL 0
@@ -47,7 +47,7 @@
 
 typedef CALreal vec3[3];
 static const vec3 G_dir =  {0.0,0.0, -1.0};
-static const CALreal G = 9.81;
+//static const CALreal G = 0;
 
 #define ABS(N) ((N<0)?(-N):(N))
 
@@ -73,97 +73,48 @@ static const CALreal G = 9.81;
 
 #if TEST_CASE == TEST_CASE_SUPERBALL || TEST_CASE == TEST_CASE_VEL_WALL_DIAGONAL
 
-#define KA 0.28571 //boh
-#define FRICTION_COEF_PP 1000
-#define KN_PP 14000
-#define AL_PP 1
+//#define KA 0.28571 //boh
+//#define FRICTION_COEF_PP 1000
+//#define KN_PP 14000
+//#define AL_PP 1
 
-#define FRICTION_COEF_PW 1000
-#define KN_PW 14000
-#define AL_PW 0
+//#define FRICTION_COEF_PW 1000
+//#define KN_PW 14000
+//#define AL_PW 0
 
-static const CALreal PARTICLE_MASS = 1.0472e-6;
-#define PARTICLE_RADIUS 0.0005
+//static const CALreal PARTICLE_MASS = 1.0472e-6;
+//#define PARTICLE_RADIUS 0.0005
 
-#define DELTA_T 0.0000172/50
+//#define DELTA_T 0.0000172/50
 
 #elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA || TEST_CASE == TEST_CASE_TWO_PP_VEL
 
-#define KA 0.28571
-#define FRICTION_COEF_PP 1000
-#define KN_PP 5000
-#define AL_PP 0
+//#define KA 0.28571
+//#define FRICTION_COEF_PP 1000
+//#define KN_PP 5000
+//#define AL_PP 0
 
-#define FRICTION_COEF_PW 1000
-#define KN_PW 5000
-#define AL_PW 0
-
-
-#define PARTICLE_RADIUS 5e-4
-
-#define DENSITY (7500.0)
-
-#define PIG 3.141592653589793238
-#define PIG43  (PIG *(3.0/4.0))
-
-#define PARTICLE_VOLUME  ((PIG43 * PARTICLE_RADIUS) * (PIG43 * PARTICLE_RADIUS) * (PIG43 * PARTICLE_RADIUS))
-
-static const CALreal PARTICLE_MASS = (DENSITY * PARTICLE_VOLUME);
+//#define FRICTION_COEF_PW 1000
+//#define KN_PW 5000
+//#define AL_PW 0
 
 
-#define DELTA_T 5e-7
+//#define PARTICLE_RADIUS 5e-4
 
-#elif TEST_CASE == TEST_CASE_VEL_WALL_VERTICAL
+//#define DENSITY (7500.0)
 
-#define KA 0.28571 //boh
-#define FRICTION_COEF_PP 1000
-#define KN_PP 14000
-#define AL_PP 0
+//#define PIG 3.141592653589793238
+//#define PIG43  (PIG *(3.0/4.0))
 
-#define FRICTION_COEF_PW 1000
-#define KN_PW 14000
-#define AL_PW 0
 
-static const CALreal PARTICLE_MASS = 1.0472e-6;
-#define PARTICLE_RADIUS 0.0005
 
-#define DELTA_T 0.0000172/50
 
-#else
-#define KA 0.95 //boh
-#define KN_PP 5000//5000
-#define AL_PP 0.001//boh
+//#define DELTA_T 5e-7
 
-#define KN_PW 5000//5000
-#define AL_PW 0.01 //boh
 
-#if ENERGY
-#define FRICTION_COEF_PP LONG_MAX/KN_PP //boh
-#define FRICTION_COEF_PW LONG_MAX/KN_PW //boh
-#else
-#define FRICTION_COEF_PP 0.03
-#define FRICTION_COEF_PW 0.03
 #endif
 
 
-
-#define DENSITY (7400.0)
-
-#define PIG 3.141592653589793238
-#define PIG43  (PIG *(3.0/4.0))
-#define PARTICLE_RADIUS 0.0005
-#define PARTICLE_VOLUME  ((PIG43 * PARTICLE_RADIUS) * (PIG43 * PARTICLE_RADIUS) * (PIG43 * PARTICLE_RADIUS))
-
-static const CALreal PARTICLE_MASS = (DENSITY * PARTICLE_VOLUME);
-
-
-#define DELTA_T 0.00000005
-//#define DELTA_T (0.1 * sqrt(PARTICLE_MASS/KN_PP)) //[s]
-#endif
-
-#define DM (2*PARTICLE_RADIUS)
-
-static CALreal dm_2 = DM * DM;
 
 
 
@@ -197,17 +148,8 @@ static CALreal dm_2 = DM * DM;
 // PHYSICAL TIME AND COMPUTATIONAL STEPS
 #define TOTAL_SIMULATION_TIME 1.0 //0.1 //[s]
 
-#define STEPS (int)((double)(TOTAL_SIMULATION_TIME)/(double)(DELTA_T))
-//#define STEPS 10
-#define INTEGRITY_CHECK_STEPS STEPS
-
-#define DELTA_T_1_2 (DELTA_T/2)
-#define PARTICLE_MASS_DELTA_T_1_2 (DELTA_T_1_2 / PARTICLE_MASS)
-
-#define MOMENT_INERTIA ((0.4 * PARTICLE_MASS) * PARTICLE_RADIUS*PARTICLE_RADIUS)
-
-#define MOMENT_INERTIA_DELTA_T_1_2 (DELTA_T_1_2 / MOMENT_INERTIA)
-
+#define PIG 3.141592653589793238
+#define PIG43  (PIG *(3.0/4.0))
 
 
 #endif

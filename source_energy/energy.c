@@ -35,7 +35,7 @@ void compute_kinetic_energy(struct CALModel3D* ca, int cell_x, int cell_y, int c
             continue;
 
         calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x,cell_y,cell_z, &v );
-        energy = 0.5 * PARTICLE_MASS * (v[0] * v[0] + v[1] *v[1] + v[2]*v[2]);
+        energy = 0.5 * cnfg.PARTICLE_MASS * (v[0] * v[0] + v[1] *v[1] + v[2]*v[2]);
         //        printf("velocity : (%.9f, %.9f, %.9f) energy %.15f\n",v[0], v[1],v[2], energy );
         calSet3Dr(ca,Q.kinetic_energy[slot], cell_x, cell_y, cell_z, energy);
     }
@@ -54,7 +54,7 @@ void compute_rotational_energy(struct CALModel3D* ca, int cell_x, int cell_y, in
 
         calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x,cell_y,cell_z, &w );
 
-        energy = 0.5 * MOMENT_INERTIA * (w[0] * w[0] + w[1] *w[1] + w[2]*w[2]);
+        energy = 0.5 * cnfg.MOMENT_INERTIA * (w[0] * w[0] + w[1] *w[1] + w[2]*w[2]);
 
         //        printf("w : (%.9f, %.9f, %.9f) energy %.15f\n",w[0], w[1],w[2], energy );
         calSet3Dr(ca,Q.rotational_energy[slot], cell_x, cell_y, cell_z, energy);
@@ -76,7 +76,7 @@ void compute_potential_energy(struct CALModel3D* ca, int cell_x, int cell_y, int
         calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &p );
 
 
-        energy =  PARTICLE_MASS * G * fabs(p[0] * G_dir[0] + p[1] * G_dir[1] + p[2] * G_dir[2]);
+        energy =  cnfg.PARTICLE_MASS * cnfg.G * fabs(p[0] * G_dir[0] + p[1] * G_dir[1] + p[2] * G_dir[2]);
         //        printf("position : (%.9f, %.9f, %.9f) energy %.9f\n",p[0], p[1],p[2], energy );
 
         calSet3Dr(ca,Q.potential_energy[slot], cell_x, cell_y, cell_z, energy);
@@ -97,7 +97,7 @@ void compute_elastic_energy_pp(struct Collisions* collisions, struct CollisionPP
     CALreal ddt_2 = 0.0, ddn_2 = 0.0, energy= 0.0 ;
     dot_product_vec3(&ddt_2, defT_i, defT_i);
     dot_product_vec3(&ddn_2, defN_i, defN_i);
-    energy = 0.5 * KN_PP * ddn_2 + 0.5 * KN_PP * KA * ddt_2;
+    energy = 0.5 * cnfg.KN_PP * ddn_2 + 0.5 * cnfg.KN_PP * cnfg.KA * ddt_2;
     setEnergy_i_PP(collisions, i,j, energy);
 
     //    setEnergy_j_PP(collisions, i,j, energy);

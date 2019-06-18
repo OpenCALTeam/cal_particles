@@ -35,7 +35,7 @@ void forcePart_PW (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
 
     clear_vec3(Fn);
 
-    multiply_by_scalar_vec3(Fn, DefN, - KN_PW);
+    multiply_by_scalar_vec3(Fn, DefN, - cnfg.KN_PW);
 
     unsigned int indx = walls[collision_pw->wall_ID].indx;
 
@@ -43,23 +43,23 @@ void forcePart_PW (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
 
 
 
-    ddt_max = (FRICTION_COEF_PW*overlap)/KA;
+    ddt_max = (cnfg.FRICTION_COEF_PW*overlap)/cnfg.KA;
     ddt_max_2 = ddt_max * ddt_max;
     if(ddt_2 > ddt_max_2)
     {
         ddt = sqrt(ddt_2);
         divide_by_scalar_vec3(&Et, DefT, ddt);
-        multiply_by_scalar_vec3(Ft, Et, -FRICTION_COEF_PW *KN_PW * overlap);
+        multiply_by_scalar_vec3(Ft, Et, -cnfg.FRICTION_COEF_PW * cnfg.KN_PW * overlap);
         multiply_by_scalar_vec3(&deT, Et, ddt_max);
 
         resetPart_PW(deT, theta, p, vec_r, collision_pw, collisions );
     }
     else
     {
-        multiply_by_scalar_vec3(Ft, DefT, (-KN_PW*KA));
+        multiply_by_scalar_vec3(Ft, DefT, (-cnfg.KN_PW * cnfg.KA));
     }
 
-    (*Fn) [indx] = (*Fn) [indx] - AL_PW * v[indx];
+    (*Fn) [indx] = (*Fn) [indx] - cnfg.AL_PW * v[indx];
 
 }
 

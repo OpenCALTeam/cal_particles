@@ -48,7 +48,7 @@ void drawAxes()
 void drawParticles()
 {
   //float particle_size = 1.0/MAX_NUMBER_OF_PARTICLES_PER_CELL;
-  float particle_radius = PARTICLE_RADIUS;
+  float particle_radius = cnfg.PARTICLE_RADIUS;
 
   CALint cell_x, cell_y, cell_z;
   CALreal px, py, pz;
@@ -216,7 +216,7 @@ void simulationRun(void)
   char winwow_title[256];
   char steps_cstr[64];
   strcpy(winwow_title, "cal_DEM - step ");
-  sprintf(steps_cstr, "%d (of %d), elapsed_time %.3f s (of %f s)", a_simulazioni->step, STEPS, elapsed_time, TOTAL_SIMULATION_TIME);
+  sprintf(steps_cstr, "%d (of %d), elapsed_time %.6f s (of %f s)", a_simulazioni->step, cnfg.STEPS, elapsed_time, TOTAL_SIMULATION_TIME);
   strcat(winwow_title, steps_cstr);
   glutSetWindowTitle(winwow_title);
 }

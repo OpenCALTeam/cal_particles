@@ -84,7 +84,7 @@ void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     for (destination_slot = 0; destination_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
                         if (calGetNext3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z) == NULL_ID)
                         {
-                            printf("sono la particella %d e vado da source= %d dest=%d cella (%d,%d,%d) vicino %d \n",id_particle, source_slot, destination_slot, cell_x,cell_y,cell_z, n );
+//                            printf("sono la particella %d e vado da source= %d dest=%d cella (%d,%d,%d) vicino %d \n",id_particle, source_slot, destination_slot, cell_x,cell_y,cell_z, n );
                             moveParticleToNeighbor(destination_slot,source_slot,ca,cell_x,cell_y,cell_z,n);
                             sucked = CAL_TRUE;
                             break;

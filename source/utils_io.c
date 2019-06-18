@@ -1,6 +1,7 @@
 #include <utils_io.h>
 #include <stdlib.h>
 #include <string.h>
+#include <configuration.h>
 
 CALint number_of_particles = 0;
 CALreal total_energy = 0.0;
@@ -50,7 +51,7 @@ void summary(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                 if (max_velocity < v)
                 {
                     max_velocity = v;
-                    max_displacement = v*DELTA_T;
+                    max_displacement = v * cnfg.DELTA_T;
                     set_vec3(&max_velocity_vec, velocity);
                 }
 
@@ -167,10 +168,10 @@ void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, dou
                         particle_id = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
 
                         number_of_particles++;
-                        total_energy += PARTICLE_MASS*G*p[2];
-                        total_energy += 0.5*PARTICLE_MASS*v[0]*v[0];
-                        total_energy += 0.5*PARTICLE_MASS*v[1]*v[1];
-                        total_energy += 0.5*PARTICLE_MASS*v[2]*v[2];
+                        total_energy += cnfg.PARTICLE_MASS*cnfg.G*p[2];
+                        total_energy += 0.5*cnfg.PARTICLE_MASS*v[0]*v[0];
+                        total_energy += 0.5*cnfg.PARTICLE_MASS*v[1]*v[1];
+                        total_energy += 0.5*cnfg.PARTICLE_MASS*v[2]*v[2];
 
                         fprintf(f, "%d\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\n", particle_id, p[0], p[1], p[2], v[0], v[1], v[2], F[0], F[1], F[2]);
                     }
@@ -182,34 +183,73 @@ void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, dou
         fclose(f);
 }
 
-void readProperties (char* file_name)
+void readProperties (char* file_name, struct Configuration * config)
 {
 
     FILE * fp;
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
-    char delim[] = "=";
 
     fp = fopen(file_name, "r");
     if (fp == NULL)
+    {
+        printf ("Unable to open %s\n", file_name);
         exit(EXIT_FAILURE);
 
+    }
+
+    double value;
+    char file_energy_name[255];
+
     while ((read = getline(&line, &len, fp)) != -1) {
-        printf("Retrieved line of length %zu:\n", read);
-        printf("%s", line);
-        char *ptr = strtok(line, "=");
+        //        printf("Retrieved line of length %zu:\n", read);
+        //        printf("%s", line);
+        char *name = strtok(line, " =\n");
 
-        printf("%s\n", ptr);
-        ptr = strtok(NULL, "=");
+        //        printf("%s\n", name);
+        char *value_string = strtok(NULL, " =\n");
 
-        printf("%s\n", ptr);
-        double temp = strtod(ptr,NULL);
+        //        printf("%s\n", value_string);
 
-        printf("%.10f\n", temp);
+        if(strcmp(name, "file_particlesInfo_name") == 0)
+            strncpy(config->file_particlesInfo_name, value_string, 255);
 
+        else if(strcmp(name, "file_energy_name") == 0)
+            strncpy(config->file_energy_name, value_string, 255);
+        else
+        {
+            value = strtod(value_string,NULL);
 
+            if(strcmp(name, "KA") == 0)
+                config->KA = value;
+            else if(strcmp(name, "FRICTION_COEF_PP") == 0)
+                config->FRICTION_COEF_PP = value;
+            else if(strcmp(name, "FRICTION_COEF_PW") == 0)
+                config->FRICTION_COEF_PW = value;
+            else if(strcmp(name, "KN_PP") == 0)
+                config->KN_PP = value;
+            else if(strcmp(name, "KN_PW") == 0)
+                config->KN_PW = value;
 
+            else if(strcmp(name, "AL_PP") == 0)
+                config->AL_PP = value;
+
+            else if(strcmp(name, "G") == 0)
+                config->G = value;
+
+            else if(strcmp(name, "AL_PW") == 0)
+                config->AL_PW = value;
+            else if(strcmp(name, "PARTICLE_MASS") == 0)
+                config->PARTICLE_MASS = value;
+            else if(strcmp(name, "PARTICLE_RADIUS") == 0)
+                config->PARTICLE_RADIUS = value;
+            else if(strcmp(name, "DENSITY") == 0)
+                config->DENSITY = value;
+
+            else if(strcmp(name, "DELTA_T") == 0)
+                config->DELTA_T = value;
+        }
     }
 
     fclose(fp);
@@ -217,5 +257,7 @@ void readProperties (char* file_name)
         free(line);
 
 }
+
+
 
 

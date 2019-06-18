@@ -5,7 +5,7 @@ CALbyte caminalu(struct CALModel3D* modello)
 {
   CALint step = a_simulazioni->step;
 
-  if (step < STEPS)
+  if (step < cnfg.STEPS)
       return CAL_FALSE;
 
   return CAL_TRUE;

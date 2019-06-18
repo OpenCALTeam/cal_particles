@@ -19,7 +19,7 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
 
     distance_squared_vec3(&dij_2, *pi, *pj);
 
-    if (dij_2 < dm_2)
+    if (dij_2 < cnfg.DM_2)
     {
 
         vec3 rij, enij, vrij, defN, defT, Fn, Ft;
@@ -27,7 +27,7 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
 
         //        printf("dm[%d %d] = %.7f dij[%d %d] = %.10f \n",id_PARTICLE_i, id_PARTICLE_j,  DM,id_PARTICLE_i, id_PARTICLE_j, dij);
 
-        CALreal overlap = DM - dij;
+        CALreal overlap = cnfg.DM - dij;
 
         subtract_vec3(&rij, *pj, *pi);
         divide_by_scalar_vec3(&enij, rij, dij);
@@ -43,10 +43,10 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
             if(vnij != 0.0)
             {
                 dtp = fabs(overlap/vnij);
-                dtp_dt = dtp / DELTA_T;
+                dtp_dt = dtp / cnfg.DELTA_T;
                 if (dtp_dt > 1.0)
                 {
-                    dtp = DELTA_T;
+                    dtp = cnfg.DELTA_T;
                 }
 
             }
@@ -262,10 +262,11 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
                 dpw = fabs(walls[wall_ID].pos[indx] - pi[indx]);
 
-                if(dpw < PARTICLE_RADIUS) //È COSÌ?
+                if(dpw < cnfg.PARTICLE_RADIUS) //È COSÌ?
                 {
 
-                    external = pi[indx] + sign * PARTICLE_RADIUS;
+                    //printProperties(&cnfg);
+                    external = pi[indx] + sign * cnfg.PARTICLE_RADIUS;
 
 
                     //FARE CON VALORE ASSOLUTO
@@ -280,7 +281,7 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
                     clear_vec3(&vec_r);
 
-                    vec_r[indx] += sign * PARTICLE_RADIUS;
+                    vec_r[indx] += sign * cnfg.PARTICLE_RADIUS;
                     struct CollisionPW* collision_pw = findCollision_PW(&collisions, id_PARTICLE_i, wall_ID);
                     if (collision_pw == NULL)
                     {
@@ -288,9 +289,9 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                         if ( vi[indx] != 0.0)
                         {
                             dtp = (sign * overlap) / vi[indx];
-                            dtp_dt = dtp / DELTA_T;
+                            dtp_dt = dtp / cnfg.DELTA_T;
                             if (dtp_dt > 1.0)
-                                dtp = DELTA_T;
+                                dtp = cnfg.DELTA_T;
 
                         }
                         else
@@ -309,7 +310,7 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     CALreal ddt_2 = 0.0, ddn_2 = 0.0, energy= 0.0 ;
                     dot_product_vec3(&ddt_2, defT, defT);
                     dot_product_vec3(&ddn_2, defN, defN);
-                    energy = 0.5 * KN_PW * ddn_2 + 0.5 * KN_PW * KA * ddt_2;
+                    energy = 0.5 * cnfg.KN_PW * ddn_2 + 0.5 * cnfg.KN_PW * cnfg.KA * ddt_2;
                     setEnergy_i_PW(&collisions, id_PARTICLE_i, wall_ID, energy);
 #endif
 

@@ -26,13 +26,13 @@ void leap_frog_velocity(struct CALModel3D* ca,
 
             //            printf("sono la particella %d e la cella è (%d,%d,%d) e ho velocità %.5f %.5f %.5f\n ", id_PARTICLE_i,cell_x,cell_y,cell_z, vi[0],vi[1], vi[2]);
 
-            multiply_by_scalar_vec3(&toAdd, Fi, PARTICLE_MASS_DELTA_T_1_2);
+            multiply_by_scalar_vec3(&toAdd, Fi, (0.5* cnfg.DELTA_T) / cnfg.PARTICLE_MASS);
             add_vec3(&vi, vi, toAdd);
             calSet3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, slot, cell_x,cell_y,cell_z, vi );
 
             clear_vec3(&toAdd);
 
-            multiply_by_scalar_vec3(&toAdd, moment_i, MOMENT_INERTIA_DELTA_T_1_2);
+            multiply_by_scalar_vec3(&toAdd, moment_i, (0.5 * cnfg.DELTA_T) / cnfg.MOMENT_INERTIA);
 
 
 #if TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
@@ -70,7 +70,7 @@ void leap_frog_positions(struct CALModel3D* ca,
 #if TEST_CASE == TEST_CASE_SUPERBALL || TEST_CASE == TEST_CASE_VEL_WALL
 //            printf("sono la particella %d e la cella è (%d,%d,%d) e ho posizione %.5f %.5f %.5f\n ", id_PARTICLE_i, cell_x,cell_y,cell_z, pi[0],pi[1], pi[2]);
 #endif
-            multiply_by_scalar_vec3(&toAdd, vi, DELTA_T);
+            multiply_by_scalar_vec3(&toAdd, vi, cnfg.DELTA_T);
             add_vec3(&pi, pi, toAdd);
 
             calSet3Dr_vec3_slot(ca, Q.px, Q.py, Q.pz, slot, cell_x,cell_y,cell_z, pi );
@@ -81,7 +81,7 @@ void leap_frog_positions(struct CALModel3D* ca,
 
             clear_vec3(&toAdd);
 
-            multiply_by_scalar_vec3(&toAdd, wi, DELTA_T);
+            multiply_by_scalar_vec3(&toAdd, wi, cnfg.DELTA_T);
 
             add_vec3(&theta_i, theta_i, toAdd);
             calSet3Dr_vec3_slot(ca, Q.thetax, Q.thetay, Q.thetaz, slot, cell_x,cell_y,cell_z, theta_i );
@@ -111,9 +111,9 @@ void applyForce(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
             clear_vec3(&accGr);
             clear_vec3(&moment_collision);
 
-            multiply_by_scalar_vec3(&accGr, G_dir, G);
+            multiply_by_scalar_vec3(&accGr, G_dir, cnfg.G);
 
-            multiply_by_scalar_vec3(&F, accGr, PARTICLE_MASS);
+            multiply_by_scalar_vec3(&F, accGr, cnfg.PARTICLE_MASS);
 
             totalForceCollisionPP(&collisions, &F, id_particle);
             totalForceCollisionPW(&collisions, &F, id_particle);
@@ -144,16 +144,16 @@ void euler_backward_forward_velocity(struct CALModel3D* ca,
             calGet3Dr_vec3(ca, Q.momentx[slot], Q.momenty[slot], Q.momentz[slot], cell_x,cell_y,cell_z, &moment_i);
             calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x,cell_y,cell_z, &wi);
 
-            multiply_by_scalar_vec3(&toAdd, Fi, DELTA_T);
-            divide_by_scalar_vec3(&toAdd, toAdd, PARTICLE_MASS);
+            multiply_by_scalar_vec3(&toAdd, Fi, cnfg.DELTA_T);
+            divide_by_scalar_vec3(&toAdd, toAdd, cnfg.PARTICLE_MASS);
             add_vec3(&vi, vi, toAdd);
             calSet3Dr_vec3_slot(ca, Q.vx, Q.vy, Q.vz, slot, cell_x,cell_y,cell_z, vi );
 
             clear_vec3(&toAdd);
 
 
-            multiply_by_scalar_vec3(&toAdd, moment_i, DELTA_T);
-            divide_by_scalar_vec3(&toAdd, toAdd, MOMENT_INERTIA);
+            multiply_by_scalar_vec3(&toAdd, moment_i, cnfg.DELTA_T);
+            divide_by_scalar_vec3(&toAdd, toAdd, cnfg.MOMENT_INERTIA);
 
             add_vec3(&wi, wi, toAdd);
             calSet3Dr_vec3_slot(ca, Q.wx, Q.wy, Q.wz, slot, cell_x,cell_y,cell_z, wi );
@@ -181,13 +181,13 @@ void euler_backward_forward_position(struct CALModel3D* ca,
             calGet3Dr_vec3(ca, Q.thetax[slot], Q.thetay[slot], Q.thetaz[slot], cell_x,cell_y,cell_z, &theta_i);
 
 
-            multiply_by_scalar_vec3(&toAdd, vi, DELTA_T);
+            multiply_by_scalar_vec3(&toAdd, vi, cnfg.DELTA_T);
             add_vec3(&pi, pi, toAdd);
             calSet3Dr_vec3_slot(ca, Q.px, Q.py, Q.pz, slot, cell_x,cell_y,cell_z, pi );
 
             clear_vec3(&toAdd);
 
-            multiply_by_scalar_vec3(&toAdd, wi, DELTA_T);
+            multiply_by_scalar_vec3(&toAdd, wi, cnfg.DELTA_T);
 
             add_vec3(&theta_i, theta_i, toAdd);
             calSet3Dr_vec3_slot(ca, Q.thetax, Q.thetay, Q.thetaz, slot, cell_x,cell_y,cell_z, theta_i );

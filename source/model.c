@@ -137,25 +137,31 @@ void run()
     boundaryCellsSerial(u_modellu);
 #endif
 
+    char path_config[256];
+    sprintf(path_config, "./config/config%d.properties", TEST_CASE);
+    initConfig(path_config, &cnfg);
+    printProperties(&cnfg);
+
+//    exit(EXIT_SUCCESS);
 
 
-//#ifdef ENERGY
-//    total_energy_file = fopen("./data/total_energy_1.dat", "w");
-//    if ( !total_energy_file )
-//    {
-//        printf ("Unable to open %s.\n", "./data/total_energy.dat");
-//        exit(EXIT_FAILURE);
-//    }
+#ifdef ENERGY
+    total_energy_file = fopen(cnfg.file_energy_name, "w");
+    if ( !total_energy_file )
+    {
+        printf ("Unable to open %s.\n", cnfg.file_energy_name);
+        exit(EXIT_FAILURE);
+    }
 
-//    particle_info_file = fopen("./data/particle_info_1.dat", "w");
-//    if ( !total_energy_file )
-//    {
-//        printf ("Unable to open %s.\n", "/data/particle_info.dat");
-//        exit(EXIT_FAILURE);
-//    }
-//#endif
+    particle_info_file = fopen(cnfg.file_particlesInfo_name, "w");
+    if ( !particle_info_file )
+    {
+        printf ("Unable to open %s.\n", cnfg.file_particlesInfo_name);
+        exit(EXIT_FAILURE);
+    }
+#endif
 
-    readProperties("./config/config.properties");
+
 
     // Initial conditions
     initial_nummber_of_particles = 1;
@@ -267,7 +273,7 @@ void run()
 #endif
 
 
-    printf("attrito %llu \n", FRICTION_COEF_PW);
+    printf("attrito %.6f \n", cnfg.FRICTION_COEF_PW);
 
 
     printf( "initial_nummber_of_particles = %d\n", initial_nummber_of_particles-1);
@@ -293,6 +299,6 @@ void run()
 #ifdef OMP
     printf("OpenMP parallel execution enabled!\n");
 #endif
-    printf("A system of %d particles will be simulated for %f s, subdivided in %d steps, each one corresponding to %f s\n", initial_nummber_of_particles, TOTAL_SIMULATION_TIME, STEPS, DELTA_T);
+    printf("A system of %d particles will be simulated for %f s, subdivided in %d steps, each one corresponding to %f s\n", initial_nummber_of_particles, TOTAL_SIMULATION_TIME, cnfg.STEPS, cnfg.DELTA_T);
 #endif
 }

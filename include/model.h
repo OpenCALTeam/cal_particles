@@ -4,6 +4,7 @@
 #include <calmodel_utils.h>
 #include <vector_utils.h>
 #include <collision_pp.h>
+#include<configuration.h>
 
 //SUBSTATES
 struct Substates
@@ -56,6 +57,8 @@ CALint initial_nummber_of_particles;
 CALreal elapsed_time;
 struct Collisions collisions; //da inizializzare
 struct Wall walls[N_WALLS];
+
+struct Configuration cnfg;
 
 #ifdef ENERGY
 FILE * total_energy_file;

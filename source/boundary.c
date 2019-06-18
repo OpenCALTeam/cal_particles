@@ -7,7 +7,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
 
   if (cell_x == 0)
     {
-      p[0] = PARTICLE_RADIUS;
+      p[0] = cnfg.PARTICLE_RADIUS;
       p[1] = (cell_y * CELL_SIDE) + CELL_SIDE/2;
       p[2] = (cell_z * CELL_SIDE) + CELL_SIDE/2;
 
@@ -31,7 +31,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
 
   if (cell_x == X_CELLS-1)
     {
-      p[0] = X_CELLS * CELL_SIDE - PARTICLE_RADIUS;
+      p[0] = X_CELLS * CELL_SIDE - cnfg.PARTICLE_RADIUS;
       p[1] = (cell_y * CELL_SIDE) + CELL_SIDE/2;
       p[2] = (cell_z * CELL_SIDE) + CELL_SIDE/2;
 
@@ -55,7 +55,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
   if (cell_y == 0)
     {
       p[0] = (cell_x * CELL_SIDE) + CELL_SIDE/2;
-      p[1] = PARTICLE_RADIUS;
+      p[1] = cnfg.PARTICLE_RADIUS;
       p[2] = (cell_z * CELL_SIDE) + CELL_SIDE/2;
 
       n[0] = 0;
@@ -78,7 +78,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
   if (cell_y == Y_CELLS-1)
     {
       p[0] = (cell_x * CELL_SIDE) + CELL_SIDE/2;
-      p[1] = Y_CELLS * CELL_SIDE - PARTICLE_RADIUS;
+      p[1] = Y_CELLS * CELL_SIDE - cnfg.PARTICLE_RADIUS;
       p[2] = (cell_z * CELL_SIDE) + CELL_SIDE/2;
 
       n[0] = 0;
@@ -102,7 +102,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
     {
       p[0] = (cell_x * CELL_SIDE) + CELL_SIDE/2;
       p[1] = (cell_y * CELL_SIDE) + CELL_SIDE/2;
-      p[2] = PARTICLE_RADIUS;
+      p[2] = cnfg.PARTICLE_RADIUS;
 
       n[0] = 0;
       n[1] = 0;
@@ -125,7 +125,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
     {
       p[0] = (cell_x * CELL_SIDE) + CELL_SIDE/2;
       p[1] = (cell_y * CELL_SIDE) + CELL_SIDE/2;
-      p[2] = Z_CELLS * CELL_SIDE - PARTICLE_RADIUS;
+      p[2] = Z_CELLS * CELL_SIDE - cnfg.PARTICLE_RADIUS;
 
       n[0] = 0;
       n[1] = 0;

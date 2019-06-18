@@ -212,11 +212,11 @@ void transitionFunction(struct CALModel3D* modello)
 
     //        printID(modello);
 
-    elapsed_time += DELTA_T;
+    elapsed_time += cnfg.DELTA_T;
 
 
 
-    CALint S = INTEGRITY_CHECK_STEPS;
+    CALint S = cnfg.STEPS;
     if (a_simulazioni->step % S == 0)
     {
         CALint missing_particle = findMissingParticle(modello);
