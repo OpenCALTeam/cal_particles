@@ -2,6 +2,8 @@
 
 #include<model.h>
 
+//TODO portare a zero l'altezza
+//TODO sistemare gli indici dei wall
 void initWalls(struct Wall walls[N_WALLS])
 {
     walls[WALL_WEST].indx= 0;

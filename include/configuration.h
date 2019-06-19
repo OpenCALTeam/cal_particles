@@ -1,0 +1,39 @@
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
+
+
+struct Configuration {
+    double KA;
+    double FRICTION_COEF_PP;
+    double FRICTION_COEF_PW;
+
+    double KN_PP;
+    double KN_PW;
+
+    double AL_PP;
+    double AL_PW;
+
+    double PARTICLE_MASS;
+    double PARTICLE_RADIUS;
+    double DM;
+    double DM_2;
+
+    double DELTA_T;
+
+    double DENSITY;
+
+    double G;
+    int STEPS;
+    double MOMENT_INERTIA;
+
+    char file_energy_name[255];
+    char file_particlesInfo_name[255];
+
+
+};
+
+void initConfig(char* file_name, struct Configuration * config);
+void printProperties(struct Configuration * config);
+
+#endif
+

@@ -64,7 +64,13 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
                       collision_ij);
 
 #ifdef ENERGY
-        compute_elastic_energy_pp (&collisions, collision_ij, id_PARTICLE_i, id_PARTICLE_j, overlap, dij, *pi, *pj, *theta_i, *theta_j);
+
+        CALreal ddt_2 = 0.0, ddn_2 = 0.0, energy= 0.0 ;
+        dot_product_vec3(&ddt_2, defT, defT);
+        dot_product_vec3(&ddn_2, defN, defN);
+        energy = 0.5 * cnfg.KN_PP * ddn_2 + 0.5 * cnfg.KN_PP * cnfg.KA * ddt_2;
+        setEnergy_i_PP(&collisions, id_PARTICLE_i,id_PARTICLE_j, energy);
+
 #endif
 
         forcePart_PP(&Fn, &Ft, overlap, defN, defT, enij,
