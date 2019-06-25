@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 Project(cal_DEM)
 
-OPTION (GUI "GUI" ON)
+OPTION (GUI "GUI" OFF)
 OPTION (OMP "OpenMP" OFF)
 OPTION (VERBOSE "verbose mode" ON)
 OPTION (ENERGY "energy calculation" ON)
@@ -101,9 +101,9 @@ if(GUI)
 else() # CLI
     message(STATUS "Building with CLI support...")
     if(ENERGY)
-        add_executable(${PROJECT_NAME}  ${SRC} ${HDR})
+        add_executable(${PROJECT_NAME}  ${CLI_SRC} ${ENERGY_SRC} ${ENERGY_HDR} ${SRC} ${HDR})
     else ()
-        add_executable(${PROJECT_NAME} ${CLI_SRC} ${ENERGY_SRC} ${ENERGY_HDR} ${SRC} ${HDR})
+        add_executable(${PROJECT_NAME} ${CLI_SRC} ${SRC} ${HDR})
     endif()
 
 

@@ -172,24 +172,25 @@ void transitionFunction(struct CALModel3D* modello)
     updateCollisionsPP(&collisions);
     updateCollisionsPW(&collisions);
 
-#ifdef VERBOSE
-    printSummary(modello);
+
+
 #ifdef ENERGY
+    computeSummary(modello);
     saveTotalEnergy(modello, a_simulazioni->step, elapsed_time, total_energy_file);
     saveParticleInfo(modello, a_simulazioni->step, elapsed_time, particle_info_file);
 #endif
+#ifdef VERBOSE
+    printSummary();
 #endif
 
 #ifdef ENERGY
-
-
     calApplyElementaryProcess3D(modello, setToZeroEnergy);
     calApplyElementaryProcess3D(modello,total_elastic_energy_pp);
     calApplyElementaryProcess3D(modello,total_elastic_energy_pw);
 
 
-//    calApplyElementaryProcess3D(modello,compute_total_energy);
-//    updateTotalEnergy(modello);
+    //    calApplyElementaryProcess3D(modello,compute_total_energy);
+    //    updateTotalEnergy(modello);
 #endif
 
     calApplyElementaryProcess3D(modello,applyForce);

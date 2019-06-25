@@ -265,6 +265,17 @@ void run()
     p_0[2]=0.0011;
 
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+#elif TEST_CASE == TEST_CASE_VEL_WALL_DIAGONAL_GRAVITY
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+    v_0[0] = 0.5;
+    clear_vec3(&w_0);
+
+    p_0[0]=0.02;
+    p_0[1]=0.02;
+    p_0[2]=0.0011;
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
 #else
     for (int i = 0; i < TOTAL_NUMBER_PARTICLE; ++i) {
         addRandomParticlePosition(u_modellu, &initial_nummber_of_particles);
@@ -272,8 +283,6 @@ void run()
 
 #endif
 
-
-    printf("attrito %.6f \n", cnfg.FRICTION_COEF_PW);
 
 
     printf( "initial_nummber_of_particles = %d\n", initial_nummber_of_particles-1);

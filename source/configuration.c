@@ -18,7 +18,11 @@ void initConfig(char* file_name, struct Configuration * config)
     config->DM = 2* config->PARTICLE_RADIUS;
     config->DM_2 = config->DM*config->DM;
 
-    config-> STEPS =(int)((double)(TOTAL_SIMULATION_TIME)/(double)(config->DELTA_T));
+    if(config->STEPS <= 0.0)
+    {
+        config-> STEPS =(int)((double)(TOTAL_SIMULATION_TIME)/(double)(config->DELTA_T));
+    }
+
     config->MOMENT_INERTIA= ((0.4 * config->PARTICLE_MASS) * config->PARTICLE_RADIUS*config->PARTICLE_RADIUS);
 }
 

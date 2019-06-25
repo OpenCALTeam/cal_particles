@@ -65,7 +65,7 @@ void summary(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
         }
 }
 
-void printSummary(struct CALModel3D* ca)
+void computeSummary(struct CALModel3D* ca)
 {
     number_of_particles = 0;
     total_energy = 0.0;
@@ -83,19 +83,16 @@ void printSummary(struct CALModel3D* ca)
     clear_vec3(&max_velocity_vec);
 
     calApplyElementaryProcess3D(ca,summary);
+}
 
-
-
-
-
-
+void printSummary ()
+{
 #ifdef ENERGY
     printf("step %6d, elapsed_time: %.6f s, n_of_particles: %d, tot_energy: %.9f, max_v: %.6f, max_w: %.6f, max_v=(%.6f, %.6f, %.6f), max_w=(%.6f, %.6f, %.6f), max_displacement: %e\n", a_simulazioni->step, elapsed_time, number_of_particles, total_energy, max_velocity,max_omega,
            max_velocity_vec[0], max_velocity_vec[1], max_velocity_vec[2], max_omega_vec[0], max_omega_vec[1], max_omega_vec[2], max_displacement);
 #else
     printf("step %6d, elapsed_time: %.6f s, n_of_particles: %d, max_v: %.6f, max_w: %.6f, max_displacement: %e\n", a_simulazioni->step, elapsed_time, number_of_particles, max_velocity, max_omega, max_displacement);
 #endif
-
 }
 
 void saveTotalEnergy(struct CALModel3D *ca, CALint step, CALreal elapsed_time, FILE *f)
@@ -249,6 +246,9 @@ void readProperties (char* file_name, struct Configuration * config)
 
             else if(strcmp(name, "DELTA_T") == 0)
                 config->DELTA_T = value;
+
+            else if(strcmp(name, "STEPS") == 0)
+                config->STEPS = value;
         }
     }
 
