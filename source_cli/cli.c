@@ -35,11 +35,15 @@ int main(int argc, char** argv)
   printf("argv[0] = %s; t0_path = %s\n", argv[0], t0_path);
 #endif
 
+
   saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, t0_path);
 
 #ifdef OMP
+  //printf("omp_get_num_threads()= %d \n",omp_get_num_threads());
   double begin, end;
   begin = omp_get_wtime();
+
+
 #else
   clock_t begin = clock();
   clock_t end = begin;
@@ -54,10 +58,14 @@ int main(int argc, char** argv)
 #ifdef OMP
   end = omp_get_wtime();
   time_spent = end - begin;
+
 #else
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 #endif
+
+  printf("Simulation terminated\n");
+  printf("Elapsed time: %fs\n", time_spent);
 
   saveParticles(u_modellu, a_simulazioni->step, elapsed_time, time_spent, tf_path);
 

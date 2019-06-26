@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define TEST_CASE 7
+#define TEST_CASE -1
 #define INTEGRATION_METHOD 1
 
 #define TEST_CASE_SUPERBALL 0
@@ -29,6 +29,8 @@
 #define TEST_CASE_VEL_WALL_VERTICAL 5
 #define TEST_CASE_VEL_WALL_DIAGONAL 6
 #define TEST_CASE_VEL_WALL_DIAGONAL_GRAVITY 7
+
+#define OPTIMITAZION_ACTIVE_CELLS 1
 
 
 #define LEAP_FROG 1

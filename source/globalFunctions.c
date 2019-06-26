@@ -1,5 +1,6 @@
 #include <globalFunctions.h>
 
+
 void updateF(struct CALModel3D* ca)
 {
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
@@ -181,6 +182,14 @@ void transitionFunction(struct CALModel3D* modello)
 #endif
 #ifdef VERBOSE
     printSummary();
+#endif
+
+#ifndef VERBOSE
+    if(a_simulazioni->step % 1000 == 0)
+    {
+        printSummary();
+    }
+
 #endif
 
 #ifdef ENERGY

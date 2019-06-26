@@ -10,37 +10,37 @@ void initWalls(struct Wall walls[N_WALLS])
     walls[WALL_WEST].sign= -1;
     walls[WALL_WEST].border_id = WALL_WEST;
     clear_vec3(&walls[WALL_WEST].pos);
-    walls[WALL_WEST].pos[0] = cnfg.PARTICLE_RADIUS;
+    walls[WALL_WEST].pos[0] = 0.0;
 
     walls[WALL_EAST].indx= 0;
     walls[WALL_EAST].sign= 1;
     walls[WALL_EAST].border_id = WALL_EAST;
     clear_vec3(&walls[WALL_EAST].pos);
-    walls[WALL_EAST].pos[0] = X_CELLS * CELL_SIDE - cnfg.PARTICLE_RADIUS;
+    walls[WALL_EAST].pos[0] = X_CELLS * CELL_SIDE ;
 
     walls[WALL_NORTH].indx= 1;
     walls[WALL_NORTH].sign= 1;
     walls[WALL_NORTH].border_id = WALL_NORTH;
     clear_vec3(&walls[WALL_NORTH].pos);
-    walls[WALL_NORTH].pos[1] = Y_CELLS * CELL_SIDE - cnfg.PARTICLE_RADIUS;
+    walls[WALL_NORTH].pos[1] = Y_CELLS * CELL_SIDE ;
 
     walls[WALL_SOUTH].indx= 1;
     walls[WALL_SOUTH].sign= -1;
     walls[WALL_SOUTH].border_id = WALL_SOUTH;
     clear_vec3(&walls[WALL_SOUTH].pos);
-    walls[WALL_SOUTH].pos[1] = cnfg.PARTICLE_RADIUS;
+    walls[WALL_SOUTH].pos[1] = 0.0;
 
     walls[WALL_REAR].indx= 2;
     walls[WALL_REAR].sign= 1;
     walls[WALL_REAR].border_id = WALL_REAR;
     clear_vec3(&walls[WALL_REAR].pos);
-    walls[WALL_REAR].pos[2] = Z_CELLS * CELL_SIDE - cnfg.PARTICLE_RADIUS;
+    walls[WALL_REAR].pos[2] = Z_CELLS * CELL_SIDE ;
 
     walls[WALL_FRONT].indx= 2;
     walls[WALL_FRONT].sign= -1;
     walls[WALL_FRONT].border_id = WALL_FRONT;
     clear_vec3(&walls[WALL_FRONT].pos);
-    walls[WALL_FRONT].pos[2] = cnfg.PARTICLE_RADIUS;
+    walls[WALL_FRONT].pos[2] = 0.0;
 }
 
 void copyCollisionPW(struct CollisionPW * _to, struct CollisionPW * _from)
