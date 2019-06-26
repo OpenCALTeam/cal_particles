@@ -5,5 +5,6 @@
 
 
 void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
+void pickupParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
 
 #endif

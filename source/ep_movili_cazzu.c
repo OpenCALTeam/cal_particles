@@ -13,7 +13,7 @@ void makeSlotEmpty(int slot, struct CALModel3D* ca, int cell_x, int cell_y, int 
 
     calSet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,NULL_ID);
 
-//    calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)-1);
+    //    calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)-1);
 }
 
 void moveParticleToNeighbor(int destination_slot, int source_slot, struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
@@ -36,7 +36,7 @@ void moveParticleToNeighbor(int destination_slot, int source_slot, struct CALMod
 
     calSet3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z, calGetX3Di(ca,Q.ID[source_slot],cell_x,cell_y,cell_z,n));
 
-//    calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)+1);
+    //    calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)+1);
 }
 
 void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
@@ -58,12 +58,22 @@ void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
             if ((cell_x != new_cell_x) || (cell_y != new_cell_y) || (cell_z != new_cell_z))
             {
-                    makeSlotEmpty(slot, ca,cell_x,cell_y,cell_z);
+                makeSlotEmpty(slot, ca,cell_x,cell_y,cell_z);
 
+#if OPTIMITAZION_ACTIVE_CELLS == 1
+                calAddActiveCell3D(ca, new_cell_x, new_cell_y, new_cell_z);
+#endif
             }
         }
 
+
+}
+
+void pickupParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
+{
     //sucali
+    vec3 p;
+    CALint  new_cell_x, new_cell_y, new_cell_z;
     for (int n=1; n<ca->sizeof_X; n++)
         for (int source_slot = 0; source_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; source_slot++)
         {
@@ -84,7 +94,7 @@ void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     for (destination_slot = 0; destination_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
                         if (calGetNext3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z) == NULL_ID)
                         {
-//                            printf("sono la particella %d e vado da source= %d dest=%d cella (%d,%d,%d) vicino %d \n",id_particle, source_slot, destination_slot, cell_x,cell_y,cell_z, n );
+                            printf("sono la particella %d e vado da source= %d dest=%d cella (%d,%d,%d) vicino %d \n",id_particle, source_slot, destination_slot, cell_x,cell_y,cell_z, n );
                             moveParticleToNeighbor(destination_slot,source_slot,ca,cell_x,cell_y,cell_z,n);
                             sucked = CAL_TRUE;
                             break;

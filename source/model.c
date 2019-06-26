@@ -16,44 +16,50 @@
 
 void run()
 {
-    u_modellu = calCADef3D(X_CELLS,Y_CELLS,Z_CELLS,CAL_MOORE_NEIGHBORHOOD_3D,CAL_SPACE_TOROIDAL,CAL_NO_OPT);
 
-    Q.Fx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.Fy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.Fz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    char path_config[256];
+    sprintf(path_config, "./config/config%d.properties", TEST_CASE);
+    initConfig(path_config, &cnfg);
+    printProperties(&cnfg);
 
-    Q.momentx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.momenty = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.momentz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    u_modellu = calCADef3D(X_CELLS,Y_CELLS,Z_CELLS,CAL_MOORE_NEIGHBORHOOD_3D,CAL_SPACE_TOROIDAL,OPTIMITAZION_ACTIVE_CELLS);
 
-    Q.px = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.py = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.pz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.Fx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.Fy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.Fz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
-    Q.thetax = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.thetay = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.thetaz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.momentx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.momenty = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.momentz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
-    Q.vx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.vy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.vz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.px = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.py = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.pz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
-    Q.wx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.wy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.wz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.thetax = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.thetay = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.thetaz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
-    Q.ID = (struct CALSubstate3Di**)malloc(sizeof(struct CALSubstate3Di*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.nP = (struct CALSubstate3Di*)malloc(sizeof(struct CALSubstate3Di)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.vx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.vy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.vz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+
+    Q.wx = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.wy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.wz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+
+    Q.ID = (struct CALSubstate3Di**)malloc(sizeof(struct CALSubstate3Di*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.nP = (struct CALSubstate3Di*)malloc(sizeof(struct CALSubstate3Di)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
 #ifdef ENERGY
-    Q.total_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.kinetic_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.potential_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.rotational_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.elastic_pp_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.elastic_pw_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)*MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.total_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.kinetic_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.potential_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.rotational_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.elastic_pp_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    Q.elastic_pw_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* MAX_NUMBER_OF_PARTICLES_PER_CELL);
 #endif
-    for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
+    for(int slot=0;slot< MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
     {
         Q.Fx[slot] = calAddSubstate3Dr(u_modellu);
         Q.Fy[slot] = calAddSubstate3Dr(u_modellu);
@@ -137,12 +143,9 @@ void run()
     boundaryCellsSerial(u_modellu);
 #endif
 
-    char path_config[256];
-    sprintf(path_config, "./config/config%d.properties", TEST_CASE);
-    initConfig(path_config, &cnfg);
-    printProperties(&cnfg);
 
-//    exit(EXIT_SUCCESS);
+
+    //    exit(EXIT_SUCCESS);
 
 
 #ifdef ENERGY
@@ -243,9 +246,9 @@ void run()
 
     vec3 p_0, v_0, w_0;
     clear_vec3(&v_0);
-//    v_0[0] = 0.1;
+    //    v_0[0] = 0.1;
     clear_vec3(&w_0);
-//    v_0[2] = -0.1;
+    //    v_0[2] = -0.1;
 
     p_0[0]=0.02;
     p_0[1]=0.02;
@@ -297,6 +300,12 @@ void run()
 
     // Simulation
     a_simulazioni = calRunDef3D(u_modellu,0,CAL_RUN_LOOP,CAL_UPDATE_EXPLICIT);
+
+#if OPTIMITAZION_ACTIVE_CELLS == 1
+//    calRunAddInitFunc3D(a_simulazioni, setActiveCells);
+    setActiveCells(u_modellu);
+#endif
+
     calRunAddGlobalTransitionFunc3D(a_simulazioni, transitionFunction);
     calRunAddStopConditionFunc3D(a_simulazioni, caminalu);
 

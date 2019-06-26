@@ -28,4 +28,6 @@ void printID (struct CALModel3D* model);
 void printID_cell (struct CALModel3D* ca, int cell_x, int cell_y, int cell_z);
 void cleanup(struct CALModel3D* modello);
 
+void setActiveCells(struct CALModel3D* ca);
+
 #endif

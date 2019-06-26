@@ -7,16 +7,25 @@ void initConfig(char* file_name, struct Configuration * config)
 {
     readProperties(file_name, config);
 
+    double volume = PIG43 * config->PARTICLE_RADIUS;
+    config->PARTICLE_VOLUME = volume * volume * volume;
+
     if(config->DENSITY > 0.0)
     {
-        double volume = PIG43 * config->PARTICLE_RADIUS;
-        volume = volume * volume * volume;
-        config->PARTICLE_MASS = config->DENSITY * volume;
-
+        config->PARTICLE_MASS = config->DENSITY * config->PARTICLE_VOLUME;
     }
 
+//    config->MAX_NUMBER_OF_PARTICLES_PER_CELL = (int)(((MAX_OCCUPANCY_VOLUME)/(config->PARTICLE_VOLUME))+1);
     config->DM = 2* config->PARTICLE_RADIUS;
     config->DM_2 = config->DM*config->DM;
+
+#ifdef OMP
+    sprintf(config->file_energy_name, "%s_%d_omp.dat", config->file_energy_name,OPTIMITAZION_ACTIVE_CELLS);
+    sprintf(config->file_particlesInfo_name, "%s_%d_omp.dat", config->file_particlesInfo_name,OPTIMITAZION_ACTIVE_CELLS);
+#else
+    sprintf(config->file_energy_name, "%s_%d.dat", config->file_energy_name,OPTIMITAZION_ACTIVE_CELLS);
+    sprintf(config->file_particlesInfo_name, "%s_%d.dat", config->file_particlesInfo_name,OPTIMITAZION_ACTIVE_CELLS);
+#endif
 
     if(config->STEPS <= 0.0)
     {
@@ -41,9 +50,11 @@ void printProperties(struct Configuration * config)
 
     printf("PARTICLE_MASS=%.10f\n", config->PARTICLE_MASS);
     printf("PARTICLE_RADIUS=%.10f\n", config->PARTICLE_RADIUS);
+    printf("PARTICLE_VOLUME=%.10f\n", config->PARTICLE_VOLUME);
     printf("DELTA_T=%.10f\n", config->DELTA_T);
     printf("DELTA_T=%.5f\n", config->G);
     printf("STEPS=%d\n", config->STEPS);
+//    printf("MAX_NUMBER_OF_PARTICLES_PER_CELL=%d\n", config->MAX_NUMBER_OF_PARTICLES_PER_CELL);
     printf("DENSITY=%.10f\n", config->DENSITY);
     printf("MOMENT_INERTIA=%.17f\n", config->MOMENT_INERTIA);
     printf("file_energy_name=%s\n", config->file_energy_name);

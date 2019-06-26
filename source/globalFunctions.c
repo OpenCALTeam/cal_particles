@@ -33,6 +33,14 @@ void updateTotalEnergy(struct CALModel3D* ca)
 }
 #endif
 
+#if OPTIMITAZION_ACTIVE_CELLS == 1
+
+void updateActiveCells (struct CALModel3D* ca)
+{
+    calUpdateActiveCells3D(ca);
+}
+#endif
+
 void updateMoment(struct CALModel3D* ca)
 {
     for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
@@ -117,6 +125,31 @@ void printCount (struct CALModel3D* ca)
     printf("count =  %d\n", count);
 }
 
+#if OPTIMITAZION_ACTIVE_CELLS == 1
+void setActiveCells(struct CALModel3D* ca)
+{
+    calApplyElementaryProcess3D(ca, countParticles);
+
+    updateNP(ca);
+
+    for (int cell_x=0; cell_x<ca->rows; cell_x++)
+    {
+        for (int cell_y=0; cell_y<ca->columns; cell_y++)
+            for (int cell_z = 0; cell_z<ca->slices; cell_z++)
+            {
+                if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) >= 1)
+                {
+                    printf("(%d,%d;%d) è ora attiva\n", cell_x, cell_y, cell_z);
+                    calAddActiveCell3D(ca, cell_x, cell_y, cell_z);
+                }
+                else
+                    calRemoveActiveCell3D(ca, cell_x, cell_y, cell_z);
+            }
+    }
+    updateActiveCells(ca);
+}
+#endif
+
 
 
 void transitionFunction(struct CALModel3D* modello)
@@ -150,10 +183,20 @@ void transitionFunction(struct CALModel3D* modello)
 
     //  calApplyElementaryProcess3D(modello,movili);
     calApplyElementaryProcess3D(modello,moveParticles); //sposta le particelle nei nuovi celloni
+#if OPTIMITAZION_ACTIVE_CELLS == 1
+    updateActiveCells(modello);
+#endif
+
+    calApplyElementaryProcess3D(modello,pickupParticles); //sposta le particelle nei nuovi celloni
     calUpdate3D(modello);
 
     //trasformare in elementary
     calApplyElementaryProcess3D(modello,countParticles);
+
+
+#if OPTIMITAZION_ACTIVE_CELLS == 1
+    updateActiveCells(modello);
+#endif
     updateNP(modello);
 
 #ifdef ENERGY

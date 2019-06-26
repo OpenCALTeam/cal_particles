@@ -352,6 +352,10 @@ void countParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
         if(calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
             count ++;
 
+#if OPTIMITAZION_ACTIVE_CELLS == 1
+    if(count == 0 && calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z) >0)
+        calRemoveActiveCell3D(ca, cell_x, cell_y, cell_z);
+#endif
     calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z, count);
 
 

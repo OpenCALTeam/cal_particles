@@ -15,6 +15,7 @@ struct Configuration {
 
     double PARTICLE_MASS;
     double PARTICLE_RADIUS;
+    double PARTICLE_VOLUME;
     double DM;
     double DM_2;
 
@@ -24,6 +25,8 @@ struct Configuration {
 
     double G;
     int STEPS;
+
+//    int MAX_NUMBER_OF_PARTICLES_PER_CELL;
     double MOMENT_INERTIA;
 
     char file_energy_name[255];

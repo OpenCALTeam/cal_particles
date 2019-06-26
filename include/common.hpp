@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define TEST_CASE -1
+#define TEST_CASE 1
 #define INTEGRATION_METHOD 1
 
 #define TEST_CASE_SUPERBALL 0
