@@ -5,7 +5,7 @@ unsigned int _seed = 1;
 int getFirstFreeSlot(struct CALModel3D *ca, int cell_x,int cell_y,int cell_z)
 {
     int freeSlot = -1;
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; ++slot) {
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; ++slot) {
         if (calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z) == NULL_ID)
         {
             freeSlot = slot;
@@ -19,7 +19,7 @@ int getFirstFreeSlot(struct CALModel3D *ca, int cell_x,int cell_y,int cell_z)
 bool addRandomParticlePosition(struct CALModel3D *ca, int * nextIDParticle)
 {
     CALreal cx = ((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (CELL_SIDE);
-    CALreal cy = 0.001;
+    CALreal cy = /*((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (CELL_SIDE);*/ 0.001;
     CALreal cz = ((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (CELL_SIDE);
 
     //generiamo una porzione
@@ -111,3 +111,39 @@ bool addParticleWithPosition(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0
     return false;
 
 }
+
+bool addParticleWithFullConfiguration(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0, vec3 theta_0,CALint particle_id, int * numberOfParticles)
+{
+
+    int cell_x = p_0[0]/CELL_SIDE;
+    int cell_y = p_0[1]/CELL_SIDE;
+    int cell_z = p_0[2]/CELL_SIDE;
+
+
+    int slot = getFirstFreeSlot(ca, cell_x,cell_y,cell_z);
+
+
+    if (slot != -1)
+    {
+        printf( "aggiunta particella a pos : %.6f %.6f %.6f con id %d \n", p_0[0],p_0[1],p_0[2], particle_id);
+
+//        calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
+//        calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
+//        calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
+
+        calInit3Dr_vec3(ca,Q.thetax[slot],Q.thetay[slot], Q.thetaz[slot], cell_x, cell_y, cell_z, theta_0 );
+        calInit3Dr_vec3(ca,Q.px[slot],Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, p_0 );
+        calInit3Dr_vec3(ca,Q.vx[slot],Q.vy[slot], Q.vz[slot], cell_x, cell_y, cell_z, v_0 );
+        calInit3Dr_vec3(ca,Q.wx[slot],Q.wy[slot], Q.wz[slot], cell_x, cell_y, cell_z, w_0 );
+
+        calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,particle_id);
+
+        (*numberOfParticles)++;
+
+        return true;
+    }
+
+    return false;
+
+}
+
