@@ -15,7 +15,7 @@ void initConfig(char* file_name, struct Configuration * config)
         config->PARTICLE_MASS = config->DENSITY * config->PARTICLE_VOLUME;
     }
 
-    config->MAX_NUMBER_OF_PARTICLES_PER_CELL = 10;// (int)(((MAX_OCCUPANCY_VOLUME)/(config->PARTICLE_VOLUME))+1);
+    config->MAX_NUMBER_OF_PARTICLES_PER_CELL = 300;//(int)(((MAX_OCCUPANCY_VOLUME)/(config->PARTICLE_VOLUME))+1);
     config->DM = 2* config->PARTICLE_RADIUS;
     config->DM_2 = config->DM*config->DM;
 

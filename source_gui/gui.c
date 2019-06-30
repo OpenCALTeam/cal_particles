@@ -76,7 +76,7 @@ void drawParticles()
       for (cell_z=0; cell_z<Z_CELLS; cell_z++)
         //if (calGet3Di(u_modellu,Q.ID[0],cell_x,cell_y,cell_z) != NULL_ID)
           {
-            for(int slot=0;slot<MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
+            for(int slot=0;slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL;slot++)
               {
                 if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) == NULL_ID)
                   continue;

@@ -16,7 +16,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
       n[2] = 0;
 
       //dovrei azzerare anche momento theta ecc?
-      for (int boundary_slot = MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
+      for (int boundary_slot = cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
         if (calGet3Di(ca, Q->ID[boundary_slot], cell_x, cell_y, cell_z) >= NULL_ID ) //TODO PERCHÈ SI FA?
           {
             calInit3Dr_vec3_slot_sv(ca, Q->Fx, Q->Fy, Q->Fz, boundary_slot, cell_x,cell_y,cell_z, 0.0 );
@@ -39,7 +39,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
       n[1] = 0;
       n[2] = 0;
 
-      for (int boundary_slot = MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
+      for (int boundary_slot = cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
         if (calGet3Di(ca, Q->ID[boundary_slot], cell_x, cell_y, cell_z) >= NULL_ID )
           {
             calInit3Dr_vec3_slot_sv(ca, Q->Fx, Q->Fy, Q->Fz, boundary_slot, cell_x,cell_y,cell_z, 0.0 );
@@ -62,7 +62,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
       n[1] = 1;
       n[2] = 0;
 
-      for (int boundary_slot = MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
+      for (int boundary_slot = cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
         if (calGet3Di(ca, Q->ID[boundary_slot], cell_x, cell_y, cell_z) >= NULL_ID )
           {
             calInit3Dr_vec3_slot_sv(ca, Q->Fx, Q->Fy, Q->Fz, boundary_slot, cell_x,cell_y,cell_z, 0.0 );
@@ -85,7 +85,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
       n[1] = -1;
       n[2] = 0;
 
-      for (int boundary_slot = MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
+      for (int boundary_slot = cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
         if (calGet3Di(ca, Q->ID[boundary_slot], cell_x, cell_y, cell_z) >= NULL_ID )
           {
             calInit3Dr_vec3_slot_sv(ca, Q->Fx, Q->Fy, Q->Fz, boundary_slot, cell_x,cell_y,cell_z, 0.0 );
@@ -108,7 +108,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
       n[1] = 0;
       n[2] = 1;
 
-      for (int boundary_slot = MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
+      for (int boundary_slot = cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
         if (calGet3Di(ca, Q->ID[boundary_slot], cell_x, cell_y, cell_z) >= NULL_ID )
           {
             calInit3Dr_vec3_slot_sv(ca, Q->Fx, Q->Fy, Q->Fz, boundary_slot, cell_x,cell_y,cell_z, 0.0 );
@@ -131,7 +131,7 @@ void mb(struct CALModel3D* ca, struct Substates *Q, int cell_x, int cell_y, int 
       n[1] = 0;
       n[2] = -1;
 
-      for (int boundary_slot = MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
+      for (int boundary_slot = cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL - 1; boundary_slot >= 0; boundary_slot--)
         if (calGet3Di(ca, Q->ID[boundary_slot], cell_x, cell_y, cell_z) >= NULL_ID )
           {
             calInit3Dr_vec3_slot_sv(ca, Q->Fx, Q->Fy, Q->Fz, boundary_slot, cell_x,cell_y,cell_z, 0.0 );

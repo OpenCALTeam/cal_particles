@@ -3,7 +3,7 @@
 
 void updateF(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.Fx[slot]);
         calUpdateSubstate3Dr(ca,Q.Fy[slot]);
@@ -14,7 +14,7 @@ void updateF(struct CALModel3D* ca)
 #ifdef ENERGY
 void updateEnergy(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.kinetic_energy[slot]);
         calUpdateSubstate3Dr(ca,Q.potential_energy[slot]);
@@ -26,7 +26,7 @@ void updateEnergy(struct CALModel3D* ca)
 
 void updateTotalEnergy(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.total_energy[slot]);
     }
@@ -43,7 +43,7 @@ void updateActiveCells (struct CALModel3D* ca)
 
 void updateMoment(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.momentx[slot]);
         calUpdateSubstate3Dr(ca,Q.momenty[slot]);
@@ -58,7 +58,7 @@ void updateNP(struct CALModel3D* ca)
 
 void updateP(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.px[slot]);
         calUpdateSubstate3Dr(ca,Q.py[slot]);
@@ -68,7 +68,7 @@ void updateP(struct CALModel3D* ca)
 
 void updateTheta(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.thetax[slot]);
         calUpdateSubstate3Dr(ca,Q.thetay[slot]);
@@ -78,7 +78,7 @@ void updateTheta(struct CALModel3D* ca)
 
 void updateV(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.vx[slot]);
         calUpdateSubstate3Dr(ca,Q.vy[slot]);
@@ -88,7 +88,7 @@ void updateV(struct CALModel3D* ca)
 
 void updateW(struct CALModel3D* ca)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calUpdateSubstate3Dr(ca,Q.wx[slot]);
         calUpdateSubstate3Dr(ca,Q.wy[slot]);
@@ -98,7 +98,7 @@ void updateW(struct CALModel3D* ca)
 void printID_cell (struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
 
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
         printf("%d | ", calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z));
 
     printf("\n");
@@ -139,7 +139,7 @@ void setActiveCells(struct CALModel3D* ca)
             {
                 if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) >= 1)
                 {
-                    printf("(%d,%d;%d) è ora attiva\n", cell_x, cell_y, cell_z);
+//                    printf("(%d,%d;%d) è ora attiva\n", cell_x, cell_y, cell_z);
                     calAddActiveCell3D(ca, cell_x, cell_y, cell_z);
                 }
                 else
@@ -155,10 +155,10 @@ void setActiveCells(struct CALModel3D* ca)
 void transitionFunction(struct CALModel3D* modello)
 {
 
-    //    if (a_simulazioni->step >= 1566)
-    //    {
-    //        printID(modello);
-    //    }
+//        if (a_simulazioni->step >= 1566)
+//        {
+//            printID(modello);
+//        }
 
 #if INTEGRATION_METHOD == LEAP_FROG
     calApplyElementaryProcess3D(modello, leap_frog_velocity);
@@ -288,7 +288,7 @@ void printID (struct CALModel3D* ca)
         for (int cell_y=0; cell_y<ca->columns; cell_y++)
             for (int cell_z = 0; cell_z<ca->slices; cell_z++)
             {
-                for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+                for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
                     printf("%d | ", calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z));
 
 

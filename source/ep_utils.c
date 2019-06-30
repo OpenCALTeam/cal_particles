@@ -4,7 +4,7 @@
 CALbyte isThereAtLeastTwoParticle(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
     int count = 0;
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         if (calGetX3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z,n) > NULL_ID)
             count++;
@@ -19,7 +19,7 @@ CALbyte isThereAtLeastTwoParticle(struct CALModel3D* ca, int cell_x, int cell_y,
 CALbyte isThereAtLeastAParticle(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z, int n)
 {
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         if (calGetX3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z,n) > NULL_ID)
             return CAL_TRUE;
@@ -73,7 +73,7 @@ CALint findMissingParticle(struct CALModel3D* ca)
         for (int cell_x=0; cell_x<ca->rows; cell_x++)
             for (int cell_y=0; cell_y<ca->columns; cell_y++)
                 for (int cell_z = 0; cell_z<ca->slices; cell_z++)
-                    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+                    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
                         if (calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z) == id)
                             particle_found = CAL_TRUE;
 
@@ -90,9 +90,9 @@ void findDuplicateParticleInTheSameSlot (struct CALModel3D* ca)
     for (int cell_x=0; cell_x<ca->rows; cell_x++)
         for (int cell_y=0; cell_y<ca->columns; cell_y++)
             for (int cell_z = 0; cell_z<ca->slices; cell_z++)
-                for (int i=0; i<MAX_NUMBER_OF_PARTICLES_PER_CELL; i++)
+                for (int i=0; i<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; i++)
                 {
-                    for (int j=0; j<MAX_NUMBER_OF_PARTICLES_PER_CELL; j++)
+                    for (int j=0; j<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; j++)
                     {
                         if(i== j)
                             continue;

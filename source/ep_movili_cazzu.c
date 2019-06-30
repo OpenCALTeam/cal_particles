@@ -44,8 +44,13 @@ void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     vec3 p;
     CALint  new_cell_x, new_cell_y, new_cell_z;
 
+    if(cell_x > ca->rows || cell_y > ca->columns || cell_z > ca->slices )
+    {
+        printf("\\\\\\\\\\\\\\\\\\\\\ ci muoviamo male (%d,%d;%d)\n", cell_x,cell_y,cell_z );
+    }
+
     //pezziali
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
         if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
         {
             calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &p );
@@ -61,7 +66,17 @@ void moveParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                 makeSlotEmpty(slot, ca,cell_x,cell_y,cell_z);
 
 #if OPTIMITAZION_ACTIVE_CELLS == 1
-                calAddActiveCell3D(ca, new_cell_x, new_cell_y, new_cell_z);
+                printf("(%d,%d;%d) è ORA attiva\n", new_cell_x, new_cell_y, new_cell_z);
+                if(new_cell_x > ca->rows || new_cell_y > ca->columns || new_cell_z > ca->slices
+                        || new_cell_x < 0 || new_cell_y < 0 || new_cell_z < 0)
+                {
+                    printf("sono %d parto da (%d,%d;%d) \n", calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z), cell_x,cell_y,cell_z);
+                    printf("(%d,%d;%d) è ORA attiva MA DOVE VAI \n", new_cell_x, new_cell_y, new_cell_z);
+                    printf("lo spazio è (%d, %d, %d) \n", ca->rows, ca->columns, ca->slices);
+//                    exit(EXIT_SUCCESS);
+                }
+                else
+                    calAddActiveCell3D(ca, new_cell_x, new_cell_y, new_cell_z);
 #endif
             }
         }
@@ -74,8 +89,12 @@ void pickupParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     //sucali
     vec3 p;
     CALint  new_cell_x, new_cell_y, new_cell_z;
+
+
+    if(cell_x > ca->rows || cell_y > ca->columns || cell_z > ca->slices )
+        printf("\\\\\\\\\\\\\\\\\\\\\ preleviamo male (%d,%d;%d)\n", cell_x,cell_y,cell_z );
     for (int n=1; n<ca->sizeof_X; n++)
-        for (int source_slot = 0; source_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; source_slot++)
+        for (int source_slot = 0; source_slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; source_slot++)
         {
             int id_particle = calGetX3Di(ca,Q.ID[source_slot],cell_x,cell_y,cell_z,n);
             if (id_particle > NULL_ID)
@@ -91,7 +110,7 @@ void pickupParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                 {
                     CALbyte sucked = CAL_FALSE;
                     int destination_slot;
-                    for (destination_slot = 0; destination_slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
+                    for (destination_slot = 0; destination_slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; destination_slot++)
                         if (calGetNext3Di(ca,Q.ID[destination_slot],cell_x,cell_y,cell_z) == NULL_ID)
                         {
                             printf("sono la particella %d e vado da source= %d dest=%d cella (%d,%d,%d) vicino %d \n",id_particle, source_slot, destination_slot, cell_x,cell_y,cell_z, n );
@@ -103,7 +122,7 @@ void pickupParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                     {
                         printf("ERROR: unable to suck a particle.\n");
 #ifdef VERBOSE
-                        printf("cell_capacity: %d\n", MAX_NUMBER_OF_PARTICLES_PER_CELL);
+                        printf("cell_capacity: %d\n", cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL);
                         printf("current_step: %d\n", a_simulazioni->step);
                         printf("source_slot: %d\n", source_slot);
                         printf("destination_slot: %d\n", destination_slot);

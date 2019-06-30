@@ -11,7 +11,7 @@ void leap_frog_velocity(struct CALModel3D* ca,
                         int cell_x, int cell_y, int cell_z)
 {
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
         CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
@@ -35,14 +35,15 @@ void leap_frog_velocity(struct CALModel3D* ca,
             multiply_by_scalar_vec3(&toAdd, moment_i, (0.5 * cnfg.DELTA_T) / cnfg.MOMENT_INERTIA);
 
 
-#if TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
-//            printf("sono la particella %d PRIMA e ho omega %.5f %.5f %.5f\n ", id_PARTICLE_i, wi[0],wi[1], wi[2]);
+#if TEST_CASE == TEST_CASE_SANDWICH
+            printf("sono la particella %d PRIMA e ho omega %.5f %.5f %.5f il momento è (%.6f,%.6f,%.6f) \n ", id_PARTICLE_i,
+                   wi[0],wi[1], wi[2], moment_i[0], moment_i[1], moment_i[2]);
 #endif
 
             add_vec3(&wi, wi, toAdd);
 
-#if TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
-//            printf("sono la particella %d DOPO e ho omega %.5f %.5f %.5f\n ", id_PARTICLE_i, wi[0],wi[1], wi[2]);
+#if TEST_CASE == TEST_CASE_SANDWICH
+            printf("sono la particella %d DOPO e ho omega %.5f %.5f %.5f\n ", id_PARTICLE_i, wi[0],wi[1], wi[2]);
 #endif
             calSet3Dr_vec3_slot(ca, Q.wx, Q.wy, Q.wz, slot, cell_x,cell_y,cell_z, wi );
 
@@ -54,7 +55,7 @@ void leap_frog_velocity(struct CALModel3D* ca,
 void leap_frog_positions(struct CALModel3D* ca,
                          int cell_x, int cell_y, int cell_z)
 {
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
         CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
@@ -101,7 +102,7 @@ void applyForce(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 
 
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         CALint id_particle = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
         if ( id_particle > NULL_ID)
@@ -132,7 +133,7 @@ void euler_backward_forward_velocity(struct CALModel3D* ca,
                                      int cell_x, int cell_y, int cell_z)
 {
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
         CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
@@ -167,7 +168,7 @@ void euler_backward_forward_position(struct CALModel3D* ca,
                                      int cell_x, int cell_y, int cell_z)
 {
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
         CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);

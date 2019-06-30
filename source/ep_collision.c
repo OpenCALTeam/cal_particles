@@ -112,7 +112,7 @@ void inner_collision(struct CALModel3D* ca,
         return;
 
     //    printf("_______________________________________ (%d,%d,%d)\n", cell_x, cell_y, cell_z);
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
         CALint id_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
@@ -121,7 +121,7 @@ void inner_collision(struct CALModel3D* ca,
         if (id_i > NULL_ID)
         {
             // inner particle-particle collision
-            for (int inner_slot=slot+1; inner_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; inner_slot++)
+            for (int inner_slot=slot+1; inner_slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; inner_slot++)
             {
                 CALint id_j = calGet3Di(ca, Q.ID[inner_slot],cell_x,cell_y,cell_z);
 
@@ -188,7 +188,7 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) <= 0)
         return;
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
         if (id_PARTICLE_i > NULL_ID)
@@ -203,7 +203,7 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
                 //                if(!isThereAtLeastAParticle(ca, cell_x, cell_y,cell_z, n))
                 //                    return;
 
-                for (int outer_slot=0; outer_slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; outer_slot++)
+                for (int outer_slot=0; outer_slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; outer_slot++)
                 {
                     CALint id_PARTICLE_j = calGetX3Di(ca, Q.ID[outer_slot],cell_x,cell_y,cell_z,n);
                     //                    printf("valuto (%d,%d) e n = %d e cell (%d,%d,%d) \n",id_PARTICLE_i, id_PARTICLE_j, n, cell_x, cell_y, cell_z  );
@@ -244,7 +244,7 @@ void outer_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         CALint id_PARTICLE_i = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
         if (id_PARTICLE_i > NULL_ID)
@@ -348,13 +348,16 @@ void walls_collision(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 void countParticles(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
     int count = 0;
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
         if(calGet3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
             count ++;
 
 #if OPTIMITAZION_ACTIVE_CELLS == 1
     if(count == 0 && calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z) >0)
+    {
+        printf("(%d,%d;%d) NON É PIÙ attiva\n", cell_x, cell_y, cell_z);
         calRemoveActiveCell3D(ca, cell_x, cell_y, cell_z);
+    }
 #endif
     calSet3Di(ca,Q.nP,cell_x,cell_y,cell_z, count);
 

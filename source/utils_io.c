@@ -23,7 +23,7 @@ void summary(struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
     CALreal v = 0.0;
     CALreal w = 0.0;
 
-    for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
         if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
         {
 #pragma omp critical
@@ -82,12 +82,14 @@ void computeSummary(struct CALModel3D* ca)
     clear_vec3(&max_omega_vec);
     clear_vec3(&max_velocity_vec);
 
+//    printf("step %6d, active cells %d \n", a_simulazioni->step, ca->A.size_current);
     calApplyElementaryProcess3D(ca,summary);
 }
 
 void printSummary ()
 {
 #ifdef ENERGY
+
     printf("step %6d, elapsed_time: %.6f s, n_of_particles: %d, tot_energy: %.9f, max_v: %.6f, max_w: %.6f, max_v=(%.6f, %.6f, %.6f), max_w=(%.6f, %.6f, %.6f), max_displacement: %e\n", a_simulazioni->step, elapsed_time, number_of_particles, total_energy, max_velocity,max_omega,
            max_velocity_vec[0], max_velocity_vec[1], max_velocity_vec[2], max_omega_vec[0], max_omega_vec[1], max_omega_vec[2], max_displacement);
 #else
@@ -109,7 +111,7 @@ void saveParticleInfo(struct CALModel3D *ca, CALint step, CALreal elapsed_time, 
     for (int cell_x=0; cell_x<ca->rows; cell_x++)
         for (int cell_y=0; cell_y<ca->columns; cell_y++)
             for (int cell_z = 0; cell_z<ca->slices; cell_z++)
-                for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+                for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
                     if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
                     {
                         calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, &position );
@@ -147,7 +149,7 @@ void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, dou
     for (int cell_x=0; cell_x<ca->rows; cell_x++)
         for (int cell_y=0; cell_y<ca->columns; cell_y++)
             for (int cell_z = 0; cell_z<ca->slices; cell_z++)
-                for (int slot = 0; slot < MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+                for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
                     if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
                     {
                         F[0] = calGet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z);
@@ -164,6 +166,8 @@ void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, dou
 
                         particle_id = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
 
+
+                        //non è questo
                         number_of_particles++;
                         total_energy += cnfg.PARTICLE_MASS*cnfg.G*p[2];
                         total_energy += 0.5*cnfg.PARTICLE_MASS*v[0]*v[0];
@@ -200,14 +204,9 @@ void readProperties (char* file_name, struct Configuration * config)
     char file_energy_name[255];
 
     while ((read = getline(&line, &len, fp)) != -1) {
-        //        printf("Retrieved line of length %zu:\n", read);
-        //        printf("%s", line);
+
         char *name = strtok(line, " =\n");
-
-        //        printf("%s\n", name);
         char *value_string = strtok(NULL, " =\n");
-
-        //        printf("%s\n", value_string);
 
         if(strcmp(name, "file_particlesInfo_name") == 0)
             strncpy(config->file_particlesInfo_name, value_string, 255);
@@ -257,6 +256,10 @@ void readProperties (char* file_name, struct Configuration * config)
         free(line);
 
 }
+
+
+
+
 
 
 

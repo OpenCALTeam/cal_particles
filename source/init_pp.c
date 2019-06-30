@@ -62,13 +62,84 @@ bool addRandomParticlePosition(struct CALModel3D *ca, int * nextIDParticle)
 
         calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,*nextIDParticle);
 
-//        calInit3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)+1);
+        //        calInit3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)+1);
 
         (*nextIDParticle)++;
         return true;
     }
 
     return false;
+
+}
+
+//aggiunge una particella con una posizone random in una posione random del CA
+void addStructuredParticles(struct CALModel3D *ca, int * nextIDParticle)
+{
+
+    vec3 pos;
+    clear_vec3(&pos);
+
+    pos[0] = cnfg.DM*2;
+//    pos[1] = cnfg.DM*2;
+//    pos[2] = cnfg.DM*2;
+
+    while (pos[0] < (X_CELLS * CELL_SIDE - cnfg.DM*2))
+    {
+        pos[1] = cnfg.DM*2;
+        while (pos[1] < (X_CELLS * CELL_SIDE - cnfg.DM*2))
+        {
+            pos[2] = (X_CELLS * CELL_SIDE - cnfg.DM*2)*0.35;
+            while (pos[2] >cnfg.DM*2)
+            {
+                int cell_x = pos[0]/CELL_SIDE;
+                int cell_y = pos[1]/CELL_SIDE;
+                int cell_z = pos[2]/CELL_SIDE;
+
+                int slot = getFirstFreeSlot(ca, cell_x,cell_y,cell_z);
+
+
+                if (slot != -1)
+                {
+
+
+                    printf( "aggiunta particella a pos : %f %f %f con id %d \n", pos[0],pos[1],pos[2], *nextIDParticle);
+
+                    calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
+
+                    calInit3Dr(ca,Q.px[slot],cell_x,cell_y,cell_z,pos[0]);
+                    calInit3Dr(ca,Q.py[slot],cell_x,cell_y,cell_z,pos[1]);
+                    calInit3Dr(ca,Q.pz[slot],cell_x,cell_y,cell_z,pos[2]);
+
+                    calInit3Dr(ca,Q.thetax[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.thetay[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.thetaz[slot],cell_x,cell_y,cell_z,0.0);
+
+
+                    calInit3Dr(ca,Q.vx[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.vy[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.vz[slot],cell_x,cell_y,cell_z,0.0);
+
+                    calInit3Dr(ca,Q.wx[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.wy[slot],cell_x,cell_y,cell_z,0.0);
+                    calInit3Dr(ca,Q.wz[slot],cell_x,cell_y,cell_z,0.0);
+
+                    calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,*nextIDParticle);
+
+                    //        calInit3Di(ca,Q.nP,cell_x,cell_y,cell_z,calGet3Di(ca,Q.nP,cell_x,cell_y,cell_z)+1);
+
+                    (*nextIDParticle)++;
+
+                }
+                pos[2]-= cnfg.DM*2;
+            }
+            pos[1]+= cnfg.DM*2;
+        }
+        pos[0]+= cnfg.DM*2;
+    }
+
+
 
 }
 
@@ -127,9 +198,9 @@ bool addParticleWithFullConfiguration(struct CALModel3D *ca, vec3 p_0, vec3 v_0,
     {
         printf( "aggiunta particella a pos : %.6f %.6f %.6f con id %d \n", p_0[0],p_0[1],p_0[2], particle_id);
 
-//        calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
-//        calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
-//        calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
+        //        calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
+        //        calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
+        //        calInit3Dr(ca,Q.Fz[slot],cell_x,cell_y,cell_z,0.0);
 
         calInit3Dr_vec3(ca,Q.thetax[slot],Q.thetay[slot], Q.thetaz[slot], cell_x, cell_y, cell_z, theta_0 );
         calInit3Dr_vec3(ca,Q.px[slot],Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, p_0 );
