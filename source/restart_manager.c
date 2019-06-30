@@ -51,8 +51,7 @@ void saveConfigurationParticles(struct CALModel3D *ca, CALint step, char* path)
                     }
 
 
-    if (!f)
-        fclose(f);
+    fclose(f);
 }
 
 
@@ -85,8 +84,8 @@ void saveConfigurationCollisionsWall(struct Collisions * collisions, CALint step
         }
     }
 
-    if (!f)
-        fclose(f);
+
+    fclose(f);
 
 
 }
@@ -131,8 +130,7 @@ void saveConfigurationCollisionsParticles(struct Collisions * collisions, CALint
         }
     }
 
-    if (!f)
-        fclose(f);
+    fclose(f);
 
 
 }
@@ -168,7 +166,7 @@ int loadSnapshotParticles (struct CALModel3D *ca, char* file_name, int *numberOf
             steps = strtod(value_string,NULL);
 
             printf("step: %f\n ", steps);
-//            a_simulazioni->step = value;
+            //            a_simulazioni->step = value;
 
 
         }
