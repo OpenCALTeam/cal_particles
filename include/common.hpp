@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define TEST_CASE 1
+#define TEST_CASE -1
 #define INTEGRATION_METHOD 1
 
 #define TEST_CASE_SUPERBALL 0
@@ -29,6 +29,9 @@
 #define TEST_CASE_VEL_WALL_VERTICAL 5
 #define TEST_CASE_VEL_WALL_DIAGONAL 6
 #define TEST_CASE_VEL_WALL_DIAGONAL_GRAVITY 7
+#define TEST_CASE_SANDWICH 8
+
+#define RESTART -2
 
 #define OPTIMITAZION_ACTIVE_CELLS 1
 
@@ -36,7 +39,7 @@
 #define LEAP_FROG 1
 #define EULER_FORWARD_BACKWARD 2
 
-
+#define STEP_SNAPSHOT -1
 
 #if TEST_CASE == TEST_CASE_SUPERBALL
 #define TOTAL_NUMBER_PARTICLE 1
@@ -129,7 +132,7 @@ static const vec3 G_dir =  {0.0,0.0, -1.0};
 
 // Max number of particles per cell (slots) according to Kepler's conjecture
 //#define MAX_NUMBER_OF_PARTICLES_PER_CELL  (int)(((MAX_OCCUPANCY_VOLUME)/(PARTICLE_VOLUME))+1)
-#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
+//#define MAX_NUMBER_OF_PARTICLES_PER_CELL 10
 
 // SLOT (or PARTICLE) IDs
 #define BORDER_ID -1            // BORDER ID
@@ -152,7 +155,7 @@ static const vec3 G_dir =  {0.0,0.0, -1.0};
 #define TOTAL_SIMULATION_TIME 1.0 //0.1 //[s]
 
 #define PIG 3.141592653589793238
-#define PIG43  (PIG *(3.0/4.0))
+#define PIG43  (PIG *(4.0/3.0))
 
 
 #endif

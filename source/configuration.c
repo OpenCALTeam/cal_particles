@@ -7,15 +7,15 @@ void initConfig(char* file_name, struct Configuration * config)
 {
     readProperties(file_name, config);
 
-    double volume = PIG43 * config->PARTICLE_RADIUS;
-    config->PARTICLE_VOLUME = volume * volume * volume;
+    config->PARTICLE_VOLUME = PIG43 * config->PARTICLE_RADIUS * config->PARTICLE_RADIUS * config->PARTICLE_RADIUS;
+
 
     if(config->DENSITY > 0.0)
     {
         config->PARTICLE_MASS = config->DENSITY * config->PARTICLE_VOLUME;
     }
 
-//    config->MAX_NUMBER_OF_PARTICLES_PER_CELL = (int)(((MAX_OCCUPANCY_VOLUME)/(config->PARTICLE_VOLUME))+1);
+    config->MAX_NUMBER_OF_PARTICLES_PER_CELL = 10;// (int)(((MAX_OCCUPANCY_VOLUME)/(config->PARTICLE_VOLUME))+1);
     config->DM = 2* config->PARTICLE_RADIUS;
     config->DM_2 = config->DM*config->DM;
 
@@ -52,9 +52,9 @@ void printProperties(struct Configuration * config)
     printf("PARTICLE_RADIUS=%.10f\n", config->PARTICLE_RADIUS);
     printf("PARTICLE_VOLUME=%.10f\n", config->PARTICLE_VOLUME);
     printf("DELTA_T=%.10f\n", config->DELTA_T);
-    printf("DELTA_T=%.5f\n", config->G);
+    printf("G=%.5f\n", config->G);
     printf("STEPS=%d\n", config->STEPS);
-//    printf("MAX_NUMBER_OF_PARTICLES_PER_CELL=%d\n", config->MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    printf("MAX_NUMBER_OF_PARTICLES_PER_CELL=%d\n", config->MAX_NUMBER_OF_PARTICLES_PER_CELL);
     printf("DENSITY=%.10f\n", config->DENSITY);
     printf("MOMENT_INERTIA=%.17f\n", config->MOMENT_INERTIA);
     printf("file_energy_name=%s\n", config->file_energy_name);
