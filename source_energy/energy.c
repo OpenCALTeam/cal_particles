@@ -7,7 +7,7 @@ void compute_total_energy(struct CALModel3D* ca, int cell_x, int cell_y, int cel
     if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) <= 0)
         return;
     CALreal totalenergy;
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) <= NULL_ID)
             continue;
@@ -29,7 +29,7 @@ void compute_kinetic_energy(struct CALModel3D* ca, int cell_x, int cell_y, int c
         return;
     vec3 v;
     CALreal energy = 0.0;
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) <= NULL_ID)
             continue;
@@ -47,7 +47,7 @@ void compute_rotational_energy(struct CALModel3D* ca, int cell_x, int cell_y, in
         return;
     vec3 w;
     CALreal energy = 0.0;
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) <= NULL_ID)
             continue;
@@ -56,7 +56,7 @@ void compute_rotational_energy(struct CALModel3D* ca, int cell_x, int cell_y, in
 
         energy = 0.5 * cnfg.MOMENT_INERTIA * (w[0] * w[0] + w[1] *w[1] + w[2]*w[2]);
 
-        //        printf("w : (%.9f, %.9f, %.9f) energy %.15f\n",w[0], w[1],w[2], energy );
+//        printf("w : (%.9f, %.9f, %.9f) energy %.15f\n",w[0], w[1],w[2], energy );
         calSet3Dr(ca,Q.rotational_energy[slot], cell_x, cell_y, cell_z, energy);
     }
 }
@@ -68,7 +68,7 @@ void compute_potential_energy(struct CALModel3D* ca, int cell_x, int cell_y, int
         return;
     vec3 p;
     CALreal energy = 0.0;
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) <= NULL_ID)
             continue;
@@ -76,7 +76,7 @@ void compute_potential_energy(struct CALModel3D* ca, int cell_x, int cell_y, int
         calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x,cell_y,cell_z, &p );
 
 
-        energy =  cnfg.PARTICLE_MASS * cnfg.G * fabs(p[0] * G_dir[0] + p[1] * G_dir[1] + p[2] * G_dir[2]);
+        energy =  cnfg.PARTICLE_MASS * cnfg.G * fabs(p[0] * G_dir[0] + p[1] * G_dir[1] + (p[2] - walls[WALL_FRONT].pos[2]) * G_dir[2]);
         //        printf("position : (%.9f, %.9f, %.9f) energy %.9f\n",p[0], p[1],p[2], energy );
 
         calSet3Dr(ca,Q.potential_energy[slot], cell_x, cell_y, cell_z, energy);
@@ -122,7 +122,7 @@ void total_elastic_energy_pp(struct CALModel3D* ca, int cell_x, int cell_y, int 
         return;
     CALreal energy;
 
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
         CALint id_particle = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
@@ -138,7 +138,7 @@ void total_elastic_energy_pp(struct CALModel3D* ca, int cell_x, int cell_y, int 
 
 void setToZeroEnergy (struct CALModel3D* ca, int cell_x, int cell_y, int cell_z)
 {
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
         calSet3Dr(ca,Q.elastic_pw_energy[slot], cell_x, cell_y, cell_z, 0.0);
         calSet3Dr(ca,Q.elastic_pp_energy[slot], cell_x, cell_y, cell_z, 0.0);
@@ -156,7 +156,7 @@ void total_elastic_energy_pw(struct CALModel3D* ca, int cell_x, int cell_y, int 
         return;
     CALreal energy;
 
-    for (int slot=0; slot<MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
+    for (int slot=0; slot<cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
     {
 
         CALint id_particle = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);

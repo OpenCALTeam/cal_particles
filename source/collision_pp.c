@@ -236,6 +236,7 @@ void updateForce_j_PP (struct Collisions* collisions, const int i, const int j,v
     {
         return; //ERROR
     }
+
     subtract_vec3(&collisions->collisions_PP_next[i][j-i]->F_collision_j,
             collisions->collisions_PP_next[i][j-i]->F_collision_j, *force);
 }
@@ -274,7 +275,7 @@ void updateMoment_j_PP (struct Collisions* collisions, const int i, const int j,
     {
         return; //ERROR
     }
-    subtract_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_j,
+    add_vec3(&collisions->collisions_PP_next[i][j-i]->moment_collision_j,
             collisions->collisions_PP_next[i][j-i]->moment_collision_j, *moment);
 }
 
