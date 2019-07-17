@@ -136,7 +136,7 @@ void setInitCollsionValues_PP (struct CollisionPP* collision_ij,
     subtract_vec3(&collision_ij->vers_R_c_0, collision_ij->pos_j_0, collision_ij->pos_i_0);
 
     CALreal absVec = 0.0;
-    absulute_value_vec3(&absVec, collision_ij->vers_R_c_0);
+    absolute_value_vec3(&absVec, collision_ij->vers_R_c_0);
 
     divide_by_scalar_vec3(&collision_ij->vers_R_c_0, collision_ij->vers_R_c_0, absVec);
 }

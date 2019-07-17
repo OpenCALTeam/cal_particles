@@ -172,6 +172,7 @@ bool addParticleWithPosition(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0
         calInit3Dr_vec3(ca,Q.px[slot],Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, p_0 );
         calInit3Dr_vec3(ca,Q.vx[slot],Q.vy[slot], Q.vz[slot], cell_x, cell_y, cell_z, v_0 );
         calInit3Dr_vec3(ca,Q.wx[slot],Q.wy[slot], Q.wz[slot], cell_x, cell_y, cell_z, w_0 );
+//        printf( "aggiunta particella a vel : %f %f %f con id %d \n", v_0[0],v_0[1],v_0[2], *nextIDParticle);
 
         calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,*nextIDParticle);
 
@@ -183,7 +184,7 @@ bool addParticleWithPosition(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0
 
 }
 
-bool addParticleWithFullConfiguration(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0, vec3 theta_0,CALint particle_id, int * numberOfParticles)
+bool addParticleWithFullConfiguration(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0, vec3 theta_0,vec3 F_0, vec3 moment_0, CALint particle_id, int * numberOfParticles)
 {
 
     int cell_x = p_0[0]/CELL_SIDE;
@@ -206,6 +207,9 @@ bool addParticleWithFullConfiguration(struct CALModel3D *ca, vec3 p_0, vec3 v_0,
         calInit3Dr_vec3(ca,Q.px[slot],Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, p_0 );
         calInit3Dr_vec3(ca,Q.vx[slot],Q.vy[slot], Q.vz[slot], cell_x, cell_y, cell_z, v_0 );
         calInit3Dr_vec3(ca,Q.wx[slot],Q.wy[slot], Q.wz[slot], cell_x, cell_y, cell_z, w_0 );
+
+        calInit3Dr_vec3(ca,Q.Fx[slot],Q.Fy[slot], Q.Fz[slot], cell_x, cell_y, cell_z, F_0 );
+        calInit3Dr_vec3(ca,Q.momentx[slot],Q.momenty[slot], Q.momentz[slot], cell_x, cell_y, cell_z, moment_0 );
 
         calInit3Di(ca,Q.ID[slot],cell_x,cell_y,cell_z,particle_id);
 

@@ -65,7 +65,7 @@ void cross_product_vec3(vec3 * s, const vec3 u,const vec3 v)
 }
 
 /* ABSolute value of a Vector */
-void absulute_value_vec3(double * s, const vec3 v)
+void absolute_value_vec3(double * s, const vec3 v)
 {
     double _tmp;
     int _i;

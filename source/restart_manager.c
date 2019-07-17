@@ -13,12 +13,12 @@ void saveConfigurationParticles(struct CALModel3D *ca, CALint step, char* path)
         exit(EXIT_FAILURE);
     }
 
-    vec3 p, v, w, theta;
+    vec3 p, v, w, theta, F, moment;
     CALint particle_id;
 
 
     fprintf(f, "Current_step: %d\n", step);
-    fprintf(f, "id     \tp[0]     \tp[1]     \tp[2]     \tv[0]     \tv[1]     \tv[2]     \ttheta[0]     \ttheta[1]     \ttheta[2] \tw[0]     \tw[1]     \tw[2]\n");
+    fprintf(f, "id     \tp[0]     \tp[1]     \tp[2]     \tv[0]     \tv[1]     \tv[2]     \ttheta[0]     \ttheta[1]     \ttheta[2] \tw[0]     \tw[1]     \tw[2] \tF[0]     \tF[1]     \tF[2] \tmoment[0]     \tmoment[1]     \tmoment[2]\n");
 
     for (int cell_x=0; cell_x<ca->rows; cell_x++)
         for (int cell_y=0; cell_y<ca->columns; cell_y++)
@@ -43,11 +43,20 @@ void saveConfigurationParticles(struct CALModel3D *ca, CALint step, char* path)
                         w[1] = calGet3Dr(ca, Q.wy[slot],cell_x,cell_y,cell_z);
                         w[2] = calGet3Dr(ca, Q.wz[slot],cell_x,cell_y,cell_z);
 
+                        F[0] = calGet3Dr(ca, Q.Fx[slot],cell_x,cell_y,cell_z);
+                        F[1] = calGet3Dr(ca, Q.Fy[slot],cell_x,cell_y,cell_z);
+                        F[2] = calGet3Dr(ca, Q.Fz[slot],cell_x,cell_y,cell_z);
+
+                        moment[0] = calGet3Dr(ca, Q.momentx[slot],cell_x,cell_y,cell_z);
+                        moment[1] = calGet3Dr(ca, Q.momenty[slot],cell_x,cell_y,cell_z);
+                        moment[2] = calGet3Dr(ca, Q.momentz[slot],cell_x,cell_y,cell_z);
+
                         particle_id = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
 
 
 
-                        fprintf(f, "%d\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\n", particle_id, p[0], p[1], p[2], v[0], v[1], v[2], theta[0], theta[1], theta[2], w[0], w[1], w[2]);
+                        fprintf(f, "%d\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\t%.6f\n",
+                                particle_id, p[0], p[1], p[2], v[0], v[1], v[2], theta[0], theta[1], theta[2], w[0], w[1], w[2], F[0], F[1], F[2], moment[0], moment[1], moment[2]);
                     }
 
 
@@ -143,6 +152,8 @@ int loadSnapshotParticles (struct CALModel3D *ca, char* file_name, int *numberOf
     ssize_t read;
 
     fp = fopen(file_name, "r");
+
+    printf("aperto \n");
     if (fp == NULL)
     {
         printf ("Unable to open %s\n", file_name);
@@ -152,7 +163,7 @@ int loadSnapshotParticles (struct CALModel3D *ca, char* file_name, int *numberOf
 
     double value;
 
-    vec3 p, v, w, theta;
+    vec3 p, v, w, theta, F, moment;
     CALint particle_id, steps;
 
     while ((read = getline(&line, &len, fp)) != -1) {
@@ -208,7 +219,21 @@ int loadSnapshotParticles (struct CALModel3D *ca, char* file_name, int *numberOf
             value_string = strtok(NULL, " \t\n");
             w[2] = strtod(value_string,NULL);
 
-            if(addParticleWithFullConfiguration(ca,p,v,w,theta,particle_id,numberOfParticles ))
+            value_string = strtok(NULL, " \t\n");
+            F[0] = strtod(value_string,NULL);
+            value_string = strtok(NULL, " \t\n");
+            F[1] = strtod(value_string,NULL);
+            value_string = strtok(NULL, " \t\n");
+            F[2] = strtod(value_string,NULL);
+
+            value_string = strtok(NULL, " \t\n");
+            moment[0] = strtod(value_string,NULL);
+            value_string = strtok(NULL, " \t\n");
+            moment[1] = strtod(value_string,NULL);
+            value_string = strtok(NULL, " \t\n");
+            moment[2] = strtod(value_string,NULL);
+
+            if(addParticleWithFullConfiguration(ca,p,v,w,theta, F, moment, particle_id,numberOfParticles ))
             {
                 printf( "aggiunta particella a pos : %.6f %.6f %.6f con id %d \n", p[0],p[1],p[2], particle_id);
             }
