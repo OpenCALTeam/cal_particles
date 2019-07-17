@@ -13,6 +13,8 @@ struct Configuration {
     double AL_PP;
     double AL_PW;
 
+    double COEF_REST;
+
     double PARTICLE_MASS;
     double PARTICLE_RADIUS;
     double PARTICLE_VOLUME;

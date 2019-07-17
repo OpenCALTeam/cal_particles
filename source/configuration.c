@@ -2,6 +2,7 @@
 
 #include <common.hpp>
 #include <utils_io.h>
+#include<math.h>
 
 void initConfig(char* file_name, struct Configuration * config)
 {
@@ -15,7 +16,16 @@ void initConfig(char* file_name, struct Configuration * config)
         config->PARTICLE_MASS = config->DENSITY * config->PARTICLE_VOLUME;
     }
 
-    config->MAX_NUMBER_OF_PARTICLES_PER_CELL = 300;//(int)(((MAX_OCCUPANCY_VOLUME)/(config->PARTICLE_VOLUME))+1);
+    if(config->COEF_REST > 0.0)
+    {
+        config->AL_PP = sqrt((4*config->PARTICLE_MASS*config->KN_PP)/ (1+ pow((PIG/log(config->COEF_REST)),2)));
+        config->AL_PW = sqrt((4*config->PARTICLE_MASS*config->KN_PW)/ (1+ pow((PIG/log(config->COEF_REST)),2)));
+
+    }
+
+    printf(" config->AL_PP %.7f config->COEF_REST = %.7f \n", config->AL_PP, config->COEF_REST);
+
+    config->MAX_NUMBER_OF_PARTICLES_PER_CELL = (int)(((MAX_OCCUPANCY_VOLUME)/(config->PARTICLE_VOLUME))+1);
     config->DM = 2* config->PARTICLE_RADIUS;
     config->DM_2 = config->DM*config->DM;
 
@@ -47,6 +57,8 @@ void printProperties(struct Configuration * config)
 
     printf("AL_PP=%.10f\n", config->AL_PP);
     printf("AL_PW=%.10f\n", config->AL_PW);
+
+    printf("COEF_REST=%.10f\n", config->COEF_REST);
 
     printf("PARTICLE_MASS=%.10f\n", config->PARTICLE_MASS);
     printf("PARTICLE_RADIUS=%.10f\n", config->PARTICLE_RADIUS);
