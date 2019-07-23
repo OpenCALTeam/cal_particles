@@ -19,6 +19,7 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
 
     distance_squared_vec3(&dij_2, *pi, *pj);
 
+
     if (dij_2 < cnfg.DM_2)
     {
 
@@ -32,13 +33,20 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
         subtract_vec3(&rij, *pj, *pi);
         divide_by_scalar_vec3(&enij, rij, dij);
 
-        subtract_vec3(&vrij, *vj, *vi);
+        subtract_vec3(&vrij, *vi, *vj);
         dot_product_vec3 (&vnij, vrij, enij);
 
         struct CollisionPP* collision_ij = findCollision_PP(&collisions, id_PARTICLE_i, id_PARTICLE_j);
 
         if (collision_ij == NULL)
         {
+
+            printf("inizio urto particella %d ha v=(%.6f %.6f %.6f) e w=(%.6f %.6f %.6f)\n ", id_PARTICLE_i, (*vi)[0], (*vi)[1], (*vi)[2],
+                    (*wi)[0], (*wi)[1], (*wi)[2]);
+
+            printf("inizio urto particella %d ha v=(%.6f %.6f %.6f) e w=(%.6f %.6f %.6f)\n ", id_PARTICLE_j, (*vj)[0], (*vj)[1], (*vj)[2],
+                    (*wj)[0], (*wj)[1], (*wj)[2]);
+
             CALreal dtp, dtp_dt;
             if(vnij != 0.0)
             {
@@ -85,6 +93,11 @@ void evaluate_collision_PP (int id_PARTICLE_i, int id_PARTICLE_j, vec3* pi, vec3
         struct CollisionPP* collision_ij = findCollision_PP(&collisions, id_PARTICLE_i, id_PARTICLE_j);
         if (collision_ij != NULL)
         {
+            printf("fine urto particella %d ha v=(%.6f %.6f %.6f) e w=(%.6f %.6f %.6f)\n ", id_PARTICLE_i, (*vi)[0], (*vi)[1], (*vi)[2],
+                    (*wi)[0], (*wi)[1], (*wi)[2]);
+
+            printf("fine urto particella %d ha v=(%.6f %.6f %.6f) e w=(%.6f %.6f %.6f)\n ", id_PARTICLE_j, (*vj)[0], (*vj)[1], (*vj)[2],
+                    (*wj)[0], (*wj)[1], (*wj)[2]);
             deleteCollision_PP(&collisions, id_PARTICLE_i, id_PARTICLE_j);
         }
     }
@@ -160,6 +173,7 @@ void inner_collision(struct CALModel3D* ca,
                     calGet3Dr_vec3(ca, Q.wx[inner_slot], Q.wy[inner_slot], Q.wz[inner_slot], cell_x,cell_y,cell_z, &wj );
 
                 }
+
 
                 evaluate_collision_PP(id_PARTICLE_i, id_PARTICLE_j, &pi, &pj, &theta_i, &theta_j, &vi, &vj, &wi, &wj);
 

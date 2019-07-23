@@ -60,14 +60,28 @@ void dot_product_vec3(double * s, const vec3 v,const vec3 u)
 void cross_product_vec3(vec3 * s, const vec3 u,const vec3 v)
 {
 
-        (*s)[0] = u[2]*v[1] - u[1]*v[2]; //prima
-        (*s)[1] = u[0]*v[2] - u[2]*v[0]; //prima
-        (*s)[2] = u[1]*v[0] - u[0]*v[1]; //prima
+    vec3 _u;
+    clear_vec3(&_u);
+    _u[0] = u[0];
+    _u[1] = u[1];
+    _u[2] = u[2];
 
-//    (*s)[0] = u[1]*v[2] - u[2]*v[1];
-//    (*s)[1] = u[2]*v[0] - u[0]*v[2];
-//    (*s)[2] = u[0]*v[1] - u[1]*v[0];
+#if TENTATIVO_DISPERATO == 1
+    (*s)[0] = _u[1]*v[2] - _u[2]*v[1];
+    (*s)[1] = _u[2]*v[0] - _u[0]*v[2];
+    (*s)[2] = _u[0]*v[1] - _u[1]*v[0];
+#else
+
+    (*s)[0] = _u[2]*v[1] - _u[1]*v[2]; //TODO prima
+    (*s)[1] = _u[0]*v[2] - _u[2]*v[0]; //TODO prima
+    (*s)[2] = _u[1]*v[0] - _u[0]*v[1]; //TODO prima
+
+#endif
+
+
+
 }
+
 
 /* ABSolute value of a Vector */
 void absolute_value_vec3(double * s, const vec3 v)

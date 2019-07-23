@@ -356,7 +356,7 @@ void run()
 
     clear_vec3(&v_0);
     clear_vec3(&w_0);
-    p_0[0]=0.02+cnfg.PARTICLE_RADIUS*2.3;
+    p_0[0]=0.02+cnfg.PARTICLE_RADIUS*1.75;
     p_0[1]=0.02;
     p_0[2]=0.02;
 //    v_0[0] = -2.2;
