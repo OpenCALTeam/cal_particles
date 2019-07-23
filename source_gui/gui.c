@@ -91,8 +91,11 @@ void drawParticles()
 
                 if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
                   {
-                    glColor3f(1,0,0);
-                    glutSolidSphere(particle_radius,10,10);
+                    if (calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z)  == HIGHLIGHTED_PARTICLE)
+                        glColor3f(0,0,1);
+                    else
+                        glColor3f(1,0,0);
+                    glutWireSphere(particle_radius,10,10);
                   }
                 else
                   if(calGet3Di(u_modellu,Q.ID[slot],cell_x,cell_y,cell_z) < NULL_ID)

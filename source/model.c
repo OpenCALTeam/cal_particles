@@ -172,6 +172,8 @@ void run()
     elapsed_time = 0.0;
     int initial_step=0;
 
+    initWalls(walls);
+
 
 
 
@@ -180,7 +182,7 @@ void run()
     clear_vec3(&v_0);
     v_0[0] = 0.1;
     clear_vec3(&w_0);
-    v_0[2] = -0.1;
+    //v_0[2] = -0.1;
     w_0[1]= 500;
 
     p_0[0]=0.02;
@@ -209,24 +211,26 @@ void run()
 #elif TEST_CASE == TEST_CASE_TWO_PP_VEL_OMEGA
     vec3 p_0, v_0, w_0;
     clear_vec3(&v_0);
-    v_0[0] = +0.2;
+    v_0[0] = +1.0;
     clear_vec3(&w_0);
-    w_0[1] = 40.0;
+    w_0[2] = 500.0;
 
     p_0[0]=0.02;
     p_0[1]=0.02;
     p_0[2]=0.02;
 
-    w_0[1] = 0.3;
+//    w_0[0] = 40.0;
 
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
-    p_0[0]=0.0211;
+    clear_vec3(&v_0);
+    clear_vec3(&w_0);
+    p_0[0]=0.02+cnfg.PARTICLE_RADIUS*2.3;
     p_0[1]=0.02;
     p_0[2]=0.02;
-    v_0[0] = -0.2;
+//    v_0[0] = -2.2;
 
-    w_0[1] = -50.2;
+//    w_0[1] = -30.0;
 
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
@@ -284,52 +288,92 @@ void run()
 
 #elif TEST_CASE == TEST_CASE_SANDWICH
     vec3 p_0, v_0, w_0;
+    //    clear_vec3(&v_0);
+    //    v_0[0] = 10.5;
+    //    clear_vec3(&w_0);
+    //    w_0[0] = 20.0;
+
+    //    p_0[0]=0.02;
+    //    p_0[1]=0.02;
+    //    p_0[2]=0.02;
+    //    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+    //    clear_vec3(&v_0);
+    //    v_0[0] = -10.5;
+    //    clear_vec3(&w_0);
+    //    w_0[0] = -20.0;
+
+    //    p_0[0]=0.02 + cnfg.PARTICLE_RADIUS*6;
+    //    p_0[1]=0.02;
+    //    p_0[2]=0.02;
+    //    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
     clear_vec3(&v_0);
-    v_0[0] = 10.5;
+
     clear_vec3(&w_0);
-    w_0[0] = 20.0;
+    w_0[2] = -50.0;
+    v_0[1] = -1.5;
+
+    p_0[0]=0.02 + cnfg.PARTICLE_RADIUS*3;
+    p_0[1]=0.02;
+    p_0[2]=0.02;
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+    //    clear_vec3(&v_0);
+    //    v_0[1] = -5.5;
+    //    clear_vec3(&w_0);
+    //    w_0[1] = -50.0;
+
+    //    p_0[0]=0.02 + cnfg.PARTICLE_RADIUS*3;
+    //    p_0[1]=0.02 + cnfg.PARTICLE_RADIUS*3;
+    //    p_0[2]=0.02;
+    //    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+    clear_vec3(&v_0);
+    v_0[1] = +1.5;
+    clear_vec3(&w_0);
+    w_0[1] = +50.0;
+
+    p_0[0]=0.02 + cnfg.PARTICLE_RADIUS*3;
+    p_0[1]=0.02 - cnfg.PARTICLE_RADIUS*3;
+    p_0[2]=0.02;
+    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+
+#elif TEST_CASE == TEST_CASE_BILIARD_BALL
+    vec3 p_0, v_0, w_0;
+    clear_vec3(&v_0);
+    v_0[0] = +1.0;
+    clear_vec3(&w_0);
+//    w_0[1] = 0;
 
     p_0[0]=0.02;
-    p_0[1]=0.02;
+    p_0[1]=0.02+cnfg.PARTICLE_RADIUS;
     p_0[2]=0.02;
+
+//    w_0[0] = 40.0;
+
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 
     clear_vec3(&v_0);
-    v_0[0] = -10.5;
     clear_vec3(&w_0);
-    w_0[0] = -20.0;
-
-    p_0[0]=0.02 + cnfg.PARTICLE_RADIUS*6;
+    p_0[0]=0.02+cnfg.PARTICLE_RADIUS*2.3;
     p_0[1]=0.02;
     p_0[2]=0.02;
-    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
+//    v_0[0] = -2.2;
 
-    clear_vec3(&v_0);
+//    w_0[1] = -30.0;
 
-    clear_vec3(&w_0);
-    w_0[1] = -50.0;
-
-    p_0[0]=0.02 + cnfg.PARTICLE_RADIUS*3;
-    p_0[1]=0.02;
-    p_0[2]=0.02;
-    addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
-
-    clear_vec3(&v_0);
-    v_0[1] = -5.5;
-    clear_vec3(&w_0);
-    w_0[1] = -50.0;
-
-    p_0[0]=0.02 + cnfg.PARTICLE_RADIUS*3;
-    p_0[1]=0.02 + cnfg.PARTICLE_RADIUS*3;
-    p_0[2]=0.02;
     addParticleWithPosition(u_modellu, p_0, v_0,w_0, &initial_nummber_of_particles);
 #elif TEST_CASE == TEST_CASE_STRUCTURED
     addStructuredParticles(u_modellu, &initial_nummber_of_particles);
 
 
 #elif TEST_CASE == RESTART
-//     initial_step = loadSnapshotParticles(u_modellu, "./snapshots/particle_configuration2080_ribelli.dat", & initial_nummber_of_particles);
-    initial_step = loadSnapshotParticles(u_modellu, "./snapshots/particle_configuration_chimici.dat", & initial_nummber_of_particles);
+    initial_step = loadSnapshotParticles(u_modellu, "./snapshots/particle_configuration40300.dat", & initial_nummber_of_particles);
+    //    initial_step = loadSnapshotParticles(u_modellu, "./snapshots/particle_configuration_chimici.dat", & initial_nummber_of_particles);
+
+    initial_step++;
+    elapsed_time = cnfg.DELTA_T * (initial_step+1);
 
 #else
     mmiscali_nta_cella_seriale(u_modellu);
@@ -351,15 +395,15 @@ void run()
     collisions.N_PARTICLES = initial_nummber_of_particles+1;
     initCollisionsPP(&collisions);
 
-    initWalls(walls);
+
     initCollisionsPW(&collisions);
 
 #if TEST_CASE == RESTART
-    loadSnapshotCollisionsParticles(&collisions, "./snapshots/collisions_particles_configuration_chimici.dat");
-    loadSnapshotCollisionsWalls(&collisions, "./snapshots/collisions_wall_configuration_chimici.dat");
+    //    loadSnapshotCollisionsParticles(&collisions, "./snapshots/collisions_particles_configuration_chimici.dat");
+    //    loadSnapshotCollisionsWalls(&collisions, "./snapshots/collisions_wall_configuration_chimici.dat");
 
-//    loadSnapshotCollisionsParticles(&collisions, "./snapshots/collisions_particles_configuration2080_ribelli.dat");
-//    loadSnapshotCollisionsWalls(&collisions, "./snapshots/collisions_wall_configuration2080.dat");
+    loadSnapshotCollisionsParticles(&collisions, "./snapshots/collisions_particles_configuration40300.dat");
+    loadSnapshotCollisionsWalls(&collisions, "./snapshots/collisions_wall_configuration40300.dat");
     updateCollisionsPP(&collisions);
     updateCollisionsPW(&collisions);
 #endif

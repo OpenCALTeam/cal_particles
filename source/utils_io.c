@@ -112,17 +112,20 @@ void saveParticleInfo(struct CALModel3D *ca, CALint step, CALreal elapsed_time, 
         for (int cell_y=0; cell_y<ca->columns; cell_y++)
             for (int cell_z = 0; cell_z<ca->slices; cell_z++)
                 for (int slot = 0; slot < cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL; slot++)
-                    if (calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z) > NULL_ID)
+                {
+                    int particle_id = calGet3Di(ca, Q.ID[slot],cell_x,cell_y,cell_z);
+                    if (particle_id > NULL_ID)
                     {
                         calGet3Dr_vec3(ca, Q.px[slot], Q.py[slot], Q.pz[slot], cell_x, cell_y, cell_z, &position );
                         calGet3Dr_vec3(ca, Q.thetax[slot], Q.thetay[slot], Q.thetaz[slot], cell_x, cell_y, cell_z, &theta );
                         calGet3Dr_vec3(ca, Q.wx[slot], Q.wy[slot], Q.wz[slot], cell_x, cell_y, cell_z, &omega );
                         calGet3Dr_vec3(ca, Q.vx[slot], Q.vy[slot], Q.vz[slot], cell_x, cell_y, cell_z, &velocity );
 
-                        fprintf(f, "%d %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f\n",step, elapsed_time, position[0], position[1], position[2],
+                        fprintf(f, "%d %.10f %d %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f %.10f\n",step, elapsed_time, particle_id, position[0], position[1], position[2],
                                 theta[0], theta[1], theta[2],
                                 velocity[0],velocity[1], velocity[2], omega[0], omega[1], omega[2]);
                     }
+                }
 }
 
 void saveParticles(struct CALModel3D *ca, CALint step, CALreal elapsed_time, double CPU_time, char* path)

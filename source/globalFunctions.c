@@ -139,7 +139,7 @@ void setActiveCells(struct CALModel3D* ca)
             {
                 if(calGet3Di(ca, Q.nP,cell_x,cell_y,cell_z) >= 1)
                 {
-//                    printf("(%d,%d;%d) è ora attiva\n", cell_x, cell_y, cell_z);
+                    //                    printf("(%d,%d;%d) è ora attiva\n", cell_x, cell_y, cell_z);
                     calAddActiveCell3D(ca, cell_x, cell_y, cell_z);
                 }
                 else
@@ -155,10 +155,10 @@ void setActiveCells(struct CALModel3D* ca)
 void transitionFunction(struct CALModel3D* modello)
 {
 
-//        if (a_simulazioni->step >= 1566)
-//        {
-//            printID(modello);
-//        }
+    //        if (a_simulazioni->step >= 1566)
+    //        {
+    //            printID(modello);
+    //        }
 
 #if INTEGRATION_METHOD == LEAP_FROG
     calApplyElementaryProcess3D(modello, leap_frog_velocity);
@@ -221,7 +221,12 @@ void transitionFunction(struct CALModel3D* modello)
 #ifdef ENERGY
     computeSummary(modello);
     saveTotalEnergy(modello, a_simulazioni->step, elapsed_time, total_energy_file);
+#if PARTICLE_INFO == 1
     saveParticleInfo(modello, a_simulazioni->step, elapsed_time, particle_info_file);
+#else
+    if(a_simulazioni->step % 1000 == 0)
+        saveParticleInfo(modello, a_simulazioni->step, elapsed_time, particle_info_file);
+#endif
 #endif
 #ifdef VERBOSE
     printSummary();

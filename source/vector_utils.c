@@ -59,9 +59,14 @@ void dot_product_vec3(double * s, const vec3 v,const vec3 u)
 
 void cross_product_vec3(vec3 * s, const vec3 u,const vec3 v)
 {
-   (*s)[0] = u[2]*v[1] - u[1]*v[2];
-   (*s)[1] = u[0]*v[2] - u[2]*v[0];
-   (*s)[2] = u[1]*v[0] - u[0]*v[1];
+
+        (*s)[0] = u[2]*v[1] - u[1]*v[2]; //prima
+        (*s)[1] = u[0]*v[2] - u[2]*v[0]; //prima
+        (*s)[2] = u[1]*v[0] - u[0]*v[1]; //prima
+
+//    (*s)[0] = u[1]*v[2] - u[2]*v[1];
+//    (*s)[1] = u[2]*v[0] - u[0]*v[2];
+//    (*s)[2] = u[0]*v[1] - u[1]*v[0];
 }
 
 /* ABSolute value of a Vector */
