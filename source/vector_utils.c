@@ -57,29 +57,18 @@ void dot_product_vec3(double * s, const vec3 v,const vec3 u)
         (*s) += (v)[_i] * (u)[_i];
 }
 
-void cross_product_vec3(vec3 * s, const vec3 u,const vec3 v)
+void cross_product_vec3(vec3 * s, const vec3 _u,const vec3 v)
 {
 
-    vec3 _u;
-    clear_vec3(&_u);
-    _u[0] = u[0];
-    _u[1] = u[1];
-    _u[2] = u[2];
-
-#if TENTATIVO_DISPERATO == 1
-    (*s)[0] = _u[1]*v[2] - _u[2]*v[1];
-    (*s)[1] = _u[2]*v[0] - _u[0]*v[2];
-    (*s)[2] = _u[0]*v[1] - _u[1]*v[0];
-#else
+//    vec3 _u;
+//    clear_vec3(&_u);
+//    _u[0] = u[0];
+//    _u[1] = u[1];
+//    _u[2] = u[2];
 
     (*s)[0] = _u[2]*v[1] - _u[1]*v[2]; //TODO prima
     (*s)[1] = _u[0]*v[2] - _u[2]*v[0]; //TODO prima
     (*s)[2] = _u[1]*v[0] - _u[0]*v[1]; //TODO prima
-
-#endif
-
-
-
 }
 
 

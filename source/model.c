@@ -50,7 +50,7 @@ void run()
     Q.wz = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
     Q.ID = (struct CALSubstate3Di**)malloc(sizeof(struct CALSubstate3Di*)* cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL);
-    Q.nP = (struct CALSubstate3Di*)malloc(sizeof(struct CALSubstate3Di)* cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL);
+    //Q.nP = (struct CALSubstate3Di*)malloc(sizeof(struct CALSubstate3Di)* cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL);
 
 #ifdef ENERGY
     Q.total_energy = (struct CALSubstate3Dr**)malloc(sizeof(struct CALSubstate3Dr*)* cnfg.MAX_NUMBER_OF_PARTICLES_PER_CELL);
@@ -88,7 +88,7 @@ void run()
 
         Q.ID[slot] = calAddSubstate3Di(u_modellu);
 
-        Q.nP = calAddSubstate3Di(u_modellu);
+
 
 #ifdef ENERGY
         Q.total_energy[slot] = calAddSubstate3Dr(u_modellu);
@@ -136,6 +136,7 @@ void run()
 
 
     }
+    Q.nP = calAddSubstate3Di(u_modellu);
     calInitSubstate3Di(u_modellu,Q.nP,0);
 
 
@@ -415,6 +416,7 @@ void run()
     //    calRunAddInitFunc3D(a_simulazioni, setActiveCells);
     setActiveCells(u_modellu);
 #endif
+
 
     calRunAddGlobalTransitionFunc3D(a_simulazioni, transitionFunction);
     calRunAddStopConditionFunc3D(a_simulazioni, caminalu);

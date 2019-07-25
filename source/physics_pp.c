@@ -6,12 +6,7 @@ void defPart_PP_ij (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enij, vec3 t
     vec3 delta_theta_vers, delta_theta_i, delta_theta_j, delta_t_i, delta_t_j, vr_i, vr_j;
     multiply_by_scalar_vec3(DefN, enij, overlap);
 
-#if TENTATIVO_DISPERATO == 1
-    cross_product_vec3(&delta_theta_vers,  enij, collision_ij->vers_R_c_0 ); //TODO prima
-#else
     cross_product_vec3(&delta_theta_vers, collision_ij->vers_R_c_0, enij );
-#endif
-
 
     subtract_vec3(&delta_theta_i, theta_i, collision_ij->theta_i_0);
     add_vec3(&delta_theta_i, delta_theta_i, delta_theta_vers);
@@ -19,20 +14,16 @@ void defPart_PP_ij (vec3 * DefN, vec3 * DefT, CALreal overlap, vec3 enij, vec3 t
     subtract_vec3(&delta_theta_j, theta_j, collision_ij->theta_j_0);
     add_vec3(&delta_theta_j, delta_theta_j, delta_theta_vers);
 
-#if TENTATIVO_DISPERATO == 1
-    multiply_by_scalar_vec3(&vr_i, enij, +cnfg.PARTICLE_RADIUS); //TODO prima
-    multiply_by_scalar_vec3(&vr_j, enij,  -cnfg.PARTICLE_RADIUS); //TODO prima
-#else
+
     multiply_by_scalar_vec3(&vr_i, enij, cnfg.PARTICLE_RADIUS);
     multiply_by_scalar_vec3(&vr_j, enij,  -cnfg.PARTICLE_RADIUS);
-#endif
 
     cross_product_vec3(&delta_t_i, vr_i, delta_theta_i );
     cross_product_vec3(&delta_t_j, vr_j, delta_theta_j);
 
     subtract_vec3(DefT, delta_t_i, delta_t_j);
 
-    printf("DefT = (%.9f,%.9f,%.9f)\n", (*DefT)[0], (*DefT)[1], (*DefT)[2] );
+//    printf("DefT = (%.9f,%.9f,%.9f)\n", (*DefT)[0], (*DefT)[1], (*DefT)[2] );
 
 }
 
@@ -68,7 +59,7 @@ void forcePart_PP (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
                    struct Collisions* collisions)
 {
     CALreal ddt_2, ddt_max_2, ddt, ddt_max;
-    vec3 WixRi, WjxRj, vrc, vrcn, vrct, vrcn_AL, vrct_AL, Et, deT;
+    vec3 WixRi, WjxRj, vrc, vrcn, vrct, vrcn_AL, vrct_AL, Et, deT, Ri, Rj;
 
     multiply_by_scalar_vec3(Fn, DefN, -cnfg.KN_PP );
 
@@ -93,23 +84,11 @@ void forcePart_PP (vec3* Fn, vec3* Ft, CALreal overlap, vec3 DefN,
     }
 
 
-#if TENTATIVO_DISPERATO == 1
-    multiply_by_scalar_vec3(&WixRi, enij, cnfg.PARTICLE_RADIUS); //TODO prima
-#else
-    multiply_by_scalar_vec3(&WixRi, enij, cnfg.PARTICLE_RADIUS);
-#endif
+    multiply_by_scalar_vec3(&Ri, enij, cnfg.PARTICLE_RADIUS);
+    cross_product_vec3(&WixRi, Ri, Wi);
 
-    cross_product_vec3(&WixRi, WixRi, Wi);
-
-
-
-#if TENTATIVO_DISPERATO == 1
-    multiply_by_scalar_vec3(&WjxRj, enij, -cnfg.PARTICLE_RADIUS); //TODO prima
-#else
-    multiply_by_scalar_vec3(&WjxRj, enij, -cnfg.PARTICLE_RADIUS);
-#endif
-
-    cross_product_vec3(&WjxRj, WjxRj, Wj);
+    multiply_by_scalar_vec3(&Rj, enij, -cnfg.PARTICLE_RADIUS);
+    cross_product_vec3(&WjxRj, Rj, Wj);
 
 
     add_vec3(&vrc, vrij, WixRi);
@@ -137,11 +116,8 @@ void updateForces_PP (vec3 Ft, vec3 Fn, vec3 enij, struct CollisionPP* collision
     updateForce_j_PP(collisions, collision_ij->id_i, collision_ij->id_j, &F);
 
     cross_product_vec3(&enijXFt,  Ft, enij);
-#if TENTATIVO_DISPERATO == 1
-    multiply_by_scalar_vec3(&enijXFt, enijXFt, cnfg.PARTICLE_RADIUS); //TODO prima
-#else
+
     multiply_by_scalar_vec3(&enijXFt, enijXFt, cnfg.PARTICLE_RADIUS);
-#endif
 
     updateMoment_i_PP(collisions, collision_ij->id_i, collision_ij->id_j, &enijXFt);
     updateMoment_j_PP(collisions, collision_ij->id_i, collision_ij->id_j, &enijXFt);

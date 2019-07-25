@@ -17,7 +17,9 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#define TEST_CASE 9
+
+
+#define TEST_CASE -1
 #define INTEGRATION_METHOD 1
 
 #define TEST_CASE_SUPERBALL 0
@@ -32,9 +34,16 @@
 #define TEST_CASE_SANDWICH 8
 #define TEST_CASE_STRUCTURED 9
 
+#define TEST_CASE_BILIARD_BALL 10
+
 #define RESTART -2
 
+
 #define OPTIMITAZION_ACTIVE_CELLS 1
+
+#define HIGHLIGHTED_PARTICLE -1
+
+#define PARTICLE_INFO 0
 
 
 #define LEAP_FROG 1
