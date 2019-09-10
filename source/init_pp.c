@@ -23,9 +23,13 @@ bool addRandomParticlePosition(struct CALModel3D *ca, int * nextIDParticle)
     CALreal cz = ((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (CELL_SIDE);
 
     //generiamo una porzione
-    CALint cell_x =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->rows-1)+1;
-    CALint cell_y =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->columns-1)+1;
-    CALint cell_z =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->slices-1)+1;
+//    CALint cell_x =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->rows-1)+1;
+//    CALint cell_y =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->columns-1)+1;
+//    CALint cell_z =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (ca->slices-1)+1;
+
+    CALint cell_x =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (5)+9;
+    CALint cell_y =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (5)+9;
+    CALint cell_z =((CALreal)rand_r(&_seed)/(CALreal)(RAND_MAX)) * (5)+1;
 
 
     int slot = getFirstFreeSlot(ca, cell_x,cell_y,cell_z);
@@ -158,6 +162,8 @@ bool addParticleWithPosition(struct CALModel3D *ca, vec3 p_0, vec3 v_0, vec3 w_0
     if (slot != -1)
     {
         printf( "aggiunta particella a pos : %f %f %f con id %d \n", p_0[0],p_0[1],p_0[2], *nextIDParticle);
+        printf( "vel : %.6f %.6f %.6f con id %d \n", v_0[0],v_0[1],v_0[2], *nextIDParticle);
+        printf( "omega : %.6f %.6f %.6f con id %d \n", w_0[0],w_0[1],w_0[2], *nextIDParticle);
 
         calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
         calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);
@@ -198,6 +204,7 @@ bool addParticleWithFullConfiguration(struct CALModel3D *ca, vec3 p_0, vec3 v_0,
     if (slot != -1)
     {
         printf( "aggiunta particella a pos : %.6f %.6f %.6f con id %d \n", p_0[0],p_0[1],p_0[2], particle_id);
+
 
         //        calInit3Dr(ca,Q.Fx[slot],cell_x,cell_y,cell_z,0.0);
         //        calInit3Dr(ca,Q.Fy[slot],cell_x,cell_y,cell_z,0.0);

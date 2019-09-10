@@ -377,12 +377,15 @@ void run()
     elapsed_time = cnfg.DELTA_T * (initial_step+1);
 
 #else
-    mmiscali_nta_cella_seriale(u_modellu);
-    cancella_particelle_in_urto(u_modellu);
+    //mmiscali_nta_cella_seriale(u_modellu);
+    //cancella_particelle_in_urto(u_modellu);
 
-    //    for (int i = 0; i < TOTAL_NUMBER_PARTICLE; ++i) {
-    //        addRandomParticlePosition(u_modellu, &initial_nummber_of_particles);
-    //    }
+
+
+    for (int i = 0; i < TOTAL_NUMBER_PARTICLE; ++i) {
+        addRandomParticlePosition(u_modellu, &initial_nummber_of_particles);
+    }
+    cancella_particelle_in_urto(u_modellu);
 
 #endif
 
